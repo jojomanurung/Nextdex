@@ -1,15 +1,19 @@
-import { PokemonType } from "pokenode-ts";
-import Type from "./Type";
+import { PokemonSprites, PokemonType } from "pokenode-ts";
 import { PokemonTypes } from "@dex/constant/PokemonTypes";
+import Type from "./Type";
+import Image from "next/image";
 
 export type CardProps = {
   id: number;
   name: string;
   types: PokemonType[];
+  sprites: PokemonSprites;
 };
 
-export default function Card({ id, name, types }: CardProps) {
-  const [{ color }] = PokemonTypes.filter((value) => value.name === types[0].type.name);
+export default function Card({ id, name, types, sprites }: CardProps) {
+  const [{ color }] = PokemonTypes.filter(
+    (value) => value.name === types[0].type.name
+  );
 
   const formatPokemonId = (id: number) => {
     if (id < 10) return `#00${id}`;
@@ -18,12 +22,17 @@ export default function Card({ id, name, types }: CardProps) {
   };
 
   return (
-    <div className="rounded-xl shadow-lg p-6" style={{backgroundColor: color}}>
-      <div className="pb-5">
-        <img
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${id}.png`}
+    <div
+      className="rounded-xl shadow-lg p-6"
+      style={{ backgroundColor: color }}
+    >
+      <div className="pb-5 flex justify-center">
+        <Image
+          src={sprites.other!["official-artwork"].front_default!}
           alt={name}
-          width={`100%`}
+          width={200}
+          height={200}
+          priority={true}
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
