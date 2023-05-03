@@ -27,7 +27,7 @@ export default function Home({ results }: HomeProps) {
       <div className="flex justify-center">
         <h1 className="">Nextdex</h1>
       </div>
-      <div className="border-4 border-solid border-red-500/75 rounded-xl lg:mx-10 p-10">
+      <div className="lg:mx-20 py-7">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hasDynamicPokemon
             ? dynamicPokemon.map((item, index) => (

@@ -9,9 +9,11 @@ export interface InfiniteScroll {
   isLastPage: boolean;
 }
 
+const PAGE_LIMIT = 9;
+
 export const InfiniteScroll = (pokemon: Pokemon[]): InfiniteScroll => {
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(9);
+  const [page, setPage] = useState(PAGE_LIMIT);
   const [hasDynamicPokemon, setHasDynamicPokemon] = useState(false);
   const [dynamicPokemon, setDynamicPokemon] = useState<Pokemon[]>(pokemon);
   const [isLastPage, setIsLastPage] = useState(false);
@@ -30,7 +32,7 @@ export const InfiniteScroll = (pokemon: Pokemon[]): InfiniteScroll => {
         loadMoreTimeoutRef.current = setTimeout(() => {
           const api = new PokemonClient();
 
-          api.listPokemons(page, 9).then(async (next) => {
+          api.listPokemons(page, PAGE_LIMIT).then(async (next) => {
             console.log('page? ==> ', next.next);
             setPage(page + 9);
             const promises = next.results.map((result) =>
