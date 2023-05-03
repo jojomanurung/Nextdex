@@ -11,7 +11,7 @@ export interface InfiniteScroll {
 
 export const InfiniteScroll = (pokemon: Pokemon[]): InfiniteScroll => {
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(9);
   const [hasDynamicPokemon, setHasDynamicPokemon] = useState(false);
   const [dynamicPokemon, setDynamicPokemon] = useState<Pokemon[]>(pokemon);
   const [isLastPage, setIsLastPage] = useState(false);
@@ -32,7 +32,7 @@ export const InfiniteScroll = (pokemon: Pokemon[]): InfiniteScroll => {
 
           api.listPokemons(page, 9).then(async (next) => {
             console.log('page? ==> ', next.next);
-            setPage(page + 1);
+            setPage(page + 9);
             const promises = next.results.map((result) =>
               api.getPokemonByName(result.name)
             );

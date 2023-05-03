@@ -30,7 +30,7 @@ export default function Card({ id, name, types, sprites }: CardProps) {
         <Image
           src={sprites.other!["official-artwork"].front_default!}
           alt={name}
-          width={200}
+          width={300}
           height={200}
           priority={true}
         />
