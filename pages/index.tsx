@@ -1,10 +1,9 @@
+import { Pokemon, PokemonClient } from "pokenode-ts";
+import { useCallback, useEffect, useState } from "react";
+import VirtualScroll from "@dex/components/VirtualScroll";
 import Card from "@dex/components/Card";
-import { Loader } from "@dex/components/Loader";
-import { InfiniteScroll } from "@dex/hooks/InfiniteScroll";
 
-import { MainClient, Pokemon } from "pokenode-ts";
-
-export type HomeProps = {
+type HomeProps = {
   count: number;
   next: string | null;
   previous: string | null;
@@ -14,31 +13,55 @@ export type HomeProps = {
 const PAGE_LIMIT = 9;
 
 export default function Home({ results }: HomeProps) {
-  const {
-    isLoading,
-    loadMoreCallback,
-    hasDynamicPokemon,
-    dynamicPokemon,
-    isLastPage,
-  } = InfiniteScroll(results);
+  const [pokemons, setPokemons] = useState(results);
+  const [page, setPage] = useState(PAGE_LIMIT);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+
+  const fetchPokemon = useCallback(async () => {
+    const api = new PokemonClient();
+
+    const response = await api
+      .listPokemons(page, PAGE_LIMIT)
+      .then(async (next) => {
+        const promises = next.results.map((result) =>
+          api.getPokemonByName(result.name)
+        );
+        const pokeList = await Promise.all(promises);
+        const newPokeList = [...pokemons, ...pokeList];
+        const temp = { ...next, results: newPokeList };
+        return temp;
+      });
+
+    setPage((prev) => prev + PAGE_LIMIT);
+    setPokemons(response.results);
+    setIsLast(response.results.length === response.count);
+    setIsLoading(false);
+  }, [page, pokemons]);
+
+  useEffect(() => {
+    // if VirtualScroll is not in view then don't call following functions
+    if (!isIntersecting) return;
+    setIsLoading(true);
+    fetchPokemon();
+  }, [fetchPokemon, isIntersecting]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="flex justify-center">
         <h1 className="">Nextdex</h1>
       </div>
-      <div className="lg:mx-20 py-7">
+      <div className="lg:mx-20 pb-7">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {hasDynamicPokemon
-            ? dynamicPokemon.map((item, index) => (
-                <Card key={index} {...item} />
-              ))
-            : results.map((item, index) => <Card key={index} {...item} />)}
+          {pokemons.map((item, index) => (
+            <Card key={index} {...item} />
+          ))}
         </div>
-        <Loader
-          isLastPage={isLastPage}
+        <VirtualScroll
+          intersectCallback={setIsIntersecting}
           isLoading={isLoading}
-          loadMoreCallback={loadMoreCallback}
+          isLast={isLast}
         />
       </div>
     </div>
@@ -47,17 +70,15 @@ export default function Home({ results }: HomeProps) {
 
 // This gets called on every request
 export async function getServerSideProps() {
-  const api = new MainClient();
+  const api = new PokemonClient();
 
-  let data = await api.pokemon
-    .listPokemons(0, PAGE_LIMIT)
-    .then(async (next) => {
-      const promises = next.results.map((result) =>
-        api.pokemon.getPokemonByName(result.name)
-      );
-      const pokeList = await Promise.all(promises);
-      return { ...next, results: pokeList };
-    });
+  let data = await api.listPokemons(0, PAGE_LIMIT).then(async (next) => {
+    const promises = next.results.map((result) =>
+      api.getPokemonByName(result.name)
+    );
+    const pokeList = await Promise.all(promises);
+    return { ...next, results: pokeList };
+  });
 
   return { props: { ...data } };
 }
