@@ -16,7 +16,7 @@ export default function Layout({ children }: LayoutProps) {
         <title>Pokemon | Nextdex</title>
       </Head>
       <Navbar />
-      <main className={`${font.className} pt-[114px] px-7 lg:px-auto pb-10 bg-slate-900/90 text-white`}>{children}</main>
+      <main className={`${font.className} min-h-screen pt-[114px] px-7 lg:px-auto pb-10 bg-slate-900/90 text-white`}>{children}</main>
     </>
   );
 }

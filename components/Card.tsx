@@ -30,13 +30,15 @@ export default function Card({ id, name, types, sprites }: CardProps) {
         ></div>
       </div>
       <div className="flex justify-center">
-        <Image
-          src={sprites.other!["official-artwork"].front_default!}
-          alt={name}
-          width={270}
-          height={200}
-          priority={true}
-        />
+        {sprites.other!["official-artwork"].front_default && (
+          <Image
+            src={sprites.other!["official-artwork"].front_default}
+            alt={name}
+            width={270}
+            height={200}
+            priority={true}
+          />
+        )}
       </div>
       <div className="flex items-center justify-center flex-col gap-2">
         <div className="w-full">
