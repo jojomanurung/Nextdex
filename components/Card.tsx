@@ -2,6 +2,7 @@ import { PokemonSprites, PokemonType } from "pokenode-ts";
 import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import Type from "./Type";
 import Image from "next/image";
+import Placeholder from "@dex/public/images/pokemon_placeholder.png";
 
 export type CardProps = {
   id: number;
@@ -30,14 +31,20 @@ export default function Card({ id, name, types, sprites }: CardProps) {
         ></div>
       </div>
       <div className="flex justify-center">
-        {sprites.other!["official-artwork"].front_default && (
+        {sprites.other!["official-artwork"].front_default ? (
           <Image
             src={sprites.other!["official-artwork"].front_default}
             alt={name}
-            width={270}
-            height={200}
-            priority={true}
+            width={0}
+            height={0}
+            sizes="100%"
+            priority
+            placeholder="blur"
+            blurDataURL="/images/pokemon_placeholder.png"
+            className="w-full h-auto"
           />
+        ) : (
+          <Image src={Placeholder} alt={name} className="w-full h-auto" />
         )}
       </div>
       <div className="flex items-center justify-center flex-col gap-2">
