@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: rgb(249 250 251 / 1);
+html, body {
+  /* background-color: rgb(249 250 251 / 1); */
+  height: 100%;
 }
 
 ::-webkit-scrollbar {
