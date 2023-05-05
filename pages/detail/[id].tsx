@@ -6,21 +6,18 @@ export default function Id(data: Pokemon) {
   const [pokemon, setPokemon] = useState(data);
 
   return (
-    <div className="h-full">
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <div>
-          <p>Pokemon Name : {pokemon.name.toUpperCase()}</p>
-        </div>
-        <div>
-          <p>Pokemon id : {pokemon.id}</p>
-        </div>
+    <div className="min-h-full flex gap-1 justify-center items-center">
+      <div>
+        <p>Pokemon Name : {pokemon.name.toUpperCase()}</p>
+      </div>
+      <div>
+        <p>Pokemon id : {pokemon.id}</p>
       </div>
     </div>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  console.log('params', params);
   const id = params!.id as any;
   const api = new PokemonClient();
 

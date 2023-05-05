@@ -48,11 +48,11 @@ export default function Home({ results }: HomeProps) {
   }, [fetchPokemon, isIntersecting]);
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="min-h-full flex flex-col justify-center items-center">
       <div className="flex justify-center">
         <h1 className="">Nextdex</h1>
       </div>
-      <div className="lg:mx-20 pb-7">
+      <div className="mx-2 lg:mx-10 pb-7">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pokemons.map((item, index) => (
             <Card key={index} {...item} />
