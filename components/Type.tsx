@@ -2,11 +2,11 @@ import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import Image from "next/image";
 
 type TypeProp = {
-  item: string;
+  type: string;
 };
 
-export default function Type({ item }: TypeProp) {
-  const [{ name, color }] = PokemonTypes.filter((value) => value.name === item);
+export default function Type({ type }: TypeProp) {
+  const [{ name, color }] = PokemonTypes.filter((value) => value.name === type);
 
   return (
     <div

@@ -18,7 +18,7 @@ export default function Card({ id, name, types, sprites }: CardProps) {
 
   const formatPokemonId = (id: number) => {
     if (id < 10) return `#00${id}`;
-    else if (id >= 10 && id < 99) return `#0${id}`;
+    else if (id >= 10 && id <= 99) return `#0${id}`;
     else return `#${id}`;
   };
 
@@ -31,21 +31,17 @@ export default function Card({ id, name, types, sprites }: CardProps) {
         ></div>
       </div>
       <div className="flex justify-center">
-        {sprites.other!["official-artwork"].front_default ? (
-          <Image
-            src={sprites.other!["official-artwork"].front_default}
-            alt={name}
-            width={0}
-            height={0}
-            sizes="100%"
-            priority
-            placeholder="blur"
-            blurDataURL="/images/pokemon_placeholder.png"
-            className="w-full h-auto"
-          />
-        ) : (
-          <Image src={Placeholder} alt={name} className="w-full h-auto" />
-        )}
+        <Image
+          src={sprites.other?.["official-artwork"].front_default ?? Placeholder}
+          alt={name}
+          width={0}
+          height={0}
+          sizes="100%"
+          priority
+          placeholder="blur"
+          blurDataURL="/images/pokemon_placeholder.png"
+          className="w-full h-auto"
+        />
       </div>
       <div className="flex items-center justify-center flex-col gap-2">
         <div className="w-full">
@@ -55,7 +51,7 @@ export default function Card({ id, name, types, sprites }: CardProps) {
         <div className="w-full">
           <div className="flex justify-center item-center gap-2">
             {types.map((type: PokemonType, index: any) => (
-              <Type item={type.type.name} key={index}></Type>
+              <Type key={index} type={type.type.name}></Type>
             ))}
           </div>
         </div>
