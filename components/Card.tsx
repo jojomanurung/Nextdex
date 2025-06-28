@@ -23,7 +23,7 @@ export default function Card({ id, name, types, sprites }: CardProps) {
   };
 
   return (
-    <div className="relative rounded-xl shadow-md px-16 py-4 backdrop-blur-sm bg-slate-50/10 border border-white/5">
+    <div className="relative rounded-xl px-16 py-4 shadow-md bg-slate-50/5 backdrop-blur-sm border border-white/5">
       <div className="absolute top-0 left-0 overflow-hidden -z-[1] w-full h-full rounded-xl">
         <div
           className="h-2/4 w-2/4 absolute blur-3xl top-0 left-1/2 -translate-x-1/2"
