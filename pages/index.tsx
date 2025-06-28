@@ -12,7 +12,7 @@ type HomeProps = {
   results: Pokemon[];
 };
 
-const PAGE_LIMIT = 9;
+const PAGE_LIMIT = 12;
 
 export default function Home({ results }: HomeProps) {
   const [pokemons, setPokemons] = useState(results);
@@ -50,11 +50,11 @@ export default function Home({ results }: HomeProps) {
   }, [fetchPokemon, isIntersecting]);
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div className="flex justify-center">
+    <div className="grid grid-flow-row gap-2">
+      <div className="justify-self-center">
         <h1 className="">Nextdex</h1>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-7">
         {pokemons.map((item, index) => (
           <Link key={index} href={`detail/${item.name}`}>
             <Card {...item} />
@@ -66,7 +66,6 @@ export default function Home({ results }: HomeProps) {
         isLoading={isLoading}
         isLast={isLast}
       />
-      {/* <div className="mx-2 lg:mx-10 pb-7"></div> */}
     </div>
   );
 }
