@@ -6,7 +6,6 @@ import Image from "next/image";
 import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import VirtualScroll from "@dex/components/VirtualScroll";
-import Placeholder from "public/images/placeholder.png";
 
 type HomeProps = {
   count: number;
@@ -66,20 +65,20 @@ export default function Home({ results }: HomeProps) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:mx-7">
         {pokemons.map((item, index) => (
           <Link key={index} href={`detail/${item.name}`}>
-            <Card {...item}>
+            <Card types={item?.types}>
               <div className="flex justify-center">
                 <Image
                   src={
                     item?.sprites.other?.["official-artwork"].front_default ??
-                    Placeholder
+                    ""
                   }
                   alt={item?.name}
                   width={0}
                   height={0}
                   sizes="100%"
-                  priority
+                  loading="lazy"
                   placeholder="blur"
-                  blurDataURL="/images/pokemon_placeholder.png"
+                  blurDataURL="/images/placeholder.png"
                   className="w-1/2 md:w-auto h-auto"
                 />
               </div>

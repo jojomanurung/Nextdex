@@ -13,7 +13,7 @@ export default function Type({ type }: TypeProp) {
       className="rounded-lg px-2 py-1 flex items-center gap-2 justify-center"
       style={{ backgroundColor: color }}
     >
-      <Image src={`/pokemonTypes/${name}.svg`} alt={name} width={15} height={15}/>
+      <Image src={`/images/types/${name}.svg`} alt={name} width={15} height={15}/>
       <p className="text-center text-sm md:text-lg text-white">{name.toUpperCase()}</p>
     </div>
   );
