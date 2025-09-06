@@ -1,4 +1,4 @@
-import { PokemonSprites, PokemonType } from "pokenode-ts";
+import { PokemonType } from "pokenode-ts";
 import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import { ReactNode } from "react";
 
