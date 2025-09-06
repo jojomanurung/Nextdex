@@ -3,7 +3,7 @@ import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import { ReactNode } from "react";
 
 export type CardProps = {
-  children?: ReactNode;
+  children: ReactNode;
   types: PokemonType[];
 };
 
