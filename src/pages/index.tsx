@@ -6,7 +6,7 @@ import Image from "next/image";
 import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import VirtualScroll from "@dex/components/VirtualScroll";
-import Placeholder from "public/images/pokemon_placeholder.png";
+import Placeholder from "public/images/placeholder.png";
 
 type HomeProps = {
   count: number;
