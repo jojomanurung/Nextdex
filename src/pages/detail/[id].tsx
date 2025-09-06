@@ -1,6 +1,7 @@
 import Card from "@dex/components/Card";
+import Type from "@dex/components/Type";
 import { GetServerSideProps } from "next";
-import { Pokemon, PokemonClient } from "pokenode-ts";
+import { Pokemon, PokemonClient, PokemonType } from "pokenode-ts";
 import { useState } from "react";
 
 export default function Id(data: Pokemon) {
@@ -8,7 +9,16 @@ export default function Id(data: Pokemon) {
 
   return (
     <div className="flex gap-1 justify-center items-center">
-      <Card {...pokemon} />
+      <Card {...pokemon}>
+        <div>
+          <h2>Type</h2>
+          <div className="flex justify-center item-center gap-2">
+            {pokemon?.types.map((type: PokemonType, index: any) => (
+              <Type key={index} type={type.type.name}></Type>
+            ))}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

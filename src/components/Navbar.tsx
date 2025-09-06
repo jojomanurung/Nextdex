@@ -1,5 +1,6 @@
 import Image from "next/image";
-import logo from "@dex/public/images/Pokemon.svg";
+import Link from "next/link";
+import logo from "public/images/Pokemon.svg";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
@@ -37,7 +38,9 @@ export default function Navbar() {
           boxShadow: `rgb(0 0 0 / ${boxShadow}) 0px 0px 20px 6px`,
         }}
       >
-        <Image src={logo} alt="" height={50} />
+        <Link href={"/"}>
+          <Image src={logo} alt="" height={50} />
+        </Link>
       </div>
     </nav>
   );
