@@ -10,7 +10,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponsePokemonList>,
 ) {
-  const { page = 0, pageLimit = 12 } = req.query;
+  const { page = 0, pageLimit = 12 } = req?.query;
   try {
     const api = new PokemonClient();
     const data = await api
