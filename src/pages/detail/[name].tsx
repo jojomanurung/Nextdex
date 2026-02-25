@@ -2,10 +2,9 @@ import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import Image from "next/image";
 import { GetServerSideProps } from "next";
-import { useState } from "react";
 import { PokemonData } from "@dex/interfaces/pokemon";
 
-export default function Id(pokemon: PokemonData) {
+export default function Detail(pokemon: PokemonData) {
   return (
     <div className="max-w-5xl mx-auto space-y-12">
       {/* HERO */}
@@ -76,9 +75,9 @@ export default function Id(pokemon: PokemonData) {
 // To pre-render the page on each request from server
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   if (query) {
-    const id = query.id as string;
+    const name = query.name as string;
 
-    let resp = await fetch(`http://localhost:3000/api/pokemon/${id}`, {
+    const resp = await fetch(`http://localhost:3000/api/pokemon/${name}`, {
       next: { revalidate: 60 }, // ISR (optional)
     });
 

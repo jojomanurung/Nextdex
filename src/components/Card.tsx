@@ -1,4 +1,4 @@
-import { PokemonTypes } from "@dex/constant/PokemonTypes";
+import { TypeColors } from "@dex/constant/TypeColors";
 import { ReactNode } from "react";
 
 export type CardProps = {
@@ -7,9 +7,7 @@ export type CardProps = {
 };
 
 export default function Card({ children, types }: CardProps) {
-  const [{ color }] = PokemonTypes.filter(
-    (value) => value.name === types[0]
-  );
+  const color = TypeColors[types[0]];
 
   return (
     <div className="relative rounded-xl px-4 md:px-16 py-4 shadow-md bg-slate-50/5 backdrop-blur-sm border border-white/5">
