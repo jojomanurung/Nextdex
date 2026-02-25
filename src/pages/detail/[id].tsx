@@ -9,7 +9,7 @@ export default function Id(pokemon: PokemonData) {
   return (
     <div className="max-w-5xl mx-auto space-y-12">
       {/* HERO */}
-      <Card {...pokemon}>
+      <Card types={pokemon.types}>
         <section className="grid md:grid-cols-2 gap-10 items-center">
           <div className="relative w-full h-80">
             <Image
