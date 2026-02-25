@@ -1,22 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { PokemonData } from "@dex/interfaces/pokemon";
+import { ResponsePokemonData } from "@dex/interfaces/pokemon";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PokemonClient } from "pokenode-ts";
 
-type ResponseData = {
-  data?: PokemonData;
-  message?: string;
-  error?: string;
-};
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponsePokemonData>,
 ) {
   const { name } = req.query;
   try {
     const api = new PokemonClient();
-    let data = await api.getPokemonByName(name as string);
+    const data = await api.getPokemonByName(name as string);
 
     const pokemon = {
       id: data.id,

@@ -1,4 +1,3 @@
-import { Pokemon, PokemonClient, PokemonType } from "pokenode-ts";
 import { useCallback, useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
@@ -6,12 +5,10 @@ import Image from "next/image";
 import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import VirtualScroll from "@dex/components/VirtualScroll";
+import { PokemonData, ResponsePokemonList } from "@dex/interfaces/pokemon";
 
 type HomeProps = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Pokemon[];
+  results: PokemonData[];
 };
 
 const PAGE_LIMIT = 12;
@@ -24,23 +21,25 @@ export default function Home({ results }: HomeProps) {
   const [isLast, setIsLast] = useState(false);
 
   const fetchPokemon = useCallback(async () => {
-    const api = new PokemonClient();
+    const resp = await fetch(
+      `http://localhost:3000/api/pokemons?page=${page}&pageLimit=${PAGE_LIMIT}`,
+      {
+        next: { revalidate: 60 }, // ISR (optional)
+      },
+    );
 
-    const response = await api
-      .listPokemons(page, PAGE_LIMIT)
-      .then(async (next) => {
-        const promises = next.results.map((result) =>
-          api.getPokemonByName(result.name)
-        );
-        const pokeList = await Promise.all(promises);
-        const newPokeList = [...pokemons, ...pokeList];
-        const temp = { ...next, results: newPokeList };
-        return temp;
-      });
+    const { data } = (await resp.json()) as ResponsePokemonList;
 
+    if (!data) {
+      setIsIntersecting(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const newPokemonList = [...pokemons, ...data.pokemons];
     setPage((prev) => prev + PAGE_LIMIT);
-    setPokemons(response.results);
-    setIsLast(response.results.length === response.count);
+    setPokemons(newPokemonList);
+    setIsLast(newPokemonList.length === data?.count);
     setIsLoading(false);
   }, [page, pokemons]);
 
@@ -68,10 +67,7 @@ export default function Home({ results }: HomeProps) {
             <Card types={item?.types}>
               <div className="flex justify-center">
                 <Image
-                  src={
-                    item?.sprites.other?.["official-artwork"].front_default ??
-                    ""
-                  }
+                  src={item.image}
                   alt={item?.name}
                   width={0}
                   height={0}
@@ -90,8 +86,8 @@ export default function Home({ results }: HomeProps) {
                   {item?.name.toUpperCase()}
                 </h2>
                 <div className="flex justify-center item-center gap-2">
-                  {item?.types.map((type: PokemonType, index: any) => (
-                    <Type key={index} type={type.type.name}></Type>
+                  {item?.types.map((type) => (
+                    <Type key={type} type={type}></Type>
                   ))}
                 </div>
               </div>
@@ -110,24 +106,20 @@ export default function Home({ results }: HomeProps) {
 
 // To pre-render the page on each request from server
 export const getServerSideProps: GetServerSideProps = async () => {
-  const api = new PokemonClient();
+  const resp = await fetch(
+    `http://localhost:3000/api/pokemons?page=${0}&pageLimit=${PAGE_LIMIT}`,
+    {
+      next: { revalidate: 60 }, // ISR (optional)
+    },
+  );
 
-  let data = await api
-    .listPokemons(0, PAGE_LIMIT)
-    .then(async (next) => {
-      const promises = next.results.map((result) =>
-        api.getPokemonByName(result.name)
-      );
-      const pokeList = await Promise.all(promises);
-      return { ...next, results: pokeList };
-    })
-    .catch((err) => err);
-
-  if (data.code === "ERR_BAD_REQUEST") {
+  if (!resp.ok) {
     return {
       notFound: true,
     };
   }
 
-  return { props: data };
+  const { data } = (await resp.json()) as ResponsePokemonList;
+
+  return { props: { results: data?.pokemons } };
 };

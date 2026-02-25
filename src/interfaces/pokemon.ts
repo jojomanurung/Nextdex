@@ -12,3 +12,18 @@ export interface PokemonData {
   height: number;
   weight: number;
 }
+
+export interface ResponsePokemonList {
+  data?: {
+    pokemons: PokemonData[];
+    count: number;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface ResponsePokemonData {
+  data?: PokemonData;
+  message?: string;
+  error?: string;
+}
