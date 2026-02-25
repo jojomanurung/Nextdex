@@ -1,15 +1,14 @@
-import { PokemonType } from "pokenode-ts";
 import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import { ReactNode } from "react";
 
 export type CardProps = {
   children: ReactNode;
-  types: PokemonType[];
+  types: string[];
 };
 
 export default function Card({ children, types }: CardProps) {
   const [{ color }] = PokemonTypes.filter(
-    (value) => value.name === types[0].type.name
+    (value) => value.name === types[0]
   );
 
   return (
