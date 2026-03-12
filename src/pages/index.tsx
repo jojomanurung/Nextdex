@@ -28,7 +28,7 @@ export default function Home({ results }: HomeProps) {
       },
     );
 
-    const { data } = (await resp.json()) as ResponsePokemonList;
+    const { data, count } = (await resp.json()) as ResponsePokemonList;
 
     if (!data) {
       setIsIntersecting(false);
@@ -36,10 +36,10 @@ export default function Home({ results }: HomeProps) {
       return;
     }
 
-    const newPokemonList = [...pokemons, ...data.pokemons];
+    const newPokemonList = [...pokemons, ...data];
     setPage((prev) => prev + PAGE_LIMIT);
     setPokemons(newPokemonList);
-    setIsLast(newPokemonList.length === data?.count);
+    setIsLast(newPokemonList.length === count);
     setIsLoading(false);
   }, [page, pokemons]);
 
@@ -121,5 +121,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   const { data } = (await resp.json()) as ResponsePokemonList;
 
-  return { props: { results: data?.pokemons } };
+  return { props: { results: data } };
 };

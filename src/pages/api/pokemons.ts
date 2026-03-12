@@ -23,10 +23,10 @@ export default async function handler(
         );
         const pokeList = await Promise.all(promises);
         const data = pokeList.map((result) => result.data!);
-        return { pokemons: data, count: next.count };
+        return { data, count: next.count };
       });
 
-    res.status(200).send({ data: data, message: "success" });
+    res.status(200).send({ data: data.data, message: "success" });
   } catch (error) {
     res.status(500).send({ error: "failed to fetch data" });
   }
