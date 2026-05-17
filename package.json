@@ -18,7 +18,7 @@
     "axios-cache-interceptor": "^1.0.1",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
-    "next": "^16.2.6",
+    "next": "13.3.0",
     "pokenode-ts": "^1.18.3",
     "postcss": "^8.4.22",
     "react": "18.2.0",
