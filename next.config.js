@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    // restore scroll position on back/forward navigation (home <-> detail)
+    scrollRestoration: true,
+  },
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

@@ -18,14 +18,14 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    let backgroundTransparacyVar = clientWindowHeight / 600;
-
-    if (backgroundTransparacyVar < 0.52) {
-      let paddingVar = 2 - backgroundTransparacyVar * 3;
-      let boxShadowVar = backgroundTransparacyVar * 0.1;
-      setPadding(paddingVar);
-      setBoxShadow(boxShadowVar);
-    }
+    // Clamp at the threshold so the navbar settles on its collapsed values for
+    // any scroll past it — including an instant jump from scroll restoration —
+    // instead of freezing at whatever padding it last had.
+    const backgroundTransparacyVar = Math.min(clientWindowHeight / 600, 0.52);
+    const paddingVar = 2 - backgroundTransparacyVar * 3;
+    const boxShadowVar = backgroundTransparacyVar * 0.1;
+    setPadding(paddingVar);
+    setBoxShadow(boxShadowVar);
   }, [clientWindowHeight]);
 
   return (
