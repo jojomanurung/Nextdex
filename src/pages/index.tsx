@@ -1,4 +1,3 @@
-import { Pokemon, PokemonClient, PokemonType } from "pokenode-ts";
 import { useCallback, useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
@@ -6,12 +5,13 @@ import Image from "next/image";
 import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import VirtualScroll from "@dex/components/VirtualScroll";
+import { PokemonData } from "@dex/interfaces/pokemon";
 
 type HomeProps = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: Pokemon[];
+  results: PokemonData[];
 };
 
 const PAGE_LIMIT = 12;
@@ -24,23 +24,19 @@ export default function Home({ results }: HomeProps) {
   const [isLast, setIsLast] = useState(false);
 
   const fetchPokemon = useCallback(async () => {
-    const api = new PokemonClient();
+    const resp = await fetch(`/api/pokemon?offset=${page}&limit=${PAGE_LIMIT}`);
 
-    const response = await api
-      .listPokemons(page, PAGE_LIMIT)
-      .then(async (next) => {
-        const promises = next.results.map((result) =>
-          api.getPokemonByName(result.name)
-        );
-        const pokeList = await Promise.all(promises);
-        const newPokeList = [...pokemons, ...pokeList];
-        const temp = { ...next, results: newPokeList };
-        return temp;
-      });
+    if (!resp.ok) {
+      setIsLoading(false);
+      return;
+    }
+
+    const { data } = await resp.json();
+    const newPokeList = [...pokemons, ...data.results];
 
     setPage((prev) => prev + PAGE_LIMIT);
-    setPokemons(response.results);
-    setIsLast(response.results.length === response.count);
+    setPokemons(newPokeList);
+    setIsLast(newPokeList.length === data.count);
     setIsLoading(false);
   }, [page, pokemons]);
 
@@ -65,14 +61,11 @@ export default function Home({ results }: HomeProps) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:mx-7">
         {pokemons.map((item, index) => (
           <Link key={index} href={`detail/${item.name}`}>
-            <Card types={item?.types}>
+            <Card types={item.types}>
               <div className="flex justify-center">
                 <Image
-                  src={
-                    item?.sprites.other?.["official-artwork"].front_default ??
-                    ""
-                  }
-                  alt={item?.name}
+                  src={item.image}
+                  alt={item.name}
                   width={0}
                   height={0}
                   sizes="100%"
@@ -84,14 +77,14 @@ export default function Home({ results }: HomeProps) {
               </div>
               <div className="flex items-center justify-center flex-col gap-2">
                 <h1 className="m-0 text-center text-base md:text-2xl">
-                  {formatPokemonId(item?.id)}
+                  {formatPokemonId(item.id)}
                 </h1>
                 <h2 className="text-base md:text-2xl text-center">
-                  {item?.name.toUpperCase()}
+                  {item.name.toUpperCase()}
                 </h2>
                 <div className="flex justify-center item-center gap-2">
-                  {item?.types.map((type: PokemonType, index: any) => (
-                    <Type key={index} type={type.type.name}></Type>
+                  {item.types.map((type, index) => (
+                    <Type key={index} type={type}></Type>
                   ))}
                 </div>
               </div>
@@ -110,24 +103,19 @@ export default function Home({ results }: HomeProps) {
 
 // To pre-render the page on each request from server
 export const getServerSideProps: GetServerSideProps = async () => {
-  const api = new PokemonClient();
+  const resp = await fetch(
+    `http://localhost:3000/api/pokemon?offset=0&limit=${PAGE_LIMIT}`,
+    {
+      next: { revalidate: 60 }, // ISR (optional)
+    },
+  );
 
-  let data = await api
-    .listPokemons(0, PAGE_LIMIT)
-    .then(async (next) => {
-      const promises = next.results.map((result) =>
-        api.getPokemonByName(result.name)
-      );
-      const pokeList = await Promise.all(promises);
-      return { ...next, results: pokeList };
-    })
-    .catch((err) => err);
-
-  if (data.code === "ERR_BAD_REQUEST") {
+  if (!resp.ok) {
     return {
       notFound: true,
     };
   }
 
+  const { data } = await resp.json();
   return { props: data };
 };

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import logo from "public/images/Pokemon.svg";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
@@ -39,7 +38,13 @@ export default function Navbar() {
         }}
       >
         <Link href={"/"}>
-          <Image src={logo} alt="" height={50} />
+          <Image
+            src="/images/Pokemon.svg"
+            alt="Nextdex"
+            width={0}
+            height={0}
+            className="w-full h-auto max-w-36"
+          />
         </Link>
       </div>
     </nav>
