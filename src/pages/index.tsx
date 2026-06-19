@@ -6,6 +6,7 @@ import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import VirtualScroll from "@dex/components/VirtualScroll";
 import { PokemonData } from "@dex/interfaces/pokemon";
+import { usePokemonList } from "@dex/context/PokemonListContext";
 
 type HomeProps = {
   count: number;
@@ -17,11 +18,25 @@ type HomeProps = {
 const PAGE_LIMIT = 12;
 
 export default function Home({ results }: HomeProps) {
-  const [pokemons, setPokemons] = useState(results);
-  const [page, setPage] = useState(PAGE_LIMIT);
+  const { pokemons, setPokemons, page, setPage, isLast, setIsLast } =
+    usePokemonList();
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLast, setIsLast] = useState(false);
+
+  // First visit: seed the cache from the SSR results. On return navigation the
+  // cache is already populated, so we keep the previously loaded list instead
+  // of resetting to the first page.
+  const isSeeded = pokemons.length > 0;
+  useEffect(() => {
+    if (!isSeeded) {
+      setPokemons(results);
+      setPage(PAGE_LIMIT);
+    }
+  }, [isSeeded, results, setPokemons, setPage]);
+
+  // Fall back to SSR results for the very first paint, before the seeding
+  // effect runs, to avoid a flash of an empty list.
+  const displayPokemons = isSeeded ? pokemons : results;
 
   const fetchPokemon = useCallback(async () => {
     const resp = await fetch(`/api/pokemon?offset=${page}&limit=${PAGE_LIMIT}`);
@@ -59,7 +74,7 @@ export default function Home({ results }: HomeProps) {
         <h1 className="">Nextdex</h1>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:mx-7">
-        {pokemons.map((item, index) => (
+        {displayPokemons.map((item, index) => (
           <Link key={index} href={`detail/${item.name}`}>
             <Card types={item.types}>
               <div className="flex justify-center">
