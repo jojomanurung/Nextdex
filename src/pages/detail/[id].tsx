@@ -2,7 +2,6 @@ import Card from "@dex/components/Card";
 import Type from "@dex/components/Type";
 import Image from "next/image";
 import { GetServerSideProps } from "next";
-import { useState } from "react";
 import { PokemonData } from "@dex/interfaces/pokemon";
 
 export default function Id(pokemon: PokemonData) {
