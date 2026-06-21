@@ -54,13 +54,14 @@ export default function Home({ results }: HomeProps) {
   }, [page, pokemons]);
 
   useEffect(() => {
-    // if VirtualScroll is not in view then don't call following functions
-    if (!isIntersecting) return;
+    // Only fetch on a fresh intersection, and never while a request is in
+    // flight or once the full list is loaded.
+    if (!isIntersecting || isLoading || isLast) return;
     setIsIntersecting(false); // consume the trigger so the next fetchPokemon
     // identity can't re-fire this for the same view
     setIsLoading(true);
     fetchPokemon();
-  }, [fetchPokemon, isIntersecting]);
+  }, [fetchPokemon, isIntersecting, isLoading, isLast]);
 
   return (
     <div className="grid grid-flow-row gap-2">
