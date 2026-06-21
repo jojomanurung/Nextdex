@@ -5,7 +5,7 @@ import { PokemonData } from "@dex/interfaces/pokemon";
 // handler call). pokenode-ts caches upstream PokeAPI responses, so repeat
 // lookups — same detail page, same list offset — skip the network entirely.
 const client = new PokemonClient({
-  cacheOptions: { maxAge: 1000 * 60 * 60 }, // 1h
+  cacheOptions: { ttl: 1000 * 60 * 60 }, // 1h
 });
 
 function mapPokemon(data: Pokemon): PokemonData {
