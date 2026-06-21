@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function Navbar() {
+export function Navbar() {
   const [clientWindowHeight, setClientWindowHeight] = useState(0);
 
   const [padding, setPadding] = useState(30);
