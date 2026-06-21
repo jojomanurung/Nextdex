@@ -1,8 +1,9 @@
-import Card from "@dex/components/Card";
-import Type from "@dex/components/Type";
 import Image from "next/image";
-import { GetServerSideProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { Card } from "@dex/components/Card";
+import { Type } from "@dex/components/Type";
 import { PokemonData } from "@dex/interfaces/pokemon";
+import { getPokemon } from "@dex/lib/pokemon";
 
 export default function Id(pokemon: PokemonData) {
   return (
@@ -72,27 +73,23 @@ export default function Id(pokemon: PokemonData) {
   );
 }
 
-// To pre-render the page on each request from server
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  if (query) {
-    const id = query.id as string;
+// Generate detail pages on demand, then cache them. Pokémon data is
+// effectively immutable, so a long revalidate window is fine.
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [], // don't prebuild ~1300 pages; generate on first request
+  fallback: "blocking", // first hit renders + caches, later hits are static
+});
 
-    let resp = await fetch(`http://localhost:3000/api/pokemon/${id}`, {
-      next: { revalidate: 60 }, // ISR (optional)
-    });
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const id = params?.id as string;
+  if (!id) {
+    return { notFound: true };
+  }
 
-    if (!resp.ok) {
-      return {
-        notFound: true,
-      };
-    }
-
-    const { data } = await resp.json();
-
-    return { props: data };
-  } else {
-    return {
-      notFound: true,
-    };
+  try {
+    const pokemon = await getPokemon(id);
+    return { props: pokemon, revalidate: 60 * 60 * 24 }; // refresh daily
+  } catch (error) {
+    return { notFound: true };
   }
 };

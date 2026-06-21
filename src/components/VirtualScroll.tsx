@@ -1,40 +1,42 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-type VirtualScroll = {
+type VirtualScrollProps = {
   intersectCallback: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
   isLast: boolean;
 };
 
-export default function VirtualScroll({
+export function VirtualScroll({
   intersectCallback,
   isLoading,
   isLast,
-}: VirtualScroll) {
+}: VirtualScrollProps) {
   const loader = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<IntersectionObserver>();
-  const loadMoreTimeout: NodeJS.Timeout = setTimeout(() => null, 500);
-  const loadMoreTimeoutRef = useRef<NodeJS.Timeout>(loadMoreTimeout);
+  const loadMoreTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (isLoading) return;
-    if (observerRef.current) observerRef.current.disconnect();
 
-    const option: IntersectionObserverInit = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 1.0,
+    const node = loader.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        clearTimeout(loadMoreTimeoutRef.current);
+        loadMoreTimeoutRef.current = setTimeout(() => {
+          intersectCallback(entry.isIntersecting);
+        }, 1000);
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 },
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(loadMoreTimeoutRef.current);
     };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      loadMoreTimeoutRef.current = setTimeout(() => {
-        intersectCallback(entry.isIntersecting);
-      }, 500);
-    }, option);
-    if (loader.current) {
-      observerRef.current.observe(loader.current);
-    }
   }, [isLoading, intersectCallback]);
 
   if (isLoading) return <p className="text-center">Loading...</p>;
