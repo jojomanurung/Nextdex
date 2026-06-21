@@ -15,8 +15,6 @@ export function VirtualScroll({
   const loadMoreTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (isLoading) return;
-
     const node = loader.current;
     if (!node) return;
 
@@ -26,9 +24,9 @@ export function VirtualScroll({
         clearTimeout(loadMoreTimeoutRef.current);
         loadMoreTimeoutRef.current = setTimeout(() => {
           intersectCallback(entry.isIntersecting);
-        }, 1000);
+        }, 300);
       },
-      { root: null, rootMargin: "0px", threshold: 1.0 },
+      { root: null, rootMargin: "100px", threshold: 0.5 },
     );
 
     observer.observe(node);
@@ -37,11 +35,13 @@ export function VirtualScroll({
       observer.disconnect();
       clearTimeout(loadMoreTimeoutRef.current);
     };
-  }, [isLoading, intersectCallback]);
-
-  if (isLoading) return <p className="text-center">Loading...</p>;
+  }, [intersectCallback]);
 
   if (isLast) return <p className="text-center">End of content</p>;
 
-  return <div ref={loader}></div>;
+  return (
+    <div ref={loader} className="flex h-8 items-center justify-center">
+      {isLoading && <p className="text-center">Loading...</p>}
+    </div>
+  );
 }
