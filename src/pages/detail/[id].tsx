@@ -3,15 +3,25 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { Card } from "@dex/components/Card";
 import { Type } from "@dex/components/Type";
 import { PokemonData } from "@dex/interfaces/pokemon";
+import { PokemonTypes } from "@dex/constant/PokemonTypes";
 import { getPokemon } from "@dex/lib/pokemon";
 
 export default function Id(pokemon: PokemonData) {
+  const typeColor =
+    PokemonTypes.find((t) => t.name === pokemon.types[0])?.color ?? "#ffffff";
+
   return (
     <div className="max-w-5xl mx-auto space-y-12">
       {/* HERO */}
-      <Card types={pokemon.types}>
+      <Card>
         <section className="grid md:grid-cols-2 gap-10 items-center">
           <div className="relative w-full h-80">
+            {/* type-colored glow halo behind the artwork */}
+            <div
+              aria-hidden
+              className="absolute inset-8 rounded-full blur-3xl opacity-50"
+              style={{ backgroundColor: typeColor }}
+            />
             <Image
               src={pokemon?.image}
               alt={pokemon.name}
