@@ -9,28 +9,29 @@ import {
 import { PokemonData } from "@dex/interfaces/pokemon";
 
 type PokemonListState = {
-  pokemons: PokemonData[];
-  setPokemons: Dispatch<SetStateAction<PokemonData[]>>;
-  page: number;
-  setPage: Dispatch<SetStateAction<number>>;
-  isLast: boolean;
-  setIsLast: Dispatch<SetStateAction<boolean>>;
+  // Detail cache keyed by name — populated lazily as rows scroll into view, so
+  // returning from a detail page doesn't refetch what was already shown.
+  details: Record<string, PokemonData>;
+  setDetails: Dispatch<SetStateAction<Record<string, PokemonData>>>;
+  // How many entries of the (filtered/sorted) index are currently shown.
+  count: number;
+  setCount: Dispatch<SetStateAction<number>>;
 };
 
 const PokemonListContext = createContext<PokemonListState | undefined>(
   undefined,
 );
 
-// Lives in _app.tsx, so the list state survives page navigation (home <-> detail)
-// for the whole client session. A full browser refresh starts fresh.
+// Lives in _app.tsx, so the detail cache + scroll depth survive page navigation
+// (home <-> detail) for the whole client session. A full browser refresh starts
+// fresh.
 export function PokemonListProvider({ children }: { children: ReactNode }) {
-  const [pokemons, setPokemons] = useState<PokemonData[]>([]);
-  const [page, setPage] = useState(0);
-  const [isLast, setIsLast] = useState(false);
+  const [details, setDetails] = useState<Record<string, PokemonData>>({});
+  const [count, setCount] = useState(0);
 
   return (
     <PokemonListContext.Provider
-      value={{ pokemons, setPokemons, page, setPage, isLast, setIsLast }}
+      value={{ details, setDetails, count, setCount }}
     >
       {children}
     </PokemonListContext.Provider>
