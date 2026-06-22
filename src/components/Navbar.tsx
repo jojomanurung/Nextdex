@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Navbar() {
   const [clientWindowHeight, setClientWindowHeight] = useState(0);
 
   const [padding, setPadding] = useState(30);
   const [boxShadow, setBoxShadow] = useState(0);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -28,8 +29,23 @@ export function Navbar() {
     setBoxShadow(boxShadowVar);
   }, [clientWindowHeight]);
 
+  // Publish the navbar's live height so sticky elements below it (e.g. the
+  // ControlDeck) can dock right under it as it shrinks. Re-measured whenever the
+  // padding (and thus height) changes on scroll.
+  useEffect(() => {
+    if (navRef.current) {
+      document.documentElement.style.setProperty(
+        "--navbar-height",
+        `${navRef.current.offsetHeight}px`,
+      );
+    }
+  }, [padding]);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full backdrop-blur-sm z-10">
+    <nav
+      ref={navRef}
+      className="fixed top-0 left-0 right-0 w-full backdrop-blur-sm z-10"
+    >
       <div
         className="flex justify-center"
         style={{
