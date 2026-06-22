@@ -13,46 +13,56 @@ There is no test runner configured.
 
 ## Architecture
 
-Nextdex is a Next.js **Pages Router** app (under `src/pages/`) that browses Pokémon data from PokeAPI.
+Nextdex is a Next.js **Pages Router** app (under `src/pages/`) that browses Pokémon data from PokeAPI, styled as a glassy "Pokédex device": a sticky search/sort control deck above a single scrolling list of glass entry rows (no card grid).
 
 ### Data layer (`src/lib/pokemon.ts`)
 
-All PokeAPI access goes through this single module. It holds **one shared `pokenode-ts` `PokemonClient`** instance (created once at module load, with a 1h response cache via `cacheOptions.ttl`) so repeat lookups skip the network. It exposes:
+All PokeAPI access goes through this single module. It holds **one shared `pokenode-ts` `PokemonClient`** (created once at module load, with a 1h response cache via `cacheOptions.ttl`). It exposes:
 
-- `getPokemon(name)` — fetches one Pokémon and maps it into the trimmed `PokemonData` shape from `src/interfaces/pokemon.ts` (`id`, `name`, `image`, `types: string[]`, `stats`, `height`, `weight`).
-- `getPokemonList(offset, limit)` — lists Pokémon, then resolves each entry through `getPokemon` in parallel, returning `PokemonListResult` (`count`, `next`, `previous`, `results: PokemonData[]`).
-
-Both pages and the API route consume `PokemonData` — there is no longer any asymmetry between full `pokenode-ts` types and the trimmed shape. The raw `Pokemon` type only appears inside `mapPokemon` in this file.
+- `getPokemon(name)` — fetches one Pokémon and maps it into the trimmed `PokemonData` shape from `src/interfaces/pokemon.ts` (`id`, `name`, `image`, `types: string[]`, `stats`, `height`, `weight`). The raw `Pokemon` type only appears inside `mapPokemon` here.
+- `getPokemonList(offset, limit)` — lists Pokémon, resolves each through `getPokemon` in parallel, returns `PokemonListResult`.
+- `getPokemonIndex()` — a **lightweight full-dex index** of `{ id, name }` only (no detail fetches), used for client-side search/sort. One request; parses the id from each result URL and drops alternate forms (`id >= FORM_ID_START`, 10000).
 
 ### Rendering & data flow
 
-- **List page (`src/pages/index.tsx`)** — `getStaticProps` (ISR, `revalidate: 60`) calls `getPokemonList(0, PAGE_LIMIT)` to statically generate the first page. Further pages are fetched client-side as the user scrolls.
-- **Detail page (`src/pages/detail/[id].tsx`)** — `getStaticProps` + `getStaticPaths` (`fallback: "blocking"`, `paths: []` so pages generate on first request and then cache, `revalidate: 60 * 60 * 24`) calls `getPokemon(id)` directly. **Note: the `[id]` param is actually the Pokémon _name_** — `PokemonCard` links to `detail/${pokemon.name}`, and `getPokemonByName` is name-based. The detail page does NOT go through the API route.
-- **Internal API route `src/pages/api/pokemon/index.ts`** — a **list** endpoint taking `?offset=&limit=` query params, wrapping `getPokemonList`. It is consumed only by the list page for client-side pagination, via the relative URL `fetch('/api/pokemon?offset=...&limit=...')` (relative, so port-agnostic — no hard-coded host).
+- **List page (`src/pages/index.tsx`)** — thin/presentational. `getStaticProps` (ISR, `revalidate: 60`) fetches **both** the first page of details (`getPokemonList(0, PAGE_LIMIT)`) and the full `getPokemonIndex()`, passing `results` + `index` as props. All search, sort, and pagination happen client-side in the `usePokedexBrowser` hook (below); the page just renders `ControlDeck` + `PokemonRow`s + `VirtualScroll`.
+- **Detail page (`src/pages/detail/[id].tsx`)** — `getStaticProps` + `getStaticPaths` (`fallback: "blocking"`, `paths: []`, `revalidate: 60 * 60 * 24`) calls `getPokemon(id)` directly. **Note: the `[id]` param is actually the Pokémon _name_** — rows link to `detail/${pokemon.name}`. The detail page does NOT go through any API route.
+- **API route `src/pages/api/pokemon/[name].ts`** — returns a single `PokemonData` by name (`{ data }`), wrapping `getPokemon`. The list page calls it (relative URL `fetch('/api/pokemon/<name>')`) to **lazy-load row details on scroll** — the index only carries `id`/`name`. (A legacy list endpoint `src/pages/api/pokemon/index.ts` still exists but is no longer consumed.)
+
+### Browser engine (`src/hooks/usePokedexBrowser.ts`)
+
+Owns all list behavior so the page stays presentational. Given `{ results, index }`, it returns `{ query, setQuery, sort, setSort, pokemons, resultCount, isLoading, isLast, isEmpty, onIntersect }`. Core model: **filter + sort the full index, then "ensure the visible window's details are loaded and render the loaded ones."**
+
+- **Search** is debounced (`src/hooks/useDebouncedValue.ts`) and matches name or zero-padded number over the whole index.
+- **Sort** (`number` | `name`) re-orders the index; on a sort change it resets the window to one page and scrolls to top (ref-guarded so it skips mount and preserves a restored depth on back-navigation).
+- **Load-then-reveal pagination**: a `useEffect` fetches details (capped at `PAGE_LIMIT` per pass via `/api/pokemon/[name]`) for any visible row not yet cached, then `pokemons` renders only the loaded ones (so the list never shows placeholders and the bottom "Loading…" stays visible). A failed fetch leaves a row missing and retried later, never skipped; `setDetails` returns the same reference when nothing new arrived, so failures can't loop.
+- **Browse vs. search windows**: browse depth (`count`) lives in context; search has its own local `searchCount`, so clearing the query restores the browse list.
 
 ### List state persistence (`src/context/PokemonListContext.tsx`)
 
-`PokemonListProvider` wraps the app in `_app.tsx`, so the accumulated list (`pokemons`), current `page`, and `isLast` survive client-side navigation (home ↔ detail) for the whole session; a full browser refresh starts fresh. `index.tsx` seeds this context from the SSG `results` on first visit and reuses it on return navigation instead of resetting to page 1. Combined with `experimental.scrollRestoration` in `next.config.js`, back-navigation restores both the list and scroll position. Consume it via the `usePokemonList()` hook (throws if used outside the provider).
+`PokemonListProvider` wraps the app in `_app.tsx`, holding a **`details` cache (`Record<name, PokemonData>`)** and the browse **`count`** (reveal depth). Both survive client-side navigation (home ↔ detail) for the session; a full refresh starts fresh. Combined with `experimental.scrollRestoration` in `next.config.js`, back-navigation restores the list and scroll position. Consume via `usePokemonList()` (throws if used outside the provider).
 
-### Infinite scroll
+### Infinite scroll (`src/components/VirtualScroll.tsx`)
 
-`index.tsx` paginates with `PAGE_LIMIT = 12`. `src/components/VirtualScroll.tsx` puts an `IntersectionObserver` on a sentinel `<div>` and reports visibility back via `intersectCallback` (debounced ~1s); the page reacts in a `useEffect` and calls `fetchPokemon` to append the next batch. `isLast` is computed by comparing accumulated results length to the total `count`. Note: despite the name, `VirtualScroll` does NOT window the DOM — every loaded card stays mounted.
+A **persistent** `IntersectionObserver` on an **always-mounted** sentinel `<div>` reports visibility via `intersectCallback` (debounced ~300ms). `usePokedexBrowser` **consumes** each intersection (grows the window by one page, then waits for the sentinel to re-enter) so a batch can't run away. The sentinel stays mounted even at the end (shows "End of content") so the observer never orphans. Note: despite the name, `VirtualScroll` does NOT window the DOM — every loaded row stays mounted (a deferred perf consideration).
 
 ### Components
 
-- `PokemonCard` (`src/components/PokemonCard.tsx`) — the list-item card, `memo`-wrapped so already-rendered cards skip re-render when the next batch is appended. Wraps the shared `Card`.
-- `Card` (`src/components/Card.tsx`) — generic card shell that accepts `types: string[]` and renders a blurred backdrop colored by `types[0]`. Used by both `PokemonCard` and the detail page.
+- `PokemonRow` (`src/components/PokemonRow.tsx`) — `memo`-wrapped glass "entry capsule": sprite on a type-colored glow halo, dex number, name, generation label (`genLabel`), type chips, and an oversized ghost dex number. Responsive: chips hide below `sm`, centered at `sm+`.
+- `ControlDeck` (`src/components/ControlDeck.tsx`) — sticky glass toolbar with the search input and sort `<select>` (exports the `SortKey` type).
+- `Card` (`src/components/Card.tsx`) — a plain frosted-glass shell (`children` only); used by the detail page.
 
 ### Styling and theming
 
-- TailwindCSS, configured in `tailwind.config.js` (content globs cover `src/pages`, `src/components`, `src/app`). Global styles live in `src/styles/globals.css`.
-- `src/constant/PokemonTypes.ts` is the single source of truth for type → color mapping. `Card.tsx` destructures the match for `types[0]` (`const [{ color }] = PokemonTypes.filter(...)`), so any new Pokémon type must be added there or the lookup will throw on an empty array.
-- Layout/font setup is in `src/components/Layout.tsx` (Navbar + `<main>`), applied globally via `_app.tsx`. Fonts use `next/font/google` (Inter).
+- TailwindCSS, configured in `tailwind.config.js`. Global styles in `src/styles/globals.css`.
+- `src/constant/PokemonTypes.ts` is the single source of truth for type → color. `Type.tsx` looks it up with `.find(...)` and falls back to a neutral color (and skips the icon) for an unmapped type, so an unknown type won't crash.
+- `src/constant/pokemonMeta.ts` holds `genLabel(id)` (national-dex id → generation + region).
+- Layout/font setup is in `src/components/Layout.tsx` (Navbar + `<main>`), applied via `_app.tsx`. Fonts use `next/font/google` (Inter).
 
 ### TypeScript path alias
 
-`tsconfig.json` defines `@dex/*` → `./src/*`. Use `@dex/components/...`, `@dex/lib/...`, `@dex/context/...`, `@dex/interfaces/...`, `@dex/constant/...` for intra-`src` imports rather than relative paths.
+`tsconfig.json` defines `@dex/*` → `./src/*`. Use `@dex/components/...`, `@dex/lib/...`, `@dex/hooks/...`, `@dex/context/...`, `@dex/interfaces/...`, `@dex/constant/...` for intra-`src` imports rather than relative paths.
 
 ### Next.js image config
 
-`next.config.js` only whitelists `raw.githubusercontent.com` under `images.remotePatterns`. Adding image sources from other hosts (e.g., other PokeAPI sprite CDNs) requires updating this list, otherwise `next/image` will refuse to load them.
+`next.config.js` only whitelists `raw.githubusercontent.com` under `images.remotePatterns`. Adding image sources from other hosts requires updating this list, otherwise `next/image` will refuse to load them.

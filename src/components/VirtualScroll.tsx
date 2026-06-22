@@ -2,21 +2,17 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 type VirtualScrollProps = {
   intersectCallback: Dispatch<SetStateAction<boolean>>;
-  isLoading: boolean;
   isLast: boolean;
 };
 
 export function VirtualScroll({
   intersectCallback,
-  isLoading,
   isLast,
 }: VirtualScrollProps) {
   const loader = useRef<HTMLDivElement>(null);
   const loadMoreTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (isLoading) return;
-
     const node = loader.current;
     if (!node) return;
 
@@ -26,7 +22,7 @@ export function VirtualScroll({
         clearTimeout(loadMoreTimeoutRef.current);
         loadMoreTimeoutRef.current = setTimeout(() => {
           intersectCallback(entry.isIntersecting);
-        }, 1000);
+        }, 500);
       },
       { root: null, rootMargin: "0px", threshold: 1.0 },
     );
@@ -37,11 +33,14 @@ export function VirtualScroll({
       observer.disconnect();
       clearTimeout(loadMoreTimeoutRef.current);
     };
-  }, [isLoading, intersectCallback]);
+  }, [intersectCallback]);
 
-  if (isLoading) return <p className="text-center">Loading...</p>;
-
-  if (isLast) return <p className="text-center">End of content</p>;
-
-  return <div ref={loader}></div>;
+  // Keep the sentinel node always mounted so the observer stays attached to it.
+  // Unmounting it (e.g. when isLast flips true during a short search result) and
+  // remounting on clear would orphan the observer and break infinite scroll.
+  return (
+    <div ref={loader} className="flex h-8 items-center justify-center">
+      {isLast && <p className="text-center">End of content</p>}
+    </div>
+  );
 }

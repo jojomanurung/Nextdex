@@ -18,3 +18,9 @@ export const PokemonTypes = [
   { name: "steel", color: "#23a1bd" },
   { name: "water", color: "#14a8ff" },
 ];
+
+// Color for a Pokémon's primary type (types[0]); neutral white fallback when
+// the type isn't mapped, so glow/tint lookups never crash.
+export function primaryTypeColor(types: string[]): string {
+  return PokemonTypes.find((t) => t.name === types[0])?.color ?? "#ffffff";
+}
