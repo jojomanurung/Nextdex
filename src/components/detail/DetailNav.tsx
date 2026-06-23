@@ -11,7 +11,7 @@ const SECTIONS = [
 export function DetailNav() {
   return (
     <nav
-      className="sticky z-20 mx-auto flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-2xl border border-white/10 bg-slate-900/50 p-1 backdrop-blur-md sm:flex-nowrap sm:rounded-full"
+      className="sticky z-20 mx-auto flex w-fit max-w-full flex-wrap justify-center rounded-2xl border border-white/10 bg-slate-900/50 p-1 backdrop-blur-md sm:flex-nowrap sm:rounded-full"
       style={{ top: "calc(var(--navbar-height, 96px) + 0.5rem)" }}
     >
       {SECTIONS.map((section) => (
