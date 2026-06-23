@@ -21,8 +21,7 @@ export function ControlDeck({
 }: ControlDeckProps) {
   return (
     <div
-      className="sticky z-[9] rounded-2xl border border-white/10 bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4"
-      style={{ top: "calc(var(--navbar-height, 88px) + 4px)" }}
+      className="sticky z-[9] top-[72px] rounded-2xl border border-white/10 bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
