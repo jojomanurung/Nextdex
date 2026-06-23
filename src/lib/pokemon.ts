@@ -36,7 +36,7 @@ function mapPokemon(data: Pokemon): PokemonData {
   return {
     id: data.id,
     name: data.name,
-    image: data.sprites.other?.["official-artwork"].front_default ?? "",
+    image: data.sprites.other?.home.front_default ?? "",
     types: data.types.map((t) => t.type.name),
     stats: data.stats.map((s) => ({ name: s.stat.name, value: s.base_stat })),
     height: data.height,
@@ -264,7 +264,7 @@ export async function getPokemonDetail(
 
   return {
     ...base,
-    shinyImage: pokemon.sprites.other?.["official-artwork"].front_shiny ?? "",
+    shinyImage: pokemon.sprites.other?.home.front_shiny ?? "",
     abilities,
     evolution: flattenChain(chain.chain),
     matchups: computeMatchups(typeData),
