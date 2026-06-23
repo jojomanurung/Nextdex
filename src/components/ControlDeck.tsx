@@ -20,10 +20,8 @@ export function ControlDeck({
   resultCount,
 }: ControlDeckProps) {
   return (
-    <div
-      className="sticky z-[9] top-[72px] rounded-2xl border border-white/10 bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4"
-    >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="sticky z-[9] top-[72px] rounded-2xl border border-white/10 bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
+      <div className="flex gap-2 flex-row items-center">
         <div className="relative flex-1">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
             🔍
@@ -42,7 +40,7 @@ export function ControlDeck({
         <div className="flex items-center gap-2">
           <label
             htmlFor="sort"
-            className="text-xs uppercase tracking-wider text-zinc-500"
+            className="hidden sm:block text-xs tracking-wider text-zinc-500"
           >
             Sort
           </label>
