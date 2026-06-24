@@ -51,7 +51,7 @@ export function ScrollToTop({
       tabIndex={visible ? 0 : -1}
       className={`fixed bottom-20 right-6 z-20 rounded-full border border-white/10 bg-slate-900/50 p-3 text-zinc-300 backdrop-blur-md transition duration-300 ${
         visible
-          ? "translate-y-0 opacity-100"
+          ? "translate-y-0 opacity-80"
           : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >
