@@ -20,7 +20,7 @@ export function ControlDeck({
   resultCount,
 }: ControlDeckProps) {
   return (
-    <div className="sticky z-[9] top-[72px] rounded-2xl border border-white/10 bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
+    <div className="sticky z-[9] top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
       <div className="flex gap-2 flex-row items-center">
         <div className="relative flex-1">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
