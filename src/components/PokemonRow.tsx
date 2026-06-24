@@ -25,19 +25,19 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
           (the type chips sit centered, so they no longer clash with it). */}
       <span
         aria-hidden
-        className="pointer-events-none absolute right-5 top-1/2 z-0 -translate-y-1/2 text-7xl font-black leading-none opacity-[0.07] transition-opacity duration-300 group-hover:opacity-[0.12]"
+        className="pointer-events-none absolute right-4 top-1/2 z-0 -translate-y-1/2 text-7xl font-black leading-none opacity-[0.05] transition-opacity duration-300 group-hover:opacity-[0.10]"
         style={{ color: typeColor }}
       >
         {dex}
       </span>
 
       {/* Sprite on glow halo */}
+      <div
+        aria-hidden
+        className="absolute inset-x-4 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-20 rounded-full opacity-50 blur-xl transition-opacity duration-300 group-hover:opacity-70"
+        style={{ backgroundColor: typeColor }}
+      />
       <div className="relative z-10 h-16 w-16 shrink-0 md:h-20 md:w-20 lg:h-24 lg:w-24">
-        <div
-          aria-hidden
-          className="absolute inset-1 rounded-full opacity-50 blur-xl transition-opacity duration-300 group-hover:opacity-80"
-          style={{ backgroundColor: typeColor }}
-        />
         <Image
           src={pokemon.image}
           alt={pokemon.name}
@@ -83,7 +83,7 @@ export function PokemonRowSkeleton({ id, name }: { id: number; name: string }) {
       {/* Ghost number (untinted until the type is known) */}
       <span
         aria-hidden
-        className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/[0.04]"
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/[0.04]"
       >
         {dexNo(id)}
       </span>
