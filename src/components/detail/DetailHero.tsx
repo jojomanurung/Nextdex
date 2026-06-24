@@ -68,7 +68,7 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
 
       <div className="flex flex-wrap items-center justify-center gap-3">
         {pokemon.types.map((type) => (
-          <Type key={type} type={type} variant="frosted" />
+          <Type key={type} type={type} />
         ))}
       </div>
 

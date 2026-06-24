@@ -64,7 +64,7 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
       {/* Type chips — centered in the card (hidden on small screens) */}
       <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 gap-2 sm:flex">
         {pokemon.types.map((type) => (
-          <Type key={type} type={type} variant="frosted" />
+          <Type key={type} type={type} />
         ))}
       </div>
     </Link>
