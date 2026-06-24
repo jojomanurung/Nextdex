@@ -6,7 +6,7 @@ import { useDebouncedValue } from "@dex/hooks/useDebouncedValue";
 import { dexNo } from "@dex/constant/pokemonMeta";
 import { SortKey } from "@dex/components/home/ControlDeck";
 
-export const PAGE_LIMIT = 12;
+export const PAGE_LIMIT = 18;
 
 type UsePokedexBrowserArgs = {
   results: PokemonData[];
