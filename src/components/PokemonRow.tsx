@@ -19,10 +19,9 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
   return (
     <Link
       href={`detail/${pokemon.name}`}
-      className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
+      className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
     >
-      {/* Ghost dex number watermark — bleeds off the right edge at every size
-          (the type chips sit centered, so they no longer clash with it). */}
+      {/* Ghost dex number watermark */}
       <span
         aria-hidden
         className="pointer-events-none absolute right-4 top-1/2 z-0 -translate-y-1/2 text-7xl font-black leading-none opacity-[0.05] transition-opacity duration-300 group-hover:opacity-[0.10]"
@@ -31,10 +30,10 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
         {dex}
       </span>
 
-      {/* Sprite on glow halo */}
+      {/* Sprite on glow halo — centered behind the sprite.*/}
       <div
         aria-hidden
-        className="absolute inset-x-4 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-20 rounded-full opacity-50 blur-xl transition-opacity duration-300 group-hover:opacity-70"
+        className="absolute left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full opacity-50 blur-lg transition-opacity duration-300 group-hover:opacity-70 md:h-20 md:w-20 lg:h-24 lg:w-24"
         style={{ backgroundColor: typeColor }}
       />
       <div className="relative z-10 h-16 w-16 shrink-0 md:h-20 md:w-20 lg:h-24 lg:w-24">
@@ -79,7 +78,7 @@ export const PokemonRow = memo(PokemonRowComponent);
 // ghost number are pending placeholders.
 export function PokemonRowSkeleton({ id, name }: { id: number; name: string }) {
   return (
-    <div className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm">
+    <div className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm">
       {/* Ghost number (untinted until the type is known) */}
       <span
         aria-hidden
