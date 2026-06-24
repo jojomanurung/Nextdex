@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { Card } from "@dex/components/Card";
+import { Card } from "@dex/components/common/Card";
 import { DetailHero } from "@dex/components/detail/DetailHero";
 import { DetailNav } from "@dex/components/detail/DetailNav";
 import { AboutPanel } from "@dex/components/detail/AboutPanel";

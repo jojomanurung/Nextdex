@@ -1,7 +1,10 @@
 import { GetStaticProps } from "next";
-import { PokemonRow, PokemonRowSkeleton } from "@dex/components/PokemonRow";
-import { ControlDeck } from "@dex/components/ControlDeck";
-import { VirtualScroll } from "@dex/components/VirtualScroll";
+import {
+  PokemonRow,
+  PokemonRowSkeleton,
+} from "@dex/components/home/PokemonRow";
+import { ControlDeck } from "@dex/components/home/ControlDeck";
+import { VirtualScroll } from "@dex/components/common/VirtualScroll";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import {
   getPokemonList,

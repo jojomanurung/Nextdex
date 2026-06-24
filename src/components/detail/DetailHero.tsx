@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { PokemonDetailData } from "@dex/interfaces/pokemon";
 import { dexNo, genLabel } from "@dex/constant/pokemonMeta";
 

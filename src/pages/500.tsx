@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { Card } from "@dex/components/Card";
+import { Card } from "@dex/components/common/Card";
 
 // Pages Router custom 500 — statically generated and shown when the server hits
 // an unexpected error. Mirrors the 404 page's layout.

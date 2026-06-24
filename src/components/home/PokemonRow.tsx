@@ -1,7 +1,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import { primaryTypeColor } from "@dex/constant/PokemonTypes";
 import { genLabel, dexNo } from "@dex/constant/pokemonMeta";

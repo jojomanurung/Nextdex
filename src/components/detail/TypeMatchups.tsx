@@ -1,4 +1,4 @@
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { TypeMatchup } from "@dex/interfaces/pokemon";
 
 const MULT_LABEL: Record<number, string> = {
