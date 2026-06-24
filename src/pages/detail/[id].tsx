@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { Card } from "@dex/components/common/Card";
+import { ScrollToTop } from "@dex/components/common/ScrollToTop";
 import { DetailHero } from "@dex/components/detail/DetailHero";
 import { DetailNav } from "@dex/components/detail/DetailNav";
+import { DetailPager } from "@dex/components/detail/DetailPager";
 import { AboutPanel } from "@dex/components/detail/AboutPanel";
 import { StatBars } from "@dex/components/detail/StatBars";
 import { EvolutionChainView } from "@dex/components/detail/EvolutionChainView";
@@ -10,7 +12,16 @@ import { AbilityList } from "@dex/components/detail/AbilityList";
 import { TypeMatchups } from "@dex/components/detail/TypeMatchups";
 import { PokemonDetailData } from "@dex/interfaces/pokemon";
 import { primaryTypeColor, typeColor } from "@dex/constant/PokemonTypes";
-import { getPokemonDetail } from "@dex/lib/pokemon";
+import {
+  getPokemonDetail,
+  getPokemonNeighbors,
+  PokemonNeighbors,
+} from "@dex/lib/pokemon";
+
+type DetailPageProps = {
+  pokemon: PokemonDetailData;
+  neighbors: PokemonNeighbors;
+};
 
 // Anchored, scroll-padded frosted section so the sticky sub-nav doesn't cover
 // the heading when jumped to.
@@ -33,7 +44,7 @@ function Section({
   );
 }
 
-export default function Id(pokemon: PokemonDetailData) {
+export default function Id({ pokemon, neighbors }: DetailPageProps) {
   const accent = primaryTypeColor(pokemon.types);
   const secondary = pokemon.types[1] ? typeColor(pokemon.types[1]) : accent;
 
@@ -49,6 +60,7 @@ export default function Id(pokemon: PokemonDetailData) {
       />
 
       <div className="mx-auto max-w-5xl space-y-6">
+        <DetailPager neighbors={neighbors} />
         <DetailHero pokemon={pokemon} />
         <DetailNav />
 
@@ -79,7 +91,11 @@ export default function Id(pokemon: PokemonDetailData) {
             accent={accent}
           />
         </Section>
+
+        <DetailPager neighbors={neighbors} />
       </div>
+
+      <ScrollToTop reveal="near-bottom" />
     </>
   );
 }
@@ -91,7 +107,9 @@ export const getStaticPaths: GetStaticPaths = async () => ({
   fallback: "blocking", // first hit renders + caches, later hits are static
 });
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
+  params,
+}) => {
   const id = params?.id as string;
   if (!id) {
     return { notFound: true };
@@ -99,7 +117,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const pokemon = await getPokemonDetail(id);
-    return { props: pokemon, revalidate: 60 * 60 * 24 }; // refresh daily
+    const neighbors = await getPokemonNeighbors(pokemon.id);
+    return { props: { pokemon, neighbors }, revalidate: 60 * 60 * 24 }; // refresh daily
   } catch (error) {
     return { notFound: true };
   }
