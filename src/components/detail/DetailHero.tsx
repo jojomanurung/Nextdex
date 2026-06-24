@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { PokemonDetailData } from "@dex/interfaces/pokemon";
 import { dexNo, genLabel } from "@dex/constant/pokemonMeta";
 
@@ -68,7 +68,7 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
 
       <div className="flex flex-wrap items-center justify-center gap-3">
         {pokemon.types.map((type) => (
-          <Type key={type} type={type} variant="frosted" />
+          <Type key={type} type={type} />
         ))}
       </div>
 

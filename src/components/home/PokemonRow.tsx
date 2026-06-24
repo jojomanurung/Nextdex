@@ -1,7 +1,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import { primaryTypeColor } from "@dex/constant/PokemonTypes";
 import { genLabel, dexNo } from "@dex/constant/pokemonMeta";
@@ -64,7 +64,7 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
       {/* Type chips — centered in the card (hidden on small screens) */}
       <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 gap-2 sm:flex">
         {pokemon.types.map((type) => (
-          <Type key={type} type={type} variant="frosted" />
+          <Type key={type} type={type} />
         ))}
       </div>
     </Link>

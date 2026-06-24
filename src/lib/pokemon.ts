@@ -68,6 +68,26 @@ export async function getPokemonIndex(): Promise<PokemonIndexEntry[]> {
     .filter((entry) => entry.id > 0 && entry.id < FORM_ID_START);
 }
 
+// Adjacent national-dex entries for the detail-page pager. Reuses the cached
+// full-dex index and looks up id ± 1 directly: the national dex is contiguous,
+// so a missing neighbor means an end of the dex (#1 has no previous, the last
+// has no next) and yields null.
+export type PokemonNeighbors = {
+  prev: PokemonIndexEntry | null;
+  next: PokemonIndexEntry | null;
+};
+
+export async function getPokemonNeighbors(
+  id: number,
+): Promise<PokemonNeighbors> {
+  const index = await getPokemonIndex();
+  const byId = new Map(index.map((entry) => [entry.id, entry]));
+  return {
+    prev: byId.get(id - 1) ?? null,
+    next: byId.get(id + 1) ?? null,
+  };
+}
+
 export type PokemonListResult = {
   count: number;
   next: string | null;

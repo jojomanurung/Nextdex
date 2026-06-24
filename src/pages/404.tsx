@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { Card } from "@dex/components/Card";
+import { Card } from "@dex/components/common/Card";
 
 // Pages Router custom 404 — statically generated and auto-rendered for unknown
 // routes and for any page that returns { notFound: true } (e.g. an invalid

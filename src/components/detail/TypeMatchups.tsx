@@ -1,4 +1,4 @@
-import { Type } from "@dex/components/Type";
+import { Type } from "@dex/components/common/Type";
 import { TypeMatchup } from "@dex/interfaces/pokemon";
 
 const MULT_LABEL: Record<number, string> = {
@@ -17,7 +17,7 @@ function Group({ title, items }: { title: string; items: TypeMatchup[] }) {
       <div className="flex flex-wrap gap-2">
         {items.map((matchup) => (
           <div key={matchup.type} className="flex items-center gap-1.5">
-            <Type type={matchup.type} variant="frosted" />
+            <Type type={matchup.type} />
             <span className="text-xs font-semibold tabular-nums text-zinc-300">
               {MULT_LABEL[matchup.multiplier] ?? `${matchup.multiplier}×`}
             </span>

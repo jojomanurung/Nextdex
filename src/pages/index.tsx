@@ -1,7 +1,10 @@
 import { GetStaticProps } from "next";
-import { PokemonRow, PokemonRowSkeleton } from "@dex/components/PokemonRow";
-import { ControlDeck } from "@dex/components/ControlDeck";
-import { VirtualScroll } from "@dex/components/VirtualScroll";
+import {
+  PokemonRow,
+  PokemonRowSkeleton,
+} from "@dex/components/home/PokemonRow";
+import { ControlDeck } from "@dex/components/home/ControlDeck";
+import { VirtualScroll } from "@dex/components/common/VirtualScroll";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import {
   getPokemonList,
@@ -9,6 +12,7 @@ import {
   PokemonIndexEntry,
 } from "@dex/lib/pokemon";
 import { usePokedexBrowser, PAGE_LIMIT } from "@dex/hooks/usePokedexBrowser";
+import { ScrollToTop } from "@dex/components/common/ScrollToTop";
 
 type HomeProps = {
   results: PokemonData[];
@@ -53,6 +57,8 @@ export default function Home({ results, index }: HomeProps) {
           {query ? `No Pokémon match “${query}”.` : "Nothing to show."}
         </p>
       )}
+
+      <ScrollToTop threshold={1000} />
 
       <VirtualScroll intersectCallback={onIntersect} isLast={isLast} />
     </div>
