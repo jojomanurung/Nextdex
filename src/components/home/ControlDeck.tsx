@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 
-export type SortKey = "number" | "name";
+export type SortKey = "number" | "name" | "reverseNum" | "reverseName";
 
 type ControlDeckProps = {
   query: string;
@@ -53,8 +53,14 @@ export function ControlDeck({
             <option className="bg-slate-900 text-white" value="number">
               Number
             </option>
+            <option className="bg-slate-900 text-white" value="reverseNum">
+              Reverse Number
+            </option>
             <option className="bg-slate-900 text-white" value="name">
               Name (A–Z)
+            </option>
+            <option className="bg-slate-900 text-white" value="reverseName">
+              Name (Z-A)
             </option>
           </select>
         </div>

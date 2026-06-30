@@ -13,9 +13,11 @@ type PokemonListState = {
   // returning from a detail page doesn't refetch what was already shown.
   details: Record<string, PokemonData>;
   setDetails: Dispatch<SetStateAction<Record<string, PokemonData>>>;
-  // How many entries of the (filtered/sorted) index are currently shown.
-  count: number;
-  setCount: Dispatch<SetStateAction<number>>;
+  // How many entries of the browse list are revealed. Kept here (not in the
+  // browser hook) so the depth — and thus the list you return to when a search
+  // is cleared — survives home↔detail navigation for the whole session.
+  browseCount: number;
+  setBrowseCount: Dispatch<SetStateAction<number>>;
 };
 
 const PokemonListContext = createContext<PokemonListState | undefined>(
@@ -27,11 +29,11 @@ const PokemonListContext = createContext<PokemonListState | undefined>(
 // fresh.
 export function PokemonListProvider({ children }: { children: ReactNode }) {
   const [details, setDetails] = useState<Record<string, PokemonData>>({});
-  const [count, setCount] = useState(0);
+  const [browseCount, setBrowseCount] = useState(0);
 
   return (
     <PokemonListContext.Provider
-      value={{ details, setDetails, count, setCount }}
+      value={{ details, setDetails, browseCount, setBrowseCount }}
     >
       {children}
     </PokemonListContext.Provider>
