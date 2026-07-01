@@ -14,6 +14,7 @@ import {
 import { usePokedexBrowser, PAGE_LIMIT } from "@dex/hooks/usePokedexBrowser";
 import { ScrollToTop } from "@dex/components/common/ScrollToTop";
 import { Meta } from "@dex/components/common/Meta";
+import { SITE_NAME, SITE_URL } from "@dex/constant/site";
 
 type HomeProps = {
   results: PokemonData[];
@@ -33,14 +34,26 @@ export default function Home({ results, index }: HomeProps) {
     onIntersect,
   } = usePokedexBrowser({ results, index });
 
+  const description =
+    "Browse, search, and sort every Pokémon by number or name. Dive into stats, types, abilities, and evolutions in a sleek modern Pokédex.";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description,
+  };
+
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-3">
       <Meta
         title="Nextdex — Explore every Pokémon"
-        description="Browse, search, and sort every Pokémon by number or name. Dive into stats, types, abilities, and evolutions in a sleek modern Pokédex."
+        description={description}
         image="/images/pokeball.png"
         imageAlt="Nextdex"
         url="/"
+        jsonLd={jsonLd}
       />
 
       <ControlDeck

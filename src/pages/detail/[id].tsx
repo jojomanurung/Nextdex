@@ -14,6 +14,7 @@ import { PokemonDetailData } from "@dex/interfaces/pokemon";
 import { primaryTypeColor, typeColor } from "@dex/constant/PokemonTypes";
 import { dexNo } from "@dex/constant/pokemonMeta";
 import { Meta } from "@dex/components/common/Meta";
+import { SITE_NAME, SITE_URL, absoluteUrl } from "@dex/constant/site";
 import {
   getPokemonDetail,
   getPokemonNeighbors,
@@ -66,6 +67,34 @@ export default function Id({ pokemon, neighbors }: DetailPageProps) {
     pokemon.species.flavorEntries[0]?.text ||
     `${displayName} — ${typeList} type. Explore stats, abilities, type matchups and evolutions on Nextdex.`;
 
+  const path = `/detail/${pokemon.name}`;
+  const canonicalUrl = absoluteUrl(path);
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: `#${dexNo(pokemon.id)} ${displayName}`,
+      description,
+      url: canonicalUrl,
+      primaryImageOfPage: pokemon.image,
+      isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+      about: { "@type": "Thing", name: displayName, image: pokemon.image },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Pokédex", item: SITE_URL },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: displayName,
+          item: canonicalUrl,
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <Meta
@@ -73,8 +102,9 @@ export default function Id({ pokemon, neighbors }: DetailPageProps) {
         description={description}
         image={pokemon.image}
         imageAlt={`${displayName} official artwork`}
-        url={`/detail/${pokemon.name}`}
+        url={path}
         type="article"
+        jsonLd={jsonLd}
       />
 
       {/* Ambient type-tinted aurora, full-bleed behind the page content. */}
