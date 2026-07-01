@@ -13,6 +13,7 @@ import {
 } from "@dex/lib/pokemon";
 import { usePokedexBrowser, PAGE_LIMIT } from "@dex/hooks/usePokedexBrowser";
 import { ScrollToTop } from "@dex/components/common/ScrollToTop";
+import { Meta } from "@dex/components/common/Meta";
 
 type HomeProps = {
   results: PokemonData[];
@@ -34,6 +35,14 @@ export default function Home({ results, index }: HomeProps) {
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-3">
+      <Meta
+        title="Nextdex — Explore every Pokémon"
+        description="Browse, search, and sort every Pokémon by number or name. Dive into stats, types, abilities, and evolutions in a sleek modern Pokédex."
+        image="/images/pokeball.png"
+        imageAlt="Nextdex"
+        url="/"
+      />
+
       <ControlDeck
         query={query}
         onQueryChange={setQuery}
