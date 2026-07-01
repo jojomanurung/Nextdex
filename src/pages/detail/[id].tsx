@@ -12,6 +12,8 @@ import { AbilityList } from "@dex/components/detail/AbilityList";
 import { TypeMatchups } from "@dex/components/detail/TypeMatchups";
 import { PokemonDetailData } from "@dex/interfaces/pokemon";
 import { primaryTypeColor, typeColor } from "@dex/constant/PokemonTypes";
+import { dexNo } from "@dex/constant/pokemonMeta";
+import { Meta } from "@dex/components/common/Meta";
 import {
   getPokemonDetail,
   getPokemonNeighbors,
@@ -44,12 +46,37 @@ function Section({
   );
 }
 
+// Title-case a hyphenated/spaced api name for share-card copy, where the UI's
+// CSS `capitalize` isn't available: "mr-mime" → "Mr Mime", "pikachu" → "Pikachu".
+function formatName(value: string): string {
+  return value
+    .split(/[-\s]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export default function Id({ pokemon, neighbors }: DetailPageProps) {
   const accent = primaryTypeColor(pokemon.types);
   const secondary = pokemon.types[1] ? typeColor(pokemon.types[1]) : accent;
 
+  const displayName = formatName(pokemon.name);
+  const typeList = pokemon.types.map(formatName).join(" / ");
+  // Prefer the newest Pokédex entry for the share blurb; fall back to a summary.
+  const description =
+    pokemon.species.flavorEntries[0]?.text ||
+    `${displayName} — ${typeList} type. Explore stats, abilities, type matchups and evolutions on Nextdex.`;
+
   return (
     <>
+      <Meta
+        title={`#${dexNo(pokemon.id)} ${displayName} | Nextdex`}
+        description={description}
+        image={pokemon.image}
+        imageAlt={`${displayName} official artwork`}
+        url={`/detail/${pokemon.name}`}
+        type="article"
+      />
+
       {/* Ambient type-tinted aurora, full-bleed behind the page content. */}
       <div
         aria-hidden
