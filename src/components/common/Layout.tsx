@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import { Navbar } from "./Navbar";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 type LayoutProps = {
   children: ReactNode;
@@ -18,6 +19,7 @@ export function Layout({ children }: LayoutProps) {
       <Navbar />
       <main className={`${font.className} px-3 md:px-7 lg:px-auto pb-10`}>
         {children}
+        <SpeedInsights />
       </main>
     </>
   );
