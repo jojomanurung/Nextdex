@@ -24,12 +24,14 @@ export function Meta({
   const canonical = absoluteUrl(url);
   const ogImage = absoluteUrl(image);
   const alt = imageAlt ?? title;
+  const ogLogo = absoluteUrl("/favicon.ico");
 
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />
+      <meta property="og:logo" content={ogLogo} />
 
       {/* Facebook Card (Open Graph) */}
       <meta property="og:site_name" content={SITE_NAME} />
@@ -42,7 +44,7 @@ export function Meta({
       <meta property="og:locale" content="en_US" />
 
       {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:card" content="summary" />
       {TWITTER_HANDLE && <meta name="twitter:site" content={TWITTER_HANDLE} />}
       {TWITTER_HANDLE && (
         <meta name="twitter:creator" content={TWITTER_HANDLE} />
