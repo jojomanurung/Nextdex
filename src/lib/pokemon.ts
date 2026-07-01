@@ -36,7 +36,7 @@ function mapPokemon(data: Pokemon): PokemonData {
   return {
     id: data.id,
     name: data.name,
-    image: data.sprites.other?.home.front_default ?? "",
+    image: artworkUrl(data.id),
     types: data.types.map((t) => t.type.name),
     stats: data.stats.map((s) => ({ name: s.stat.name, value: s.base_stat })),
     height: data.height,
@@ -100,7 +100,9 @@ export async function getPokemonList(
   limit: number,
 ): Promise<PokemonListResult> {
   const list = await client.listPokemons(offset, limit);
-  const results = await Promise.all(list.results.map((r) => getPokemon(r.name)));
+  const results = await Promise.all(
+    list.results.map((r) => getPokemon(r.name)),
+  );
   return {
     count: list.count,
     next: list.next,
@@ -149,8 +151,8 @@ function idFromUrl(url: string, segment: string): number {
 // Canonical official-artwork URL (same host the API itself returns, already
 // whitelisted in next.config.js). Lets evolution stages reuse the species id
 // straight from the chain instead of a detail fetch per stage.
-function artworkUrl(id: number): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+function artworkUrl(id: number, isShiny = false): string {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${isShiny ? "shiny/" : ""}${id}.png`;
 }
 
 // Human-readable label for how a Pokémon reaches an evolution stage. Covers the
@@ -177,7 +179,8 @@ function evoConditionLabel(detail?: EvolutionDetail): string | null {
     parts.push(`Knows ${prettify(detail.known_move_type.name)} move`);
   else if (detail.location) parts.push(`At ${prettify(detail.location.name)}`);
 
-  if (detail.held_item) parts.push(`holding ${prettify(detail.held_item.name)}`);
+  if (detail.held_item)
+    parts.push(`holding ${prettify(detail.held_item.name)}`);
   if (detail.time_of_day) parts.push(`(${detail.time_of_day})`);
   if (detail.needs_overworld_rain) parts.push("in rain");
   if (detail.gender === 1) parts.push("(♀)");
@@ -202,7 +205,8 @@ function flattenChain(
     name: link.species.name,
     image: artworkUrl(id),
     stage,
-    condition: stage === 0 ? null : evoConditionLabel(link.evolution_details[0]),
+    condition:
+      stage === 0 ? null : evoConditionLabel(link.evolution_details[0]),
   });
   link.evolves_to.forEach((next) => flattenChain(next, stage + 1, acc));
   return acc;
@@ -284,7 +288,7 @@ export async function getPokemonDetail(
 
   return {
     ...base,
-    shinyImage: pokemon.sprites.other?.home.front_shiny ?? "",
+    shinyImage: artworkUrl(base.id, true) ?? "",
     abilities,
     evolution: flattenChain(chain.chain),
     matchups: computeMatchups(typeData),
