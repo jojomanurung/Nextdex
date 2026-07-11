@@ -40,7 +40,7 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
             onClick={() => setShiny((s) => !s)}
             aria-pressed={shiny}
             title="Toggle shiny artwork"
-            className={`absolute right-1 top-1 rounded-full border px-3 py-1 text-sm backdrop-blur-sm transition ${
+            className={`absolute right-1 top-1 rounded-full border px-3 py-1 text-sm backdrop-blur-xs transition ${
               shiny
                 ? "border-amber-300/70 bg-amber-300/20 text-amber-200"
                 : "border-white/15 bg-white/5 text-zinc-300 hover:bg-white/10"

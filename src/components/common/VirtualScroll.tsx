@@ -10,7 +10,7 @@ export function VirtualScroll({
   isLast,
 }: VirtualScrollProps) {
   const loader = useRef<HTMLDivElement>(null);
-  const loadMoreTimeoutRef = useRef<NodeJS.Timeout>();
+  const loadMoreTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     const node = loader.current;

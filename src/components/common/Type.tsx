@@ -15,7 +15,7 @@ export function Type({ type }: TypeProp) {
 
   return (
     <div
-      className="rounded-lg px-2 py-1 flex items-center gap-2 justify-center border backdrop-blur-sm"
+      className="rounded-lg px-2 py-1 flex items-center gap-2 justify-center border backdrop-blur-xs"
       style={{ backgroundColor: `${color}26`, borderColor: `${color}99` }}
     >
       {match && (

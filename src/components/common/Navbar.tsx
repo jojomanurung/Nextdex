@@ -10,7 +10,7 @@ export function Navbar() {
   const isHome = pathname === "/";
 
   return (
-    <nav className="sticky top-0 left-0 right-0 w-full backdrop-blur-sm z-10">
+    <nav className="sticky top-0 left-0 right-0 w-full backdrop-blur-xs z-10">
       <div className="relative flex items-center justify-center py-2">
         {!isHome && (
           <Link

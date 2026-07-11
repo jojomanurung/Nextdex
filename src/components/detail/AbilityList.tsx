@@ -6,7 +6,7 @@ export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
       {abilities.map((ability) => (
         <div
           key={ability.name}
-          className="rounded-2xl border border-white/5 bg-white/[0.03] p-3"
+          className="rounded-2xl border border-white/5 bg-white/3 p-3"
         >
           <div className="mb-1 flex items-center gap-2">
             <h3 className="font-semibold capitalize">

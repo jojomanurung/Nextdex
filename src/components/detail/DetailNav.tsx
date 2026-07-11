@@ -10,7 +10,7 @@ const SECTIONS = [
 // shared --navbar-height CSS variable, same as the list page's ControlDeck.
 export function DetailNav() {
   return (
-    <nav className="sticky z-[9] top-[72px] mx-auto flex w-fit max-w-full flex-wrap justify-center rounded-2xl border border-white/10 bg-slate-900/50 p-1 backdrop-blur-md sm:flex-nowrap sm:rounded-full">
+    <nav className="sticky z-9 top-[72px] mx-auto flex w-fit max-w-full flex-wrap justify-center rounded-2xl border border-white/10 bg-slate-900/50 p-1 backdrop-blur-md sm:flex-nowrap sm:rounded-full">
       {SECTIONS.map((section) => (
         <a
           key={section.id}
