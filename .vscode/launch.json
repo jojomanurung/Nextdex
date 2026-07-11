@@ -5,23 +5,25 @@
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev"
+      "command": "npm run dev -- --webpack --inspect"
     },
     {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug"
     },
     {
       "name": "Next.js: debug full stack",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev",
+      "command": "npm run dev -- --webpack --inspect",
       "serverReadyAction": {
-        "pattern": "started server on .+url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
+        "pattern": "- Local:.+(https?://.+)",
+        "action": "startDebugging",
+        "name": "Next.js: debug client-side",
+        "killOnServerStop": true
       }
     }
   ]
