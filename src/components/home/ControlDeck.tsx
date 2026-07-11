@@ -20,7 +20,7 @@ export function ControlDeck({
   resultCount,
 }: ControlDeckProps) {
   return (
-    <div className="sticky z-[9] top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
+    <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
       <div className="flex gap-2 flex-row items-center">
         <div className="relative flex-1">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
@@ -33,7 +33,7 @@ export function ControlDeck({
               onQueryChange(e.target.value)
             }
             placeholder="Search name or number…"
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white outline-none transition-colors placeholder:text-zinc-500 focus:border-white/30"
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-zinc-500 focus:border-white/30"
           />
         </div>
 
@@ -48,7 +48,7 @@ export function ControlDeck({
             id="sort"
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortKey)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-white/30"
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-hidden transition-colors focus:border-white/30"
           >
             <option className="bg-slate-900 text-white" value="number">
               Number

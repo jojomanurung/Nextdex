@@ -19,7 +19,7 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
   return (
     <Link
       href={`detail/${pokemon.name}`}
-      className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
+      className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
     >
       {/* Ghost dex number watermark */}
       <span
@@ -78,11 +78,11 @@ export const PokemonRow = memo(PokemonRowComponent);
 // ghost number are pending placeholders.
 export function PokemonRowSkeleton({ id, name }: { id: number; name: string }) {
   return (
-    <div className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-sm">
+    <div className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-xs">
       {/* Ghost number (untinted until the type is known) */}
       <span
         aria-hidden
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/[0.04]"
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/4"
       >
         {dexNo(id)}
       </span>

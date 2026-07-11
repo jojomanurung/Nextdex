@@ -64,7 +64,7 @@ export function EvolutionChainView({
                     className={`group flex w-36 flex-col items-center gap-1 rounded-2xl border p-2 text-center transition ${
                       isCurrent
                         ? "border-white/20 bg-white/10"
-                        : "border-white/5 bg-white/[0.03] hover:bg-white/[0.07]"
+                        : "border-white/5 bg-white/3 hover:bg-white/[0.07]"
                     }`}
                   >
                     <div className="relative h-28 w-28">
