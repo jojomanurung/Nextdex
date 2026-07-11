@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import { usePokemonList } from "@dex/context/PokemonListContext";
-
-// The index only carries id+name, so each visible row's full PokemonData is
-// fetched on demand. We fetch at most this many per pass, so revealing a deep
-// window (or re-sorting) fills progressively instead of firing hundreds of
-// requests at once; later passes pick up the rest as the cache fills.
-const FETCH_BATCH = 18;
+import { PAGE_LIMIT } from "@dex/constant/pagination";
 
 async function fetchPokemon(name: string): Promise<PokemonData | null> {
   const res = await fetch(`/api/pokemon/${name}`);
@@ -49,15 +44,12 @@ export function useLazyDetails(names: string[], seed: PokemonData[]) {
   }, [seed, details]);
 
   useEffect(() => {
-    const missing = names.filter((name) => !byName[name]).slice(0, FETCH_BATCH);
-    if (missing.length === 0) {
-      setIsFetching(false);
-      return;
-    }
+    const missing = names.filter((name) => !byName[name]).slice(0, PAGE_LIMIT);
+    if (missing.length === 0) return;
 
     let cancelled = false;
-    setIsFetching(true);
     (async () => {
+      setIsFetching(true);
       const fetched = await Promise.all(missing.map(fetchPokemon));
       if (cancelled) return;
       setDetails((cache) => mergeFetched(cache, fetched));
@@ -66,6 +58,7 @@ export function useLazyDetails(names: string[], seed: PokemonData[]) {
 
     return () => {
       cancelled = true;
+      setIsFetching(false);
     };
   }, [names, byName, setDetails]);
 

@@ -12,10 +12,6 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SITE_URL: siteUrl,
   },
-  experimental: {
-    // restore scroll position on back/forward navigation (home <-> detail)
-    scrollRestoration: true,
-  },
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

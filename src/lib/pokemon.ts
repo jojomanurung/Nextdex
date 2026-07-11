@@ -116,7 +116,7 @@ export async function getPokemonList(
 // endpoints into one PokemonDetailData. It is deliberately separate from the
 // lean getPokemon above: the list lazy-loads rows through getPokemon, so that
 // path must not pay for these extra fetches. This one only runs in the detail
-// page's getStaticProps (ISR), where the cost is paid once per build/revalidate.
+// page's server render (ISR), where the cost is paid once per build/revalidate.
 
 // PokeAPI flavor/effect text is wrapped with hard newlines and form-feeds for
 // the in-game text boxes; collapse all whitespace for web display.

@@ -18,7 +18,7 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
 
   return (
     <Link
-      href={`detail/${pokemon.name}`}
+      href={`pokemon/${pokemon.name}`}
       className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
     >
       {/* Ghost dex number watermark */}

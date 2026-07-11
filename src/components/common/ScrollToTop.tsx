@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
 type ScrollToTopProps = {
@@ -12,10 +14,6 @@ type ScrollToTopProps = {
   threshold?: number;
 };
 
-// Floating glass control that smooth-scrolls back to the top. Reveals either
-// after a fixed scroll depth ("scrolled", for infinite lists) or as the page
-// bottom nears ("near-bottom", for finite pages). Fixed to the bottom-right;
-// hidden and non-interactive until in range so it never sits over content.
 export function ScrollToTop({
   reveal = "scrolled",
   threshold,
