@@ -1,12 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
-  // The logo always links home; off the home route we also surface an explicit
-  // left-aligned "Back" button on phones (sm:hidden) — a clearer way back to the
-  // Pokédex than the centered logo. The logo stays centered (button is offset).
-  const { pathname } = useRouter();
+  const pathname = usePathname();
   const isHome = pathname === "/";
 
   return (

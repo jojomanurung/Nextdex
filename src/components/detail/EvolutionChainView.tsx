@@ -60,7 +60,7 @@ export function EvolutionChainView({
                 return (
                   <Link
                     key={stage.id}
-                    href={`/detail/${stage.name}`}
+                    href={`/pokemon/${stage.name}`}
                     className={`group flex w-36 flex-col items-center gap-1 rounded-2xl border p-2 text-center transition ${
                       isCurrent
                         ? "border-white/20 bg-white/10"

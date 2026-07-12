@@ -1,7 +1,9 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+"use client";
+
+import { useEffect, useRef } from "react";
 
 type VirtualScrollProps = {
-  intersectCallback: Dispatch<SetStateAction<boolean>>;
+  intersectCallback: (intersecting: boolean) => void;
   isLast: boolean;
 };
 

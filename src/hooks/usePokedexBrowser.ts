@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PokemonData } from "@dex/interfaces/pokemon";
 import { PokemonIndexEntry } from "@dex/lib/pokemon";
 import { usePokemonList } from "@dex/context/PokemonListContext";
 import { useDebouncedValue } from "@dex/hooks/useDebouncedValue";
 import { useLazyDetails } from "@dex/hooks/useLazyDetails";
 import { dexNo } from "@dex/constant/pokemonMeta";
+import { PAGE_LIMIT } from "@dex/constant/pagination";
 import { SortKey } from "@dex/components/home/ControlDeck";
-
-// One "page": the reveal step for infinite scroll and the SSG first-page size.
-export const PAGE_LIMIT = 18;
 
 type UsePokedexBrowserArgs = {
   results: PokemonData[];
@@ -56,7 +54,15 @@ export function usePokedexBrowser({ results, index }: UsePokedexBrowserArgs) {
   // Reveal depth. Browsing persists in context (survives navigation and a
   // search-and-clear); searching uses its own window that resets per new query.
   const [searchCount, setSearchCount] = useState(PAGE_LIMIT);
-  useEffect(() => setSearchCount(PAGE_LIMIT), [search]);
+  // Reset the search window whenever the (debounced) query changes — done during
+  // render via the previous-value pattern rather than an effect, so the window
+  // shrinks in the same render the new results appear (no transient frame at the
+  // prior, deeper depth).
+  const [prevSearch, setPrevSearch] = useState(search);
+  if (search !== prevSearch) {
+    setPrevSearch(search);
+    setSearchCount(PAGE_LIMIT);
+  }
 
   const browseReveal = Math.max(browseCount, PAGE_LIMIT); // context starts at 0
   const revealCount = isSearching ? searchCount : browseReveal;
@@ -86,17 +92,27 @@ export function usePokedexBrowser({ results, index }: UsePokedexBrowserArgs) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Infinite scroll: VirtualScroll flips this true when the sentinel enters
-  // view. We reveal exactly one more page and consume the flag, so a sentinel
-  // sitting in view can't run through page after page — it re-fires only on a
-  // fresh entry, never while a batch is still loading or once we're at the end.
-  const [atSentinel, setAtSentinel] = useState(false);
+  // Infinite scroll. VirtualScroll calls onIntersect with the sentinel's
+  // visibility; each time it scrolls fully into view we reveal exactly one more
+  // page, so a single pass can't run through page after page. The callback is
+  // kept stable (VirtualScroll attaches it to a persistent observer) and reads
+  // its guards from a ref, so it always sees the latest state and never grows
+  // while a batch is still loading or once we're at the end.
+  const growth = useRef({ isFetching, isLast, isSearching });
   useEffect(() => {
-    if (!atSentinel || isFetching || isLast) return;
-    setAtSentinel(false);
-    if (isSearching) setSearchCount((c) => c + PAGE_LIMIT);
-    else setBrowseCount((c) => Math.max(c, PAGE_LIMIT) + PAGE_LIMIT);
-  }, [atSentinel, isFetching, isLast, isSearching, setBrowseCount]);
+    growth.current = { isFetching, isLast, isSearching };
+  }, [isFetching, isLast, isSearching]);
+
+  const onIntersect = useCallback(
+    (intersecting: boolean) => {
+      if (!intersecting) return;
+      const { isFetching, isLast, isSearching } = growth.current;
+      if (isFetching || isLast) return;
+      if (isSearching) setSearchCount((c) => c + PAGE_LIMIT);
+      else setBrowseCount((c) => Math.max(c, PAGE_LIMIT) + PAGE_LIMIT);
+    },
+    [setBrowseCount],
+  );
 
   const rows = useMemo(
     () =>
@@ -117,6 +133,6 @@ export function usePokedexBrowser({ results, index }: UsePokedexBrowserArgs) {
     resultCount: matches.length,
     isLast,
     isEmpty: matches.length === 0,
-    onIntersect: setAtSentinel,
+    onIntersect,
   };
 }
