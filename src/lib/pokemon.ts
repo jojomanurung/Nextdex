@@ -18,7 +18,10 @@ import {
   genderRatioLabel,
   generationLabel,
   versionGeneration,
+  dexNo,
 } from "@dex/constant/pokemonMeta";
+import { PAGE_LIMIT } from "@dex/constant/pagination";
+import { SortKey } from "@dex/constant/sort";
 
 // One client reused across all requests (instead of `new PokemonClient()` per
 // handler call). pokenode-ts caches upstream PokeAPI responses, so repeat
@@ -88,26 +91,54 @@ export async function getPokemonNeighbors(
   };
 }
 
-export type PokemonListResult = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: PokemonData[];
+const SORT_COMPARATORS: Record<
+  SortKey,
+  (a: PokemonIndexEntry, b: PokemonIndexEntry) => number
+> = {
+  number: (a, b) => a.id - b.id,
+  reverseNum: (a, b) => b.id - a.id,
+  name: (a, b) => a.name.localeCompare(b.name),
+  reverseName: (a, b) => b.name.localeCompare(a.name),
 };
 
-export async function getPokemonList(
-  offset: number,
-  limit: number,
-): Promise<PokemonListResult> {
-  const list = await client.listPokemons(offset, limit);
-  const results = await Promise.all(
-    list.results.map((r) => getPokemon(r.name)),
-  );
+function matchesQuery(entry: PokemonIndexEntry, query: string): boolean {
+  return entry.name.includes(query) || dexNo(entry.id).includes(query);
+}
+
+export type PokemonQuery = {
+  query?: string;
+  sort?: SortKey;
+  offset?: number;
+  limit?: number;
+};
+
+export type PokemonQueryResult = {
+  results: PokemonData[];
+  total: number;
+  hasMore: boolean;
+};
+
+// Filter + sort the full dex index (cached upstream), then resolve one page of
+// details in parallel.
+export async function queryPokemon({
+  query = "",
+  sort = "number",
+  offset = 0,
+  limit = PAGE_LIMIT,
+}: PokemonQuery = {}): Promise<PokemonQueryResult> {
+  const index = await getPokemonIndex();
+  const q = query.trim().toLowerCase();
+  const matches = (q ? index.filter((e) => matchesQuery(e, q)) : index)
+    .slice()
+    .sort(SORT_COMPARATORS[sort]);
+
+  const page = matches.slice(offset, offset + limit);
+  const results = await Promise.all(page.map((e) => getPokemon(e.name)));
+
   return {
-    count: list.count,
-    next: list.next,
-    previous: list.previous,
     results,
+    total: matches.length,
+    hasMore: offset + page.length < matches.length,
   };
 }
 

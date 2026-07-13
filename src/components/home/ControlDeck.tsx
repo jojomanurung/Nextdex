@@ -1,6 +1,5 @@
 import { ChangeEvent } from "react";
-
-export type SortKey = "number" | "name" | "reverseNum" | "reverseName";
+import { SortKey, SORT_OPTIONS } from "@dex/constant/sort";
 
 type ControlDeckProps = {
   query: string;
@@ -50,18 +49,15 @@ export function ControlDeck({
             onChange={(e) => onSortChange(e.target.value as SortKey)}
             className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-hidden transition-colors focus:border-white/30"
           >
-            <option className="bg-slate-900 text-white" value="number">
-              Number
-            </option>
-            <option className="bg-slate-900 text-white" value="reverseNum">
-              Reverse Number
-            </option>
-            <option className="bg-slate-900 text-white" value="name">
-              Name (A–Z)
-            </option>
-            <option className="bg-slate-900 text-white" value="reverseName">
-              Name (Z-A)
-            </option>
+            {SORT_OPTIONS.map((option) => (
+              <option
+                key={option.value}
+                className="bg-slate-900 text-white"
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
