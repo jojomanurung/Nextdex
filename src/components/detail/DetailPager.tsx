@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PokemonNeighbors } from "@dex/lib/pokemon";
+import { PokemonNeighbors } from "@dex/interfaces/pokemon";
 import { dexNo } from "@dex/constant/pokemonMeta";
 
 type DetailPagerProps = {

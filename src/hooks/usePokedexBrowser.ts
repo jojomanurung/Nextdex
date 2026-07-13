@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PokemonData } from "@dex/interfaces/pokemon";
-import { PokemonQueryResult } from "@dex/lib/pokemon";
+import { PokemonData, PokemonQueryResult } from "@dex/interfaces/pokemon";
 import { usePokemonList } from "@dex/context/PokemonListContext";
 import { useDebouncedValue } from "@dex/hooks/useDebouncedValue";
 import { PAGE_LIMIT } from "@dex/constant/pagination";

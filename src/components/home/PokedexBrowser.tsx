@@ -7,7 +7,7 @@ import {
 import { ControlDeck } from "@dex/components/home/ControlDeck";
 import { VirtualScroll } from "@dex/components/common/VirtualScroll";
 import { ScrollToTop } from "@dex/components/common/ScrollToTop";
-import { PokemonQueryResult } from "@dex/lib/pokemon";
+import { PokemonQueryResult } from "@dex/interfaces/pokemon";
 import { usePokedexBrowser } from "@dex/hooks/usePokedexBrowser";
 
 type PokedexBrowserProps = {
