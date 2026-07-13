@@ -1,6 +1,5 @@
 import { ChangeEvent } from "react";
-
-export type SortKey = "number" | "name" | "reverseNum" | "reverseName";
+import { SortKey, SORT_OPTIONS } from "@dex/constant/sort";
 
 type ControlDeckProps = {
   query: string;
@@ -8,6 +7,7 @@ type ControlDeckProps = {
   sort: SortKey;
   onSortChange: (value: SortKey) => void;
   resultCount: number;
+  isLoading?: boolean;
 };
 
 // The device "control panel": sticky glass toolbar with search + sort. Docks
@@ -18,6 +18,7 @@ export function ControlDeck({
   sort,
   onSortChange,
   resultCount,
+  isLoading,
 }: ControlDeckProps) {
   return (
     <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
@@ -50,23 +51,28 @@ export function ControlDeck({
             onChange={(e) => onSortChange(e.target.value as SortKey)}
             className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-hidden transition-colors focus:border-white/30"
           >
-            <option className="bg-slate-900 text-white" value="number">
-              Number
-            </option>
-            <option className="bg-slate-900 text-white" value="reverseNum">
-              Reverse Number
-            </option>
-            <option className="bg-slate-900 text-white" value="name">
-              Name (A–Z)
-            </option>
-            <option className="bg-slate-900 text-white" value="reverseName">
-              Name (Z-A)
-            </option>
+            {SORT_OPTIONS.map((option) => (
+              <option
+                key={option.value}
+                className="bg-slate-900 text-white"
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      <p className="mt-2 text-xs text-zinc-500">{resultCount} results</p>
+      <div className="mt-2 flex items-center gap-2">
+        <p className="text-xs text-zinc-500">{resultCount} results</p>
+        {isLoading && (
+          <span
+            aria-hidden
+            className="h-3 w-3 animate-spin rounded-full border border-white/20 border-t-white/70"
+          />
+        )}
+      </div>
     </div>
   );
 }
