@@ -7,6 +7,7 @@ type ControlDeckProps = {
   sort: SortKey;
   onSortChange: (value: SortKey) => void;
   resultCount: number;
+  isLoading?: boolean;
 };
 
 // The device "control panel": sticky glass toolbar with search + sort. Docks
@@ -17,6 +18,7 @@ export function ControlDeck({
   sort,
   onSortChange,
   resultCount,
+  isLoading,
 }: ControlDeckProps) {
   return (
     <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
@@ -62,7 +64,15 @@ export function ControlDeck({
         </div>
       </div>
 
-      <p className="mt-2 text-xs text-zinc-500">{resultCount} results</p>
+      <div className="mt-2 flex items-center gap-2">
+        <p className="text-xs text-zinc-500">{resultCount} results</p>
+        {isLoading && (
+          <span
+            aria-hidden
+            className="h-3 w-3 animate-spin rounded-full border border-white/20 border-t-white/70"
+          />
+        )}
+      </div>
     </div>
   );
 }

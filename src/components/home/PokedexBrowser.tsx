@@ -1,6 +1,9 @@
 "use client";
 
-import { PokemonRow } from "@dex/components/home/PokemonRow";
+import {
+  PokemonRow,
+  PokemonRowSkeleton,
+} from "@dex/components/home/PokemonRow";
 import { ControlDeck } from "@dex/components/home/ControlDeck";
 import { VirtualScroll } from "@dex/components/common/VirtualScroll";
 import { ScrollToTop } from "@dex/components/common/ScrollToTop";
@@ -21,6 +24,8 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     resultCount,
     isLast,
     isEmpty,
+    isLoading,
+    isAppending,
     onIntersect,
   } = usePokedexBrowser({ initial });
 
@@ -32,12 +37,18 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
         sort={sort}
         onSortChange={setSort}
         resultCount={resultCount}
+        isLoading={isLoading}
       />
 
-      <div className="flex flex-col gap-3">
+      <div
+        className={`flex flex-col gap-3 transition-opacity duration-200 ${
+          isLoading ? "pointer-events-none opacity-40" : ""
+        }`}
+      >
         {rows.map((pokemon) => (
           <PokemonRow key={pokemon.name} pokemon={pokemon} />
         ))}
+        {isAppending && <PokemonRowSkeleton />}
       </div>
 
       {isEmpty && (
