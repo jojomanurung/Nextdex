@@ -6,18 +6,18 @@ import {
   PokemonDetailData,
   PokemonNeighbors,
   TypeMatchup,
-} from "@dex/interfaces/pokemon";
+} from "@interfaces/pokemon";
 import {
   genderRatioLabel,
   generationLabel,
   versionGeneration,
-} from "@dex/constant/pokemonMeta";
+} from "@constant/pokemonMeta";
 import {
   artworkUrl,
   client,
   getPokemonIndex,
   mapPokemon,
-} from "@dex/lib/pokemon";
+} from "@lib/pokemon";
 
 // Detail-page aggregation, kept out of lib/pokemon.ts so the list path (which
 // lazy-loads rows via getPokemon) never pays for these extra fetches.

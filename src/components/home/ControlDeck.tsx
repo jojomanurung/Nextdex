@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { SortKey, SORT_OPTIONS } from "@dex/constant/sort";
+import { SortKey, SORT_OPTIONS } from "@constant/sort";
 
 type ControlDeckProps = {
   query: string;

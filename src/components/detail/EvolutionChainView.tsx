@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { EvolutionStage } from "@dex/interfaces/pokemon";
-import { dexNo } from "@dex/constant/pokemonMeta";
+import { EvolutionStage } from "@interfaces/pokemon";
+import { dexNo } from "@constant/pokemonMeta";
 
 type EvolutionChainViewProps = {
   stages: EvolutionStage[];

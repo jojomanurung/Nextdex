@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PokemonData, PokemonQueryResult } from "@dex/interfaces/pokemon";
-import { usePokemonList } from "@dex/context/PokemonListContext";
-import { useDebouncedValue } from "@dex/hooks/useDebouncedValue";
-import { PAGE_LIMIT } from "@dex/constant/pagination";
-import { SortKey, DEFAULT_SORT } from "@dex/constant/sort";
+import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
+import { usePokemonList } from "@context/PokemonListContext";
+import { useDebouncedValue } from "@hooks/useDebouncedValue";
+import { PAGE_LIMIT } from "@constant/pagination";
+import { SortKey, DEFAULT_SORT } from "@constant/sort";
 
 type Status = "idle" | "loading" | "appending";
 

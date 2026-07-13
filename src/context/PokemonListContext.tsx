@@ -8,8 +8,8 @@ import {
   SetStateAction,
   ReactNode,
 } from "react";
-import { PokemonData } from "@dex/interfaces/pokemon";
-import { SortKey } from "@dex/constant/sort";
+import { PokemonData } from "@interfaces/pokemon";
+import { SortKey } from "@constant/sort";
 
 // Snapshot of the browse list, lifted into the never-unmounting root layout so
 // home ↔ detail navigation restores the full scrolled list for the session.

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { queryPokemon } from "@dex/lib/pokemon";
-import { DEFAULT_SORT, isSortKey } from "@dex/constant/sort";
-import { PAGE_LIMIT } from "@dex/constant/pagination";
+import { queryPokemon } from "@lib/pokemon";
+import { DEFAULT_SORT, isSortKey } from "@constant/sort";
+import { PAGE_LIMIT } from "@constant/pagination";
 
 const MAX_LIMIT = 60;
 

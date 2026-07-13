@@ -1,4 +1,4 @@
-import { SortKey } from "@dex/constant/sort";
+import { SortKey } from "@constant/sort";
 
 export interface PokemonStat {
   name: string;

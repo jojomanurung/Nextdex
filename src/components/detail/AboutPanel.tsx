@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { SpeciesMeta } from "@dex/interfaces/pokemon";
-import { pct255 } from "@dex/constant/pokemonMeta";
-import { PokedexEntries } from "@dex/components/detail/PokedexEntries";
+import { SpeciesMeta } from "@interfaces/pokemon";
+import { pct255 } from "@constant/pokemonMeta";
+import { PokedexEntries } from "@components/detail/PokedexEntries";
 
 type AboutPanelProps = {
   species: SpeciesMeta;

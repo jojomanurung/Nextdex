@@ -1,4 +1,4 @@
-import { AbilityInfo } from "@dex/interfaces/pokemon";
+import { AbilityInfo } from "@interfaces/pokemon";
 
 export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
   return (

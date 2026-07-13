@@ -3,12 +3,12 @@
 import {
   PokemonRow,
   PokemonRowSkeleton,
-} from "@dex/components/home/PokemonRow";
-import { ControlDeck } from "@dex/components/home/ControlDeck";
-import { VirtualScroll } from "@dex/components/common/VirtualScroll";
-import { ScrollToTop } from "@dex/components/common/ScrollToTop";
-import { PokemonQueryResult } from "@dex/interfaces/pokemon";
-import { usePokedexBrowser } from "@dex/hooks/usePokedexBrowser";
+} from "@components/home/PokemonRow";
+import { ControlDeck } from "@components/home/ControlDeck";
+import { VirtualScroll } from "@components/common/VirtualScroll";
+import { ScrollToTop } from "@components/common/ScrollToTop";
+import { PokemonQueryResult } from "@interfaces/pokemon";
+import { usePokedexBrowser } from "@hooks/usePokedexBrowser";
 
 type PokedexBrowserProps = {
   initial: PokemonQueryResult;

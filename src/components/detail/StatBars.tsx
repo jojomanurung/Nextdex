@@ -1,4 +1,4 @@
-import { PokemonStat } from "@dex/interfaces/pokemon";
+import { PokemonStat } from "@interfaces/pokemon";
 
 const STAT_LABELS: Record<string, string> = {
   hp: "HP",

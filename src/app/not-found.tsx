@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Card } from "@dex/components/common/Card";
+import { Card } from "@components/common/Card";
 
 export const metadata: Metadata = {
   title: "404 · Page not found | Nextdex",

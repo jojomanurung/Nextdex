@@ -4,10 +4,10 @@ import {
   PokemonIndexEntry,
   PokemonQuery,
   PokemonQueryResult,
-} from "@dex/interfaces/pokemon";
-import { dexNo } from "@dex/constant/pokemonMeta";
-import { PAGE_LIMIT } from "@dex/constant/pagination";
-import { SortKey } from "@dex/constant/sort";
+} from "@interfaces/pokemon";
+import { dexNo } from "@constant/pokemonMeta";
+import { PAGE_LIMIT } from "@constant/pagination";
+import { SortKey } from "@constant/sort";
 
 // Single shared client: pokenode-ts caches PokeAPI responses on it, so one
 // instance keeps that cache unified. pokemonDetail.ts imports this same one.

@@ -1,11 +1,11 @@
-import "@dex/styles/globals.css";
+import "@styles/globals.css";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { Inter } from "next/font/google";
-import { Navbar } from "@dex/components/common/Navbar";
-import { Insights } from "@dex/components/common/Insights";
-import { PokemonListProvider } from "@dex/context/PokemonListContext";
-import { SITE_NAME, SITE_URL, absoluteUrl } from "@dex/constant/site";
+import { Navbar } from "@components/common/Navbar";
+import { Insights } from "@components/common/Insights";
+import { PokemonListProvider } from "@context/PokemonListContext";
+import { SITE_NAME, SITE_URL, absoluteUrl } from "@constant/site";
 
 const font = Inter({ weight: "400", subsets: ["latin"] });
 

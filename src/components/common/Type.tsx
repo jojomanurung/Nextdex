@@ -1,4 +1,4 @@
-import { POKEMON_TYPES } from "@dex/constant/pokemonTypes";
+import { POKEMON_TYPES } from "@constant/pokemonTypes";
 import Image from "next/image";
 
 type TypeProp = {

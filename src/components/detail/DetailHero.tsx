@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Type } from "@dex/components/common/Type";
-import { PokemonDetailData } from "@dex/interfaces/pokemon";
-import { dexNo, genLabel } from "@dex/constant/pokemonMeta";
+import { Type } from "@components/common/Type";
+import { PokemonDetailData } from "@interfaces/pokemon";
+import { dexNo, genLabel } from "@constant/pokemonMeta";
 
 type DetailHeroProps = {
   pokemon: PokemonDetailData;
