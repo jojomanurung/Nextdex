@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PokedexBrowser } from "@dex/components/home/PokedexBrowser";
 import { JsonLd } from "@dex/components/common/JsonLd";
-import { queryPokemon, PokemonQueryResult } from "@dex/lib/pokemon";
+import { queryPokemon } from "@dex/lib/pokemon";
+import { PokemonQueryResult } from "@dex/interfaces/pokemon";
 import { buildMetadata } from "@dex/lib/metadata";
 import { SITE_NAME, SITE_URL } from "@dex/constant/site";
 

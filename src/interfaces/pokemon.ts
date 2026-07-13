@@ -1,3 +1,5 @@
+import { SortKey } from "@dex/constant/sort";
+
 export interface PokemonStat {
   name: string;
   value: number;
@@ -11,6 +13,32 @@ export interface PokemonData {
   stats: PokemonStat[];
   height: number;
   weight: number;
+}
+
+// --- List / query ---
+// Shapes for the list pipeline and the lightweight id+name dex index.
+
+export interface PokemonIndexEntry {
+  id: number;
+  name: string;
+}
+
+export interface PokemonQuery {
+  query?: string;
+  sort?: SortKey;
+  offset?: number;
+  limit?: number;
+}
+
+export interface PokemonQueryResult {
+  results: PokemonData[];
+  total: number;
+  hasMore: boolean;
+}
+
+export interface PokemonNeighbors {
+  prev: PokemonIndexEntry | null;
+  next: PokemonIndexEntry | null;
 }
 
 // --- Detail page only ---

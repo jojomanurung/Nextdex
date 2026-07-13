@@ -1,4 +1,4 @@
-import { PokemonTypes } from "@dex/constant/PokemonTypes";
+import { POKEMON_TYPES } from "@dex/constant/pokemonTypes";
 import Image from "next/image";
 
 type TypeProp = {
@@ -9,7 +9,7 @@ export function Type({ type }: TypeProp) {
   // Tolerate an unmapped type (e.g. a future/unknown type from the API) instead
   // of crashing on an empty destructure: fall back to the raw name + a neutral
   // color, and skip the icon (its SVG won't exist).
-  const match = PokemonTypes.find((value) => value.name === type);
+  const match = POKEMON_TYPES.find((value) => value.name === type);
   const name = match?.name ?? type;
   const color = match?.color ?? "#9fa39d";
 

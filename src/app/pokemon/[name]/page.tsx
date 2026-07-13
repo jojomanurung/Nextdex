@@ -12,16 +12,12 @@ import { StatBars } from "@dex/components/detail/StatBars";
 import { EvolutionChainView } from "@dex/components/detail/EvolutionChainView";
 import { AbilityList } from "@dex/components/detail/AbilityList";
 import { TypeMatchups } from "@dex/components/detail/TypeMatchups";
-import { PokemonDetailData } from "@dex/interfaces/pokemon";
-import { primaryTypeColor, typeColor } from "@dex/constant/PokemonTypes";
+import { PokemonDetailData, PokemonNeighbors } from "@dex/interfaces/pokemon";
+import { primaryTypeColor, typeColor } from "@dex/constant/pokemonTypes";
 import { dexNo } from "@dex/constant/pokemonMeta";
 import { buildMetadata } from "@dex/lib/metadata";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@dex/constant/site";
-import {
-  getPokemonDetail,
-  getPokemonNeighbors,
-  PokemonNeighbors,
-} from "@dex/lib/pokemon";
+import { getPokemonDetail, getPokemonNeighbors } from "@dex/lib/pokemonDetail";
 
 type DetailPageProps = { params: Promise<{ name: string }> };
 

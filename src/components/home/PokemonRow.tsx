@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Type } from "@dex/components/common/Type";
 import { PokemonData } from "@dex/interfaces/pokemon";
-import { primaryTypeColor } from "@dex/constant/PokemonTypes";
+import { primaryTypeColor } from "@dex/constant/pokemonTypes";
 import { genLabel, dexNo } from "@dex/constant/pokemonMeta";
 
 type PokemonRowProps = {
