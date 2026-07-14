@@ -16,7 +16,7 @@ export function PokedexEntries({ entries }: { entries: FlavorEntry[] }) {
     <div className="space-y-3">
       {shown.map((entry) => (
         <div key={entry.generation} className="space-y-1">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-zinc-500">
+          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-muted">
             {entry.generationLabel} · {entry.version}
           </p>
           <p className="leading-relaxed text-zinc-300">

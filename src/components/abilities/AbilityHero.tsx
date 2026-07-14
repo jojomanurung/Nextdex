@@ -4,7 +4,7 @@ import { genShortLabel } from "@constant/pokemonMeta";
 export function AbilityHero({ ability }: { ability: AbilityData }) {
   return (
     <header className="pt-6 text-center">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ink-muted">
         Ability
       </p>
       <h1 className="mt-2 text-4xl font-black capitalize tracking-tight sm:text-5xl">

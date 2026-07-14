@@ -43,7 +43,7 @@ export default function Error({
 
           <p className="text-6xl font-black tracking-tight sm:text-7xl">500</p>
           <h1 className="text-xl font-semibold">Something went wrong</h1>
-          <p className="max-w-md text-sm leading-relaxed text-zinc-400">
+          <p className="max-w-md text-sm leading-relaxed text-ink-muted">
             Our server used Self-Destruct &mdash; that&rsquo;s on us, not you.
             Give it a moment and try again.
           </p>

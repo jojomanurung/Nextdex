@@ -19,7 +19,7 @@ export function EvolutionChainView({
   accent,
 }: EvolutionChainViewProps) {
   if (stages.length <= 1) {
-    return <p className="text-zinc-400">This Pokémon does not evolve.</p>;
+    return <p className="text-ink-muted">This Pokémon does not evolve.</p>;
   }
 
   const maxStage = Math.max(...stages.map((s) => s.stage));
@@ -43,12 +43,12 @@ export function EvolutionChainView({
               <div className="flex flex-row items-center gap-1 sm:flex-col sm:gap-0.5">
                 <span
                   aria-hidden
-                  className="order-1 rotate-90 text-2xl leading-none text-zinc-600 sm:order-2 sm:rotate-0"
+                  className="order-1 rotate-90 text-2xl leading-none text-ink-muted sm:order-2 sm:rotate-0"
                 >
                   →
                 </span>
                 {linearCondition && (
-                  <span className="order-2 max-w-[120px] text-center text-[11px] leading-tight text-zinc-400 sm:order-1 sm:max-w-[90px]">
+                  <span className="order-2 max-w-[120px] text-center text-[11px] leading-tight text-ink-muted sm:order-1 sm:max-w-[90px]">
                     {linearCondition}
                   </span>
                 )}
@@ -85,14 +85,14 @@ export function EvolutionChainView({
                         blurDataURL="/images/placeholder.png"
                       />
                     </div>
-                    <span className="text-[10px] tracking-widest text-zinc-500">
+                    <span className="text-[10px] tracking-widest text-ink-muted">
                       #{dexNo(stage.id)}
                     </span>
                     <span className="text-sm font-medium capitalize">
                       {stage.name}
                     </span>
                     {branched && stage.condition && (
-                      <span className="text-[11px] leading-tight text-zinc-500">
+                      <span className="text-[11px] leading-tight text-ink-muted">
                         {stage.condition}
                       </span>
                     )}

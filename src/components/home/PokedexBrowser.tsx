@@ -56,7 +56,7 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
       </div>
 
       {isEmpty && (
-        <p className="py-8 text-center text-zinc-500">
+        <p className="py-8 text-center text-ink-muted">
           {query ? `No Pokémon match “${query}”.` : "Nothing to show."}
         </p>
       )}

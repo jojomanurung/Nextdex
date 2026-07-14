@@ -54,16 +54,16 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
       </div>
 
       <div className="space-y-1">
-        <p className="text-sm font-medium tracking-[0.3em] text-zinc-500">
+        <p className="text-sm font-medium tracking-[0.3em] text-ink-muted">
           #{dexNo(pokemon.id)}
         </p>
         <h1 className="text-3xl font-bold capitalize tracking-tight sm:text-5xl">
           {pokemon.name}
         </h1>
         {pokemon.species.genus && (
-          <p className="text-zinc-400">{pokemon.species.genus}</p>
+          <p className="text-ink-muted">{pokemon.species.genus}</p>
         )}
-        <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+        <p className="text-xs uppercase tracking-[0.2em] text-ink-muted">
           {genLabel(pokemon.id)}
         </p>
       </div>
