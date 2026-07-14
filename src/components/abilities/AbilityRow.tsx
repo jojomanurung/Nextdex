@@ -13,7 +13,7 @@ function AbilityRowComponent({ ability }: AbilityRowProps) {
 
   return (
     <Link
-      href={`abilities/${ability.name}`}
+      href={`/abilities/${ability.name}`}
       className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-slate-50/10"
     >
       <span
