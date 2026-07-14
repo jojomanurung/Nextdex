@@ -8,6 +8,7 @@ type ControlDeckProps = {
   onSortChange: (value: SortKey) => void;
   resultCount: number;
   isLoading?: boolean;
+  placeholder?: string;
 };
 
 // The device "control panel": sticky glass toolbar with search + sort. Docks
@@ -19,6 +20,7 @@ export function ControlDeck({
   onSortChange,
   resultCount,
   isLoading,
+  placeholder = "Search name or number…",
 }: ControlDeckProps) {
   return (
     <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
@@ -33,7 +35,7 @@ export function ControlDeck({
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               onQueryChange(e.target.value)
             }
-            placeholder="Search name or number…"
+            placeholder={placeholder}
             className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-zinc-500 focus:border-white/30"
           />
         </div>

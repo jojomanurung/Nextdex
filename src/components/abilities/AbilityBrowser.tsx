@@ -1,20 +1,20 @@
 "use client";
 
 import {
-  PokemonRow,
-  PokemonRowSkeleton,
-} from "@components/home/PokemonRow";
+  AbilityRow,
+  AbilityRowSkeleton,
+} from "@components/abilities/AbilityRow";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { VirtualScroll } from "@components/common/VirtualScroll";
 import { ScrollToTop } from "@components/common/ScrollToTop";
-import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
+import { AbilityData, AbilityQueryResult } from "@interfaces/ability";
 import { useResourceBrowser } from "@hooks/useResourceBrowser";
 
-type PokedexBrowserProps = {
-  initial: PokemonQueryResult;
+type AbilityBrowserProps = {
+  initial: AbilityQueryResult;
 };
 
-export function PokedexBrowser({ initial }: PokedexBrowserProps) {
+export function AbilityBrowser({ initial }: AbilityBrowserProps) {
   const {
     query,
     setQuery,
@@ -27,10 +27,10 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     isLoading,
     isAppending,
     onIntersect,
-  } = useResourceBrowser<PokemonData>({
+  } = useResourceBrowser<AbilityData>({
     initial,
-    endpoint: "/api/pokemon",
-    snapshotKey: "pokemon",
+    endpoint: "/api/ability",
+    snapshotKey: "abilities",
   });
 
   return (
@@ -42,6 +42,7 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
         onSortChange={setSort}
         resultCount={resultCount}
         isLoading={isLoading}
+        placeholder="Search abilities…"
       />
 
       <div
@@ -49,15 +50,15 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
           isLoading ? "pointer-events-none opacity-40" : ""
         }`}
       >
-        {rows.map((pokemon) => (
-          <PokemonRow key={pokemon.name} pokemon={pokemon} />
+        {rows.map((ability) => (
+          <AbilityRow key={ability.name} ability={ability} />
         ))}
-        {isAppending && <PokemonRowSkeleton />}
+        {isAppending && <AbilityRowSkeleton />}
       </div>
 
       {isEmpty && (
         <p className="py-8 text-center text-zinc-500">
-          {query ? `No Pokémon match “${query}”.` : "Nothing to show."}
+          {query ? `No abilities match "${query}".` : "Nothing to show."}
         </p>
       )}
 

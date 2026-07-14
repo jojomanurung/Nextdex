@@ -7,7 +7,7 @@ import {
 } from "@interfaces/pokemon";
 import { dexNo } from "@constant/pokemonMeta";
 import { PAGE_LIMIT } from "@constant/pagination";
-import { SortKey } from "@constant/sort";
+import { SortKey, SORT_COMPARATORS } from "@constant/sort";
 
 // Single shared client: pokenode-ts caches PokeAPI responses on it, so one
 // instance keeps that cache unified. pokemonDetail.ts imports this same one.
@@ -53,16 +53,6 @@ export async function getPokemonIndex(): Promise<PokemonIndexEntry[]> {
     }))
     .filter((entry) => entry.id > 0 && entry.id < FORM_ID_START);
 }
-
-const SORT_COMPARATORS: Record<
-  SortKey,
-  (a: PokemonIndexEntry, b: PokemonIndexEntry) => number
-> = {
-  number: (a, b) => a.id - b.id,
-  reverseNum: (a, b) => b.id - a.id,
-  name: (a, b) => a.name.localeCompare(b.name),
-  reverseName: (a, b) => b.name.localeCompare(a.name),
-};
 
 function matchesQuery(entry: PokemonIndexEntry, query: string): boolean {
   return entry.name.includes(query) || dexNo(entry.id).includes(query);
