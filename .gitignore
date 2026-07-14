@@ -36,12 +36,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# claude
-.claude/
-
-# agent context
-.agents/
-.impeccable/
-
-docs/
