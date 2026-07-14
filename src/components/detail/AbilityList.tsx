@@ -1,15 +1,17 @@
+import Link from "next/link";
 import { AbilityInfo } from "@interfaces/pokemon";
 
 export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {abilities.map((ability) => (
-        <div
+        <Link
           key={ability.name}
-          className="rounded-2xl border border-white/5 bg-white/3 p-3"
+          href={`/abilities/${ability.name}`}
+          className="group block rounded-2xl border border-white/5 bg-white/3 p-3 transition hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/10"
         >
           <div className="mb-1 flex items-center gap-2">
-            <h3 className="font-semibold capitalize">
+            <h3 className="font-semibold capitalize group-hover:underline">
               {ability.name.replace(/-/g, " ")}
             </h3>
             {ability.isHidden && (
@@ -21,7 +23,7 @@ export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
           <p className="text-sm leading-relaxed text-zinc-400">
             {ability.effect || "No description available."}
           </p>
-        </div>
+        </Link>
       ))}
     </div>
   );
