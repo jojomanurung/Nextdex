@@ -52,13 +52,13 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
 
       {/* Number · name · generation */}
       <div className="z-10 flex min-w-0 flex-1 flex-col gap-1">
-        <span className="text-xs font-medium tracking-[0.2em] text-zinc-500">
+        <span className="text-xs font-medium tracking-[0.2em] text-ink-muted">
           #{dex}
         </span>
         <h2 className="truncate text-lg font-semibold capitalize tracking-tight">
           {pokemon.name}
         </h2>
-        <p className="text-xs text-zinc-400">{genLabel(pokemon.id)}</p>
+        <p className="text-xs text-ink-muted">{genLabel(pokemon.id)}</p>
       </div>
 
       {/* Type chips — centered in the card (hidden on small screens) */}
@@ -99,21 +99,21 @@ export function PokemonRowSkeleton({
 
       <div className="z-10 flex min-w-0 flex-1 flex-col gap-1">
         {dex ? (
-          <span className="text-xs font-medium tracking-[0.2em] text-zinc-500">
+          <span className="text-xs font-medium tracking-[0.2em] text-ink-muted">
             #{dex}
           </span>
         ) : (
           <span className="h-3 w-10 animate-pulse rounded bg-white/10" />
         )}
         {name ? (
-          <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-zinc-400">
+          <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-ink-muted">
             {name}
           </h2>
         ) : (
           <span className="h-5 w-32 animate-pulse rounded bg-white/10" />
         )}
         {id != null ? (
-          <p className="text-xs text-zinc-600">{genLabel(id)}</p>
+          <p className="text-xs text-ink-muted">{genLabel(id)}</p>
         ) : (
           <span className="h-3 w-20 animate-pulse rounded bg-white/10" />
         )}

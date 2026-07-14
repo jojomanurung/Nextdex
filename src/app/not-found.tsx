@@ -33,7 +33,7 @@ export default function NotFound() {
 
           <p className="text-6xl font-black tracking-tight sm:text-7xl">404</p>
           <h1 className="text-xl font-semibold">Lost in the tall grass</h1>
-          <p className="max-w-md text-sm leading-relaxed text-zinc-400">
+          <p className="max-w-md text-sm leading-relaxed text-ink-muted">
             The page you&rsquo;re looking for fled, evolved, or never existed
             &mdash; even Psyduck looks confused.
           </p>

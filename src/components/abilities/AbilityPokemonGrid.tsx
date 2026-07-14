@@ -38,8 +38,8 @@ function Group({
   if (pokemon.length === 0) return null;
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold text-zinc-400">
-        {title} <span className="text-zinc-600">({pokemon.length})</span>
+      <h3 className="mb-3 text-sm font-semibold text-ink-muted">
+        {title} <span className="text-ink-muted">({pokemon.length})</span>
       </h3>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {pokemon.map((p) => (
@@ -57,7 +57,7 @@ export function AbilityPokemonGrid({
 }) {
   if (pokemon.length === 0) {
     return (
-      <p className="text-sm text-zinc-500">No Pokémon have this ability.</p>
+      <p className="text-sm text-ink-muted">No Pokémon have this ability.</p>
     );
   }
 

@@ -50,12 +50,12 @@ function PagerLink({
     >
       <Chevron
         direction={isPrev ? "left" : "right"}
-        className={`h-4 w-4 shrink-0 text-zinc-500 transition group-hover:text-zinc-200 ${
+        className={`h-4 w-4 shrink-0 text-ink-muted transition group-hover:text-zinc-200 ${
           isPrev ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"
         }`}
       />
       <span className="flex min-w-0 items-baseline gap-1.5">
-        <span className="shrink-0 text-[11px] font-medium tracking-widest text-zinc-500">
+        <span className="shrink-0 text-[11px] font-medium tracking-widest text-ink-muted">
           #{dexNo(neighbor.id)}
         </span>
         <span className="min-w-0 truncate text-sm font-medium capitalize text-zinc-200">
