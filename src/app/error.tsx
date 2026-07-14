@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Card } from "@dex/components/common/Card";
+import { Card } from "@components/common/Card";
 
 // App Router error boundary — the rough equivalent of the old 500 page. Catches
 // unexpected runtime errors thrown while rendering a route (bad data that isn't

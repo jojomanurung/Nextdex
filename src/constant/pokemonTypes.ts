@@ -1,4 +1,4 @@
-export const PokemonTypes = [
+export const POKEMON_TYPES = [
   { name: "bug", color: "#7bcf00" },
   { name: "dark", color: "#5a566a" },
   { name: "dragon", color: "#0076ff" },
@@ -22,7 +22,7 @@ export const PokemonTypes = [
 // Color for a single type name; neutral white fallback when the type isn't
 // mapped, so glow/tint lookups never crash on a future/unknown type.
 export function typeColor(name: string): string {
-  return PokemonTypes.find((t) => t.name === name)?.color ?? "#ffffff";
+  return POKEMON_TYPES.find((t) => t.name === name)?.color ?? "#ffffff";
 }
 
 // Color for a Pokémon's primary type (types[0]).

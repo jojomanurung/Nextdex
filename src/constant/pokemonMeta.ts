@@ -55,3 +55,20 @@ export function versionGeneration(version: string): number {
 export function generationLabel(gen: number): string {
   return GENERATIONS[gen - 1]?.label ?? "Unknown";
 }
+
+// Roman-numeral generation labels (region-less) for abilities, where the
+// national-dex region in genLabel/generationLabel doesn't apply.
+const GEN_ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+
+// PokeAPI generation resource name → number, e.g. "generation-iii" → 3 (0 if
+// unrecognized).
+export function generationFromName(name: string): number {
+  const roman = name.replace(/^generation-/, "").toUpperCase();
+  const index = GEN_ROMAN.indexOf(roman);
+  return index >= 0 ? index + 1 : 0;
+}
+
+// Generation number → short label, e.g. 3 → "Gen III".
+export function genShortLabel(gen: number): string {
+  return GEN_ROMAN[gen - 1] ? `Gen ${GEN_ROMAN[gen - 1]}` : "Unknown";
+}

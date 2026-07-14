@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_NAME, TWITTER_HANDLE, absoluteUrl } from "@dex/constant/site";
+import { SITE_NAME, TWITTER_HANDLE, absoluteUrl } from "@constant/site";
 
 type BuildMetadataArgs = {
   title: string;

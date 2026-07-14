@@ -19,8 +19,26 @@
     "jsx": "react-jsx",
     "incremental": true,
     "paths": {
-      "@dex/*": [
-        "./src/*"
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@constant/*": [
+        "./src/constant/*"
+      ],
+      "@context/*": [
+        "./src/context/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@interfaces/*": [
+        "./src/interfaces/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@styles/*": [
+        "./src/styles/*"
       ]
     },
     "plugins": [

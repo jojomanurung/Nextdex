@@ -1,10 +1,10 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Type } from "@dex/components/common/Type";
-import { PokemonData } from "@dex/interfaces/pokemon";
-import { primaryTypeColor } from "@dex/constant/PokemonTypes";
-import { genLabel, dexNo } from "@dex/constant/pokemonMeta";
+import { Type } from "@components/common/Type";
+import { PokemonData } from "@interfaces/pokemon";
+import { primaryTypeColor } from "@constant/pokemonTypes";
+import { genLabel, dexNo } from "@constant/pokemonMeta";
 
 type PokemonRowProps = {
   pokemon: PokemonData;
@@ -73,35 +73,52 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
 
 export const PokemonRow = memo(PokemonRowComponent);
 
-// Shown in a row's place while its details load. Mirrors PokemonRow's layout:
-// the id/name/gen are already known from the index; the sprite, type chips, and
-// ghost number are pending placeholders.
-export function PokemonRowSkeleton({ id, name }: { id: number; name: string }) {
+// Placeholder row. id/name are passed when a specific entry is pending; the
+// append spinner at the list foot omits them and everything shimmers.
+export function PokemonRowSkeleton({
+  id,
+  name,
+}: {
+  id?: number;
+  name?: string;
+}) {
+  const dex = id != null ? dexNo(id) : null;
+
   return (
     <div className="group relative flex items-center gap-4 rounded-2xl border border-white/5 bg-slate-50/5 px-4 py-3 backdrop-blur-xs">
-      {/* Ghost number (untinted until the type is known) */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/4"
-      >
-        {dexNo(id)}
-      </span>
+      {dex && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-7xl font-black leading-none text-white/4"
+        >
+          {dex}
+        </span>
+      )}
 
-      {/* Sprite placeholder */}
       <div className="h-16 w-16 shrink-0 animate-pulse rounded-full bg-white/10 md:h-20 md:w-20 lg:h-24 lg:w-24" />
 
-      {/* Number · name · generation (known from the index) */}
       <div className="z-10 flex min-w-0 flex-1 flex-col gap-1">
-        <span className="text-xs font-medium tracking-[0.2em] text-zinc-500">
-          #{dexNo(id)}
-        </span>
-        <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-zinc-400">
-          {name}
-        </h2>
-        <p className="text-xs text-zinc-600">{genLabel(id)}</p>
+        {dex ? (
+          <span className="text-xs font-medium tracking-[0.2em] text-zinc-500">
+            #{dex}
+          </span>
+        ) : (
+          <span className="h-3 w-10 animate-pulse rounded bg-white/10" />
+        )}
+        {name ? (
+          <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-zinc-400">
+            {name}
+          </h2>
+        ) : (
+          <span className="h-5 w-32 animate-pulse rounded bg-white/10" />
+        )}
+        {id != null ? (
+          <p className="text-xs text-zinc-600">{genLabel(id)}</p>
+        ) : (
+          <span className="h-3 w-20 animate-pulse rounded bg-white/10" />
+        )}
       </div>
 
-      {/* Type chip placeholders — centered, matching PokemonRow */}
       <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 gap-2 sm:flex">
         <div className="h-[26px] w-16 animate-pulse rounded-lg bg-white/10" />
         <div className="h-[26px] w-16 animate-pulse rounded-lg bg-white/10" />

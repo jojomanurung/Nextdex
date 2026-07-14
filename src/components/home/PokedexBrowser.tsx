@@ -3,24 +3,18 @@
 import {
   PokemonRow,
   PokemonRowSkeleton,
-} from "@dex/components/home/PokemonRow";
-import { ControlDeck } from "@dex/components/home/ControlDeck";
-import { VirtualScroll } from "@dex/components/common/VirtualScroll";
-import { ScrollToTop } from "@dex/components/common/ScrollToTop";
-import { PokemonData } from "@dex/interfaces/pokemon";
-import { PokemonIndexEntry } from "@dex/lib/pokemon";
-import { usePokedexBrowser } from "@dex/hooks/usePokedexBrowser";
+} from "@components/home/PokemonRow";
+import { ControlDeck } from "@components/home/ControlDeck";
+import { VirtualScroll } from "@components/common/VirtualScroll";
+import { ScrollToTop } from "@components/common/ScrollToTop";
+import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
+import { useResourceBrowser } from "@hooks/useResourceBrowser";
 
 type PokedexBrowserProps = {
-  results: PokemonData[];
-  index: PokemonIndexEntry[];
+  initial: PokemonQueryResult;
 };
 
-// Client shell for the home page. Owns all interactive list behavior — search,
-// sort, and lazy-loaded infinite scroll — via usePokedexBrowser, so the page
-// itself stays a Server Component that just fetches the seed data + full index
-// and hands them down as props.
-export function PokedexBrowser({ results, index }: PokedexBrowserProps) {
+export function PokedexBrowser({ initial }: PokedexBrowserProps) {
   const {
     query,
     setQuery,
@@ -30,8 +24,14 @@ export function PokedexBrowser({ results, index }: PokedexBrowserProps) {
     resultCount,
     isLast,
     isEmpty,
+    isLoading,
+    isAppending,
     onIntersect,
-  } = usePokedexBrowser({ results, index });
+  } = useResourceBrowser<PokemonData>({
+    initial,
+    endpoint: "/api/pokemon",
+    snapshotKey: "pokemon",
+  });
 
   return (
     <>
@@ -41,16 +41,18 @@ export function PokedexBrowser({ results, index }: PokedexBrowserProps) {
         sort={sort}
         onSortChange={setSort}
         resultCount={resultCount}
+        isLoading={isLoading}
       />
 
-      <div className="flex flex-col gap-3">
-        {rows.map((row) =>
-          row.data ? (
-            <PokemonRow key={row.name} pokemon={row.data} />
-          ) : (
-            <PokemonRowSkeleton key={row.name} id={row.id} name={row.name} />
-          ),
-        )}
+      <div
+        className={`flex flex-col gap-3 transition-opacity duration-200 ${
+          isLoading ? "pointer-events-none opacity-40" : ""
+        }`}
+      >
+        {rows.map((pokemon) => (
+          <PokemonRow key={pokemon.name} pokemon={pokemon} />
+        ))}
+        {isAppending && <PokemonRowSkeleton />}
       </div>
 
       {isEmpty && (

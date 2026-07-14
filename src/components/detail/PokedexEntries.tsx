@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FlavorEntry } from "@dex/interfaces/pokemon";
+import { FlavorEntry } from "@interfaces/pokemon";
 
 // Pokédex flavor text across generations. Shows the most recent entry, with a
 // button to reveal the rest (one representative entry per generation).
