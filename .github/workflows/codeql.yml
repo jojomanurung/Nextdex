@@ -58,13 +58,6 @@ jobs:
       # - name: Setup runtime (example)
       #   uses: actions/setup-example@v1
 
-      # Setup Node.js to handle dependency caching and environment consistency
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-
       # Install dependencies to ensure correct TypeScript references are available
       - name: Install dependencies
         run: npm ci
