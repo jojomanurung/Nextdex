@@ -7,8 +7,8 @@ import {
 import { ControlDeck } from "@components/home/ControlDeck";
 import { VirtualScroll } from "@components/common/VirtualScroll";
 import { ScrollToTop } from "@components/common/ScrollToTop";
-import { PokemonQueryResult } from "@interfaces/pokemon";
-import { usePokedexBrowser } from "@hooks/usePokedexBrowser";
+import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
+import { useResourceBrowser } from "@hooks/useResourceBrowser";
 
 type PokedexBrowserProps = {
   initial: PokemonQueryResult;
@@ -27,7 +27,11 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     isLoading,
     isAppending,
     onIntersect,
-  } = usePokedexBrowser({ initial });
+  } = useResourceBrowser<PokemonData>({
+    initial,
+    endpoint: "/api/pokemon",
+    snapshotKey: "pokemon",
+  });
 
   return (
     <>
