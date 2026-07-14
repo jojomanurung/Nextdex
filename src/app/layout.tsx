@@ -5,9 +5,9 @@ import { Inter } from "next/font/google";
 import { Navbar } from "@components/common/Navbar";
 import { Insights } from "@components/common/Insights";
 import { BrowseSnapshotProvider } from "@context/BrowseSnapshotContext";
-import { SITE_NAME, SITE_URL, absoluteUrl } from "@constant/site";
+import { SITE_NAME, SITE_URL } from "@constant/site";
 
-const font = Inter({ weight: "400", subsets: ["latin"] });
+const font = Inter({ subsets: ["latin"], display: "swap" });
 
 const defaultDescription =
   "Browse, search, and sort every Pokémon by number or name. Dive into stats, types, abilities, and evolutions in a sleek modern Pokédex.";
@@ -19,19 +19,15 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: `${SITE_NAME} — Explore every Pokémon`,
   description: defaultDescription,
-  icons: {
-    icon: [{ url: "/favicon.ico", sizes: "32x32", type: "image/png" }],
-  },
-  other: { "og:logo": absoluteUrl("/favicon.ico") },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className="bg-slate-900/90 text-white">
+      <body className={`${font.className} bg-slate-900/90 text-white`}>
         <BrowseSnapshotProvider>
           <Navbar />
-          <main className={`${font.className} px-3 md:px-7 lg:px-auto pb-10`}>
+          <main className="px-3 md:px-7 lg:px-auto pb-10">
             {children}
             <Insights />
           </main>
