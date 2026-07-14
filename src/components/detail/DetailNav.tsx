@@ -6,8 +6,6 @@ const SECTIONS = [
   { id: "evolution", label: "Evolution" },
 ];
 
-// Sticky in-page sub-nav. Docks right under the (shrinking) Navbar via the
-// shared --navbar-height CSS variable, same as the list page's ControlDeck.
 export function DetailNav() {
   return (
     <nav className="sticky z-9 top-[72px] mx-auto flex w-fit max-w-full flex-wrap justify-center rounded-2xl border border-white/10 bg-slate-900/50 p-1 backdrop-blur-md sm:flex-nowrap sm:rounded-full">
