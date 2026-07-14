@@ -7,7 +7,7 @@ import {
 } from "@interfaces/pokemon";
 import { dexNo } from "@constant/pokemonMeta";
 import { PAGE_LIMIT } from "@constant/pagination";
-import { SortKey, SORT_COMPARATORS } from "@constant/sort";
+import { SORT_COMPARATORS } from "@constant/sort";
 
 // Single shared client: pokenode-ts caches PokeAPI responses on it, so one
 // instance keeps that cache unified. pokemonDetail.ts imports this same one.
