@@ -18,6 +18,7 @@ import {
   getPokemonIndex,
   mapPokemon,
 } from "@lib/pokemon";
+import { cleanText, englishOf, idFromUrl, prettify } from "@lib/text";
 
 // Detail-page aggregation, kept out of lib/pokemon.ts so the list path (which
 // lazy-loads rows via getPokemon) never pays for these extra fetches.
@@ -38,33 +39,6 @@ export async function getPokemonNeighbors(
     prev: byId.get(id - 1) ?? null,
     next: byId.get(id + 1) ?? null,
   };
-}
-
-// Collapse the hard newlines/form-feeds PokeAPI uses to fit in-game text boxes.
-function cleanText(text: string): string {
-  return (
-    text
-      // A soft hyphen (U+00AD) + line break marks a word split across a line in
-      // older games; strip it so the word rejoins ("pleasant") not "pleas ant".
-      .replace(/­[\n\f\r]?/g, "")
-      .replace(/[\n\f\r]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-  );
-}
-
-function prettify(name: string): string {
-  return name.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function englishOf<T extends { language: { name: string } }>(
-  entries: T[],
-): T | undefined {
-  return entries.find((e) => e.language.name === "en");
-}
-
-function idFromUrl(url: string, segment: string): number {
-  return Number(url.match(new RegExp(`/${segment}/(\\d+)/?$`))?.[1]);
 }
 
 // Human-readable "how it evolves" label, falling back to the raw trigger so an
