@@ -37,7 +37,7 @@ export function StatBars({ stats }: { stats: PokemonStat[] }) {
         const filled = Math.round((stat.value / STAT_MAX) * SEGMENTS);
         return (
           <div key={stat.name} className="flex items-center gap-3">
-            <span className="w-14 shrink-0 text-xs font-medium text-zinc-400">
+            <span className="w-14 shrink-0 text-xs font-medium text-ink-muted">
               {STAT_LABELS[stat.name] ?? stat.name}
             </span>
 

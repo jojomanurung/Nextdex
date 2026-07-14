@@ -12,7 +12,7 @@ type AboutPanelProps = {
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5 border-b border-white/5 py-2 sm:flex-row sm:items-center sm:justify-between">
-      <dt className="text-sm text-zinc-500">{label}</dt>
+      <dt className="text-sm text-ink-muted">{label}</dt>
       <dd className="text-sm font-medium capitalize text-zinc-200">
         {children}
       </dd>
@@ -35,13 +35,13 @@ export function AboutPanel({ species, height, weight }: AboutPanelProps) {
         <Row label="Growth rate">{species.growthRate.replace(/-/g, " ")}</Row>
         <Row label="Catch rate">
           {species.captureRate}{" "}
-          <span className="text-zinc-500">
+          <span className="text-ink-muted">
             ({pct255(species.captureRate)}%)
           </span>
         </Row>
         <Row label="Base happiness">
           {species.baseHappiness}{" "}
-          <span className="text-zinc-500">
+          <span className="text-ink-muted">
             ({pct255(species.baseHappiness)}%)
           </span>
         </Row>

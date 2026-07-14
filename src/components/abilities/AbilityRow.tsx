@@ -28,13 +28,13 @@ function AbilityRowComponent({ ability }: AbilityRowProps) {
       </div>
 
       <div className="z-10 flex min-w-0 flex-1 flex-col gap-1">
-        <span className="text-xs font-medium tracking-[0.2em] text-zinc-500">
+        <span className="text-xs font-medium tracking-[0.2em] text-ink-muted">
           {genShortLabel(ability.generation)}
         </span>
         <h2 className="truncate text-lg font-semibold capitalize tracking-tight">
           {displayName}
         </h2>
-        <p className="line-clamp-2 text-xs text-zinc-400">{ability.effect}</p>
+        <p className="line-clamp-2 text-xs text-ink-muted">{ability.effect}</p>
       </div>
     </Link>
   );
@@ -67,7 +67,7 @@ export function AbilityRowSkeleton({
       <div className="z-10 flex min-w-0 flex-1 flex-col gap-1">
         <span className="h-3 w-14 animate-pulse rounded bg-white/10" />
         {name ? (
-          <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-zinc-400">
+          <h2 className="truncate text-lg font-semibold capitalize tracking-tight text-ink-muted">
             {name.replace(/-/g, " ")}
           </h2>
         ) : (

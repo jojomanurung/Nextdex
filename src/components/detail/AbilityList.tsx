@@ -20,7 +20,7 @@ export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
               </span>
             )}
           </div>
-          <p className="text-sm leading-relaxed text-zinc-400">
+          <p className="text-sm leading-relaxed text-ink-muted">
             {ability.effect || "No description available."}
           </p>
         </Link>

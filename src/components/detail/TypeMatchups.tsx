@@ -13,7 +13,7 @@ function Group({ title, items }: { title: string; items: TypeMatchup[] }) {
   if (items.length === 0) return null;
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-zinc-400">{title}</h3>
+      <h3 className="text-sm font-medium text-ink-muted">{title}</h3>
       <div className="flex flex-wrap gap-2">
         {items.map((matchup) => (
           <div key={matchup.type} className="flex items-center gap-1.5">

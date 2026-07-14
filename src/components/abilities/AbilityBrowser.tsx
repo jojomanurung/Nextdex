@@ -57,7 +57,7 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
       </div>
 
       {isEmpty && (
-        <p className="py-8 text-center text-zinc-500">
+        <p className="py-8 text-center text-ink-muted">
           {query ? `No abilities match "${query}".` : "Nothing to show."}
         </p>
       )}
