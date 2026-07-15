@@ -13,7 +13,7 @@ export function DetailNav() {
         <a
           key={section.id}
           href={`#${section.id}`}
-          className="whitespace-nowrap rounded-full px-3 py-1.5 text-xs text-zinc-300 transition hover:bg-white/10 hover:text-white sm:px-4 sm:py-2 sm:text-sm"
+          className="whitespace-nowrap rounded-full px-3 py-1.5 pointer-coarse:py-3.5 text-xs text-zinc-300 transition hover:bg-white/10 hover:text-white sm:px-4 sm:text-sm"
         >
           {section.label}
         </a>

@@ -44,7 +44,7 @@ function PagerLink({
     <Link
       href={`/pokemon/${neighbor.name}`}
       aria-label={`${isPrev ? "Previous" : "Next"}: ${neighbor.name}`}
-      className={`group flex min-w-0 items-center gap-0.5 rounded-full p-2 hover:backdrop-blur-md transition hover:border-white/20 hover:bg-white/10 sm:px-4 ${
+      className={`group flex min-w-0 items-center gap-0.5 rounded-full px-2 py-2 pointer-coarse:py-3 hover:backdrop-blur-md transition hover:border-white/20 hover:bg-white/10 sm:px-4 ${
         isPrev ? "" : "flex-row-reverse"
       }`}
     >
