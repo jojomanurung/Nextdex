@@ -59,6 +59,12 @@ function PokemonRowComponent({ pokemon }: PokemonRowProps) {
           {pokemon.name}
         </h2>
         <p className="text-xs text-ink-muted">{genLabel(pokemon.id)}</p>
+        {/* Type chips inline on mobile */}
+        <div className="mt-1 flex flex-wrap gap-1.5 sm:hidden">
+          {pokemon.types.map((type) => (
+            <Type key={type} type={type} />
+          ))}
+        </div>
       </div>
 
       {/* Type chips — centered in the card (hidden on small screens) */}
