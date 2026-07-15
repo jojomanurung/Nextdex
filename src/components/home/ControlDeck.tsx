@@ -36,7 +36,7 @@ export function ControlDeck({
               onQueryChange(e.target.value)
             }
             placeholder={placeholder}
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-ink-muted focus:border-white/30"
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pointer-coarse:py-3 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-ink-muted focus:border-white/30"
           />
         </div>
 
@@ -51,7 +51,7 @@ export function ControlDeck({
             id="sort"
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortKey)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-hidden transition-colors focus:border-white/30"
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 pointer-coarse:py-3 text-sm text-white outline-hidden transition-colors focus:border-white/30"
           >
             {SORT_OPTIONS.map((option) => (
               <option

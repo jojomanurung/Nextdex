@@ -39,7 +39,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative text-sm font-medium transition-colors ${
+                className={`relative text-sm font-medium transition-colors before:absolute before:inset-x-0 before:-top-3 before:-bottom-3 before:content-[''] ${
                   active
                     ? "text-white after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-white/80"
                     : "text-ink-muted hover:text-white"
