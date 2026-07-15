@@ -1,35 +1,40 @@
 import { POKEMON_TYPES } from "@constant/pokemonTypes";
-import Image from "next/image";
 
-type TypeProp = {
-  type: string;
-};
+type TypeProp = { type: string };
 
+// A type tag: the element's own color carries the identity (soft fill + border +
+// a masked, type-colored icon), while the label stays in the theme's ink so it's
+// legible in both light and dark. No glass. Color is never the sole signal — the
+// name is always spelled out.
 export function Type({ type }: TypeProp) {
-  // Tolerate an unmapped type (e.g. a future/unknown type from the API) instead
-  // of crashing on an empty destructure: fall back to the raw name + a neutral
-  // color, and skip the icon (its SVG won't exist).
   const match = POKEMON_TYPES.find((value) => value.name === type);
   const name = match?.name ?? type;
   const color = match?.color ?? "#9fa39d";
+  const iconUrl = match ? `url(/images/types/${name}.svg)` : undefined;
 
   return (
-    <div
-      className="rounded-lg px-2 py-1 flex items-center gap-2 justify-center border backdrop-blur-xs"
-      style={{ backgroundColor: `${color}26`, borderColor: `${color}99` }}
+    <span
+      className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize text-foreground"
+      style={{ backgroundColor: `${color}1f`, borderColor: `${color}59` }}
     >
-      {match && (
-        <Image
-          src={`/images/types/${name}.svg`}
-          alt={name}
-          width={0}
-          height={0}
-          className="w-3 md:w-3.5 h-auto"
+      {iconUrl && (
+        <span
+          aria-hidden
+          className="size-3 shrink-0"
+          style={{
+            backgroundColor: color,
+            maskImage: iconUrl,
+            WebkitMaskImage: iconUrl,
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+          }}
         />
       )}
-      <p className="text-center text-[10px] md:text-xs text-white">
-        {name.toUpperCase()}
-      </p>
-    </div>
+      {name}
+    </span>
   );
 }

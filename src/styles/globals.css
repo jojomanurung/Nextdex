@@ -78,8 +78,9 @@ html {
 */
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-clash), var(--font-satoshi), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, SFMono-Regular, monospace;
   --animate-ping-soft: ping-soft 1.5s ease-out infinite;
   --animate-ping-soft-delayed: ping-soft 1.5s ease-out 0.75s infinite;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -197,4 +198,43 @@ html {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/*
+  ---break---
+*/
+
+/* Brand identity: the Nextdex blue is the single fixed accent (light + dark),
+   overriding the scaffolded shadcn neutrals. Type color now lives only on the
+   type chips. Muted-foreground is nudged toward the brand hue and darkened on
+   light for AA on small text. */
+:root {
+  --primary: oklch(0.52 0.2 264);
+  --primary-foreground: oklch(0.985 0.01 264);
+  --ring: oklch(0.52 0.2 264);
+  --muted-foreground: oklch(0.47 0.02 264);
+}
+
+.dark {
+  --primary: oklch(0.7 0.16 264);
+  --primary-foreground: oklch(0.17 0.03 264);
+  --ring: oklch(0.7 0.16 264);
+  --muted-foreground: oklch(0.72 0.02 264);
+}
+
+/* Theme-aware scrollbar (replaces the hardcoded navy/blue one). */
+::-webkit-scrollbar {
+  width: 0.75rem;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklch, var(--foreground) 38%, transparent);
 }
