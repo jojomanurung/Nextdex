@@ -45,8 +45,9 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
         placeholder="Search abilities…"
       />
 
+
       <div
-        className={`flex flex-col gap-3 transition-opacity duration-200 ${
+        className={`grid grid-cols-1 gap-x-10 transition-opacity duration-200 md:grid-cols-2 xl:grid-cols-3 ${
           isLoading ? "pointer-events-none opacity-40" : ""
         }`}
       >
@@ -56,8 +57,9 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
         {isAppending && <AbilityRowSkeleton />}
       </div>
 
+
       {isEmpty && (
-        <p className="py-8 text-center text-ink-muted">
+        <p className="py-8 text-center text-muted-foreground">
           {query ? `No abilities match "${query}".` : "Nothing to show."}
         </p>
       )}
