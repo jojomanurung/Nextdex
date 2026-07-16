@@ -36,7 +36,7 @@ export function Wordmark({
       </span>
 
       {!glyphOnly && (
-        <span className="font-display text-xl font-bold leading-none tracking-tight text-foreground">
+        <span className="font-display text-xl font-bold leading-none tracking-[-0.01em] text-foreground">
           Nextdex
         </span>
       )}

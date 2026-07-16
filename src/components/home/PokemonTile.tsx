@@ -6,10 +6,6 @@ import { PokemonData } from "@interfaces/pokemon";
 import { primaryTypeColor } from "@constant/pokemonTypes";
 import { dexNo } from "@constant/pokemonMeta";
 
-// A single "product" in the collection gallery: the artwork is the hero,
-// floating on the page surface (no card box). A hover/focus spotlight lifts it
-// off the shelf. Label reads like a product tag — dex # as an SKU (mono),
-// name in the display face, type chips.
 function PokemonTileComponent({ pokemon }: { pokemon: PokemonData }) {
   const dex = dexNo(pokemon.id);
   const typeColor = primaryTypeColor(pokemon.types);
@@ -46,7 +42,7 @@ function PokemonTileComponent({ pokemon }: { pokemon: PokemonData }) {
         <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
           NO.&nbsp;{dex}
         </span>
-        <h2 className="font-display text-lg font-semibold capitalize leading-none tracking-tight text-foreground transition-colors group-hover:text-primary">
+        <h2 className="font-display text-lg font-semibold capitalize leading-none tracking-normal text-foreground transition-colors group-hover:text-primary">
           {pokemon.name}
         </h2>
         <div className="mt-1 flex flex-wrap justify-center gap-1.5">

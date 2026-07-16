@@ -2,10 +2,6 @@ import { POKEMON_TYPES } from "@constant/pokemonTypes";
 
 type TypeProp = { type: string };
 
-// A type tag: the element's own color carries the identity (soft fill + border +
-// a masked, type-colored icon), while the label stays in the theme's ink so it's
-// legible in both light and dark. No glass. Color is never the sole signal — the
-// name is always spelled out.
 export function Type({ type }: TypeProp) {
   const match = POKEMON_TYPES.find((value) => value.name === type);
   const name = match?.name ?? type;

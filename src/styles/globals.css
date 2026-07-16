@@ -33,9 +33,12 @@
   }
 }
 
-/* Smooth in-page anchor jumps (detail-page sub-nav). */
-html {
-  scroll-behavior: smooth;
+/* Smooth in-page anchor jumps (detail-page band ids) and scroll-to-top —
+   suppressed under prefers-reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Radar "ping" for the navbar mark: a faint ring emanates from the pokéball
@@ -50,27 +53,6 @@ html {
     transform: scale(1.6);
     opacity: 0;
   }
-}
-
-/* AA-safe muted ink: secondary/label text that clears 4.5:1 on the glass
-   surfaces (zinc-500 and even zinc-400 dip below AA there). A cool gray
-   nudged toward the Signal-Blue hue so it stays cohesive, not dead gray. */
-@theme {
-  --color-ink-muted: oklch(0.78 0.012 264);
-}
-
-::-webkit-scrollbar {
-  width: 1rem;               
-}
-
-::-webkit-scrollbar-track {
-  background: #060B28;        
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #2F5AFF;    
-  border-radius: .5rem;       
-  border: 0.25rem solid #060B28;  
 }
 
 /*
