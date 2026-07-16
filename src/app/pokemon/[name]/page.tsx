@@ -1,11 +1,9 @@
 import { ReactNode, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Card } from "@components/common/Card";
 import { ScrollToTop } from "@components/common/ScrollToTop";
 import { JsonLd } from "@components/common/JsonLd";
 import { DetailHero } from "@components/detail/DetailHero";
-import { DetailNav } from "@components/detail/DetailNav";
 import { DetailPager } from "@components/detail/DetailPager";
 import { AboutPanel } from "@components/detail/AboutPanel";
 import { StatBars } from "@components/detail/StatBars";
@@ -13,7 +11,7 @@ import { EvolutionChainView } from "@components/detail/EvolutionChainView";
 import { AbilityList } from "@components/detail/AbilityList";
 import { TypeMatchups } from "@components/detail/TypeMatchups";
 import { PokemonDetailData, PokemonNeighbors } from "@interfaces/pokemon";
-import { primaryTypeColor, typeColor } from "@constant/pokemonTypes";
+import { primaryTypeColor } from "@constant/pokemonTypes";
 import { dexNo } from "@constant/pokemonMeta";
 import { buildMetadata } from "@lib/metadata";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@constant/site";
@@ -88,9 +86,9 @@ export async function generateMetadata({
   }
 }
 
-// Anchored, scroll-padded frosted section so the sticky sub-nav doesn't cover
-// the heading when jumped to.
-function Section({
+// An editorial band in the reading column — a Clash heading over its content,
+// separated from its neighbours by the column's hairline rules (no boxes).
+function Band({
   id,
   title,
   children,
@@ -100,11 +98,11 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-[140px]">
-      <Card>
-        <h2 className="mb-4 text-xl font-semibold">{title}</h2>
-        {children}
-      </Card>
+    <section id={id} className="scroll-mt-20 py-8 first:pt-0 last:pb-0">
+      <h2 className="mb-4 font-display text-lg font-semibold text-foreground">
+        {title}
+      </h2>
+      {children}
     </section>
   );
 }
@@ -114,7 +112,6 @@ export default async function DetailPage({ params }: DetailPageProps) {
   const { pokemon, neighbors } = await loadDetail(name);
 
   const accent = primaryTypeColor(pokemon.types);
-  const secondary = pokemon.types[1] ? typeColor(pokemon.types[1]) : accent;
 
   const displayName = formatName(pokemon.name);
   const description = detailDescription(pokemon);
@@ -147,55 +144,61 @@ export default async function DetailPage({ params }: DetailPageProps) {
   ];
 
   return (
-    <>
+    <div className="relative">
       <JsonLd data={jsonLd} />
 
-      {/* Ambient type-tinted aurora, full-bleed behind the page content. */}
+      {/* Ambient type glow at the page top — the specimen's element. Absolute,
+          not fixed, so it scrolls with the content and can't bleed out above the
+          navbar when you overscroll to the top. */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[60vh]"
         style={{
-          background: `radial-gradient(60% 50% at 50% 0%, ${accent}33, transparent 70%), radial-gradient(45% 45% at 85% 25%, ${secondary}22, transparent 70%)`,
+          background: `radial-gradient(55% 60% at 50% -10%, ${accent}26, transparent 70%)`,
         }}
       />
 
-      <div className="mx-auto max-w-5xl space-y-6">
+      <div className="mx-auto max-w-6xl pt-2">
         <DetailPager neighbors={neighbors} />
-        <DetailHero pokemon={pokemon} />
-        <DetailNav />
 
-        <Section id="about" title="About">
-          <AboutPanel
-            species={pokemon.species}
-            height={pokemon.height}
-            weight={pokemon.weight}
-          />
-        </Section>
+        <div className="my-6 grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
+          {/* Left: the specimen, pinned while the dossier scrolls. */}
+          <div className="lg:sticky lg:top-20 lg:self-start">
+            <DetailHero pokemon={pokemon} />
+          </div>
 
-        <Section id="stats" title="Base Stats">
-          <StatBars stats={pokemon.stats} />
-        </Section>
+          {/* Right: the dossier — editorial bands divided by hairline rules. */}
+          <div className="min-w-0 divide-y divide-border">
+            <Band id="about" title="About">
+              <AboutPanel species={pokemon.species} />
+            </Band>
 
-        <Section id="abilities" title="Abilities">
-          <AbilityList abilities={pokemon.abilities} />
-        </Section>
+            <Band id="stats" title="Base stats">
+              <StatBars stats={pokemon.stats} />
+            </Band>
 
-        <Section id="matchups" title="Type Matchups">
-          <TypeMatchups matchups={pokemon.matchups} />
-        </Section>
+            <Band id="abilities" title="Abilities">
+              <AbilityList abilities={pokemon.abilities} />
+            </Band>
 
-        <Section id="evolution" title="Evolution">
-          <EvolutionChainView
-            stages={pokemon.evolution}
-            currentId={pokemon.id}
-            accent={accent}
-          />
-        </Section>
+            <Band id="matchups" title="Type matchups">
+              <TypeMatchups matchups={pokemon.matchups} />
+            </Band>
+
+            <Band id="evolution" title="Evolution">
+              <EvolutionChainView
+                stages={pokemon.evolution}
+                currentId={pokemon.id}
+                accent={accent}
+              />
+            </Band>
+          </div>
+        </div>
 
         <DetailPager neighbors={neighbors} />
       </div>
 
       <ScrollToTop reveal="near-bottom" />
-    </>
+    </div>
   );
 }

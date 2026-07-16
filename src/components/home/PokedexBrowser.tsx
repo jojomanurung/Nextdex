@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  PokemonRow,
-  PokemonRowSkeleton,
-} from "@components/home/PokemonRow";
+import { PokemonTile, PokemonTileSkeleton } from "@components/home/PokemonTile";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { VirtualScroll } from "@components/common/VirtualScroll";
 import { ScrollToTop } from "@components/common/ScrollToTop";
@@ -45,20 +42,28 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
       />
 
       <div
-        className={`flex flex-col gap-3 transition-opacity duration-200 ${
+        className={`grid grid-cols-2 gap-x-4 gap-y-8 transition-opacity duration-200 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-5 ${
           isLoading ? "pointer-events-none opacity-40" : ""
         }`}
       >
         {rows.map((pokemon) => (
-          <PokemonRow key={pokemon.name} pokemon={pokemon} />
+          <PokemonTile key={pokemon.name} pokemon={pokemon} />
         ))}
-        {isAppending && <PokemonRowSkeleton />}
+        {isAppending &&
+          Array.from({ length: 5 }).map((_, i) => (
+            <PokemonTileSkeleton key={`skeleton-${i}`} />
+          ))}
       </div>
 
       {isEmpty && (
-        <p className="py-8 text-center text-ink-muted">
-          {query ? `No Pokémon match “${query}”.` : "Nothing to show."}
-        </p>
+        <div className="flex flex-col items-center gap-2 py-20 text-center">
+          <p className="font-display text-lg text-foreground">No Pokémon found</p>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            {query
+              ? `Nothing matches “${query}”. Try another name or number.`
+              : "Nothing to show."}
+          </p>
+        </div>
       )}
 
       <ScrollToTop threshold={1000} />

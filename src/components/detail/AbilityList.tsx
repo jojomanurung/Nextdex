@@ -1,29 +1,34 @@
 import Link from "next/link";
+import { Badge } from "@components/ui/badge";
 import { AbilityInfo } from "@interfaces/pokemon";
 
+// A flowing list of abilities — each a linked name (+ Hidden badge) over its
+// effect, divided by hairline rules. Reads down the page, not a tile grid.
 export function AbilityList({ abilities }: { abilities: AbilityInfo[] }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="divide-y divide-border">
       {abilities.map((ability) => (
-        <Link
-          key={ability.name}
-          href={`/abilities/${ability.name}`}
-          className="group block rounded-2xl border border-white/5 bg-white/3 p-3 transition hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/10"
-        >
+        <div key={ability.name} className="py-4 first:pt-0 last:pb-0">
           <div className="mb-1 flex items-center gap-2">
-            <h3 className="font-semibold capitalize group-hover:underline">
+            <Link
+              href={`/abilities/${ability.name}`}
+              className="rounded-sm font-display font-semibold capitalize text-foreground transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               {ability.name.replace(/-/g, " ")}
-            </h3>
+            </Link>
             {ability.isHidden && (
-              <span className="rounded-full border border-violet-300/40 bg-violet-300/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-violet-200">
+              <Badge
+                variant="outline"
+                className="border-violet-400/50 bg-violet-400/15 uppercase tracking-wide text-violet-700 dark:text-violet-200"
+              >
                 Hidden
-              </span>
+              </Badge>
             )}
           </div>
-          <p className="text-sm leading-relaxed text-ink-muted">
+          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
             {ability.effect || "No description available."}
           </p>
-        </Link>
+        </div>
       ))}
     </div>
   );

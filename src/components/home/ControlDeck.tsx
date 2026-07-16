@@ -1,4 +1,13 @@
 import { ChangeEvent } from "react";
+import { Search, X, Loader2 } from "lucide-react";
+import { Input } from "@components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
 import { SortKey, SORT_OPTIONS } from "@constant/sort";
 
 type ControlDeckProps = {
@@ -11,8 +20,6 @@ type ControlDeckProps = {
   placeholder?: string;
 };
 
-// The device "control panel": sticky glass toolbar with search + sort. Docks
-// just below the fixed Navbar.
 export function ControlDeck({
   query,
   onQueryChange,
@@ -20,60 +27,68 @@ export function ControlDeck({
   onSortChange,
   resultCount,
   isLoading,
-  placeholder = "Search name or number…",
+  placeholder = "Search the collection…",
 }: ControlDeckProps) {
   return (
-    <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
-      <div className="flex gap-2 flex-row items-center">
+    <div className="sticky top-12 z-10 mb-8 border-b border-border bg-background py-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted">
-            🔍
-          </span>
-          <input
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
             type="text"
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               onQueryChange(e.target.value)
             }
             placeholder={placeholder}
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pointer-coarse:py-3 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-ink-muted focus:border-white/30"
+            aria-label="Search Pokémon by name or number"
+            className="h-11 pr-9 pl-9"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => onQueryChange("")}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring pointer-coarse:before:absolute pointer-coarse:before:-inset-2.5 pointer-coarse:before:content-['']"
+            >
+              <X className="size-4" />
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <label
-            htmlFor="sort"
-            className="hidden sm:block text-xs tracking-wider text-ink-muted"
+        <div className="flex items-center justify-between gap-3 sm:justify-end">
+          <p
+            aria-live="polite"
+            className="flex items-center gap-1.5 font-mono text-xs tabular-nums text-muted-foreground"
           >
-            Sort
-          </label>
-          <select
-            id="sort"
+            {isLoading && (
+              <Loader2 aria-hidden className="size-3.5 animate-spin" />
+            )}
+            {resultCount.toLocaleString()} results
+          </p>
+          <Select
             value={sort}
-            onChange={(e) => onSortChange(e.target.value as SortKey)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 pointer-coarse:py-3 text-sm text-white outline-hidden transition-colors focus:border-white/30"
+            onValueChange={(value) => onSortChange(value as SortKey)}
           >
-            {SORT_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                className="bg-slate-900 text-white"
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger aria-label="Sort" className="h-11 w-44">
+              <SelectValue>
+                {(value) =>
+                  SORT_OPTIONS.find((o) => o.value === value)?.label ?? value
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false}>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </div>
-
-      <div className="mt-2 flex items-center gap-2">
-        <p className="text-xs text-ink-muted">{resultCount} results</p>
-        {isLoading && (
-          <span
-            aria-hidden
-            className="h-3 w-3 animate-spin rounded-full border border-white/20 border-t-white/70"
-          />
-        )}
       </div>
     </div>
   );
