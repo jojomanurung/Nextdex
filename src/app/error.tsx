@@ -2,8 +2,10 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@components/common/Card";
+import { ArrowLeft, RotateCcw } from "lucide-react";
+import { StatusScreen } from "@components/common/StatusScreen";
+import { Button, buttonVariants } from "@components/ui/button";
+import { cn } from "@lib/utils";
 
 // App Router error boundary — the rough equivalent of the old 500 page. Catches
 // unexpected runtime errors thrown while rendering a route (bad data that isn't
@@ -21,50 +23,43 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-2xl py-12 sm:py-20">
-      <Card>
-        <div className="flex flex-col items-center gap-5 px-2 py-6 text-center">
-          {/* Electrode, the Self-Destruct Pokémon — "the server blew up." */}
-          <div className="relative h-40 w-40">
-            <div
-              aria-hidden
-              className="absolute inset-6 rounded-full bg-[#fb7185] opacity-30 blur-3xl"
-            />
-            <Image
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/101.png"
-              alt="Electrode about to self-destruct"
-              fill
-              sizes="160px"
-              className="object-contain drop-shadow-2xl"
-              placeholder="blur"
-              blurDataURL="/images/placeholder.png"
-            />
-          </div>
-
-          <p className="text-6xl font-black tracking-tight sm:text-7xl">500</p>
-          <h1 className="text-xl font-semibold">Something went wrong</h1>
-          <p className="max-w-md text-sm leading-relaxed text-ink-muted">
-            Our server used Self-Destruct &mdash; that&rsquo;s on us, not you.
-            Give it a moment and try again.
-          </p>
-
-          <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => reset()}
-              className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-white/25 hover:bg-white/10"
-            >
-              Try again
-            </button>
-            <Link
-              href="/"
-              className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-white/25 hover:bg-white/10"
-            >
-              &larr; Back to the Pokédex
-            </Link>
-          </div>
-        </div>
-      </Card>
-    </div>
+    <StatusScreen
+      code="500"
+      title="Something went wrong"
+      description={
+        <>
+          Our server used Self-Destruct &mdash; that&rsquo;s on us, not you. Give
+          it a moment and try again.
+        </>
+      }
+      image={{
+        src: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/101.png",
+        alt: "Electrode about to self-destruct",
+      }}
+      glow="#fb7185"
+      actions={
+        <>
+          <Button
+            type="button"
+            size="lg"
+            onClick={() => reset()}
+            className="rounded-full px-5"
+          >
+            <RotateCcw />
+            Try again
+          </Button>
+          <Link
+            href="/"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "rounded-full px-5",
+            )}
+          >
+            <ArrowLeft />
+            Back to the Pokédex
+          </Link>
+        </>
+      }
+    />
   );
 }
