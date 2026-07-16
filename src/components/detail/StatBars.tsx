@@ -26,8 +26,6 @@ function tierColor(value: number): string {
   return "#38bdf8"; // excellent
 }
 
-const EMPTY = "rgba(255,255,255,0.08)";
-
 export function StatBars({ stats }: { stats: PokemonStat[] }) {
   const total = stats.reduce((sum, stat) => sum + stat.value, 0);
 
@@ -37,27 +35,35 @@ export function StatBars({ stats }: { stats: PokemonStat[] }) {
         const filled = Math.round((stat.value / STAT_MAX) * SEGMENTS);
         return (
           <div key={stat.name} className="flex items-center gap-3">
-            <span className="w-14 shrink-0 text-xs font-medium text-ink-muted">
+            <span className="w-14 shrink-0 text-xs font-medium text-muted-foreground">
               {STAT_LABELS[stat.name] ?? stat.name}
             </span>
 
             <div className="flex flex-1 gap-0.5">
-              {Array.from({ length: SEGMENTS }, (_, i) => (
-                <span
-                  key={i}
-                  className="h-2.5 flex-1 rounded-[2px] transition-colors"
-                  style={{
-                    backgroundColor:
-                      i < filled
-                        ? tierColor(((i + 1) / SEGMENTS) * STAT_MAX)
-                        : EMPTY,
-                  }}
-                />
-              ))}
+              {Array.from({ length: SEGMENTS }, (_, i) => {
+                const isFilled = i < filled;
+                return (
+                  <span
+                    key={i}
+                    className={`h-2.5 flex-1 rounded-[2px] transition-colors ${
+                      isFilled ? "" : "bg-foreground/10"
+                    }`}
+                    style={
+                      isFilled
+                        ? {
+                            backgroundColor: tierColor(
+                              ((i + 1) / SEGMENTS) * STAT_MAX,
+                            ),
+                          }
+                        : undefined
+                    }
+                  />
+                );
+              })}
             </div>
 
             <span
-              className="w-9 shrink-0 text-right text-sm font-semibold tabular-nums"
+              className="w-9 shrink-0 text-right font-mono text-sm font-semibold tabular-nums"
               style={{ color: tierColor(stat.value) }}
             >
               {stat.value}
@@ -66,9 +72,9 @@ export function StatBars({ stats }: { stats: PokemonStat[] }) {
         );
       })}
 
-      <div className="flex items-center justify-between border-t border-white/10 pt-2 text-sm">
+      <div className="flex items-center justify-between border-t border-border pt-2 text-sm">
         <span className="font-semibold">Total</span>
-        <span className="font-bold tabular-nums">{total}</span>
+        <span className="font-mono font-bold tabular-nums">{total}</span>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { Button } from "@components/ui/button";
 import { FlavorEntry } from "@interfaces/pokemon";
 
 // Pokédex flavor text across generations. Shows the most recent entry, with a
@@ -16,23 +18,28 @@ export function PokedexEntries({ entries }: { entries: FlavorEntry[] }) {
     <div className="space-y-3">
       {shown.map((entry) => (
         <div key={entry.generation} className="space-y-1">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-muted">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
             {entry.generationLabel} · {entry.version}
           </p>
-          <p className="leading-relaxed text-zinc-300">
+          <p className="max-w-prose leading-relaxed text-muted-foreground">
             &ldquo;{entry.text}&rdquo;
           </p>
         </div>
       ))}
 
       {entries.length > 1 && (
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setExpanded((value) => !value)}
-          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300 transition hover:bg-white/10 hover:text-white"
+          className="rounded-full px-4"
         >
           {expanded ? "Show less" : `Show all ${entries.length} entries`}
-        </button>
+          <ChevronDown
+            className={`transition-transform motion-reduce:transition-none ${expanded ? "rotate-180" : ""}`}
+          />
+        </Button>
       )}
     </div>
   );

@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
+import { Ruler, Sparkles, Weight } from "lucide-react";
 import { Type } from "@components/common/Type";
+import { Badge } from "@components/ui/badge";
+import { Toggle } from "@components/ui/toggle";
 import { PokemonDetailData } from "@interfaces/pokemon";
 import { dexNo, genLabel } from "@constant/pokemonMeta";
 
@@ -10,8 +13,9 @@ type DetailHeroProps = {
   pokemon: PokemonDetailData;
 };
 
-// Oversized hero for the immersive detail page: artwork, a shiny toggle (when
-// art exists), name/dex/genus/generation, type chips, and rarity badges.
+// The specimen: the detail page's left rail (pinned on desktop, the hero on
+// mobile). Artwork with a shiny toggle, identity, type chips, rarity badges,
+// and the headline vitals.
 export function DetailHero({ pokemon }: DetailHeroProps) {
   const [shiny, setShiny] = useState(false);
   const hasShiny = Boolean(pokemon.shinyImage);
@@ -24,51 +28,49 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
   ].filter(Boolean) as string[];
 
   return (
-    <section className="relative flex flex-col items-center gap-3 pt-1 text-center">
-      <div className="relative h-48 w-48 sm:h-60 sm:w-60">
+    <section className="flex flex-col items-center gap-5 text-center">
+      <div className="relative h-52 w-52 sm:h-56 sm:w-56">
         <Image
           src={src}
           alt={pokemon.name}
           fill
-          sizes="320px"
+          sizes="256px"
           priority
           className="object-contain drop-shadow-2xl"
           placeholder="blur"
           blurDataURL="/images/placeholder.png"
         />
         {hasShiny && (
-          <button
-            type="button"
-            onClick={() => setShiny((s) => !s)}
-            aria-pressed={shiny}
+          <Toggle
+            size="sm"
+            pressed={shiny}
+            onPressedChange={(pressed) => setShiny(pressed)}
+            aria-label="Toggle shiny artwork"
             title="Toggle shiny artwork"
-            className={`absolute right-1 top-1 rounded-full border px-3 py-1 pointer-coarse:py-3 text-sm backdrop-blur-xs transition ${
-              shiny
-                ? "border-amber-300/70 bg-amber-300/20 text-amber-200"
-                : "border-white/15 bg-white/5 text-zinc-300 hover:bg-white/10"
-            }`}
+            className="absolute right-0 top-0 gap-1.5 rounded-full border border-border bg-background px-3 text-xs text-muted-foreground aria-pressed:border-amber-400/60 aria-pressed:bg-amber-400/20 aria-pressed:text-amber-700 dark:aria-pressed:text-amber-200"
           >
-            ✦ Shiny
-          </button>
+            <Sparkles className="size-3.5" />
+            Shiny
+          </Toggle>
         )}
       </div>
 
       <div className="space-y-1">
-        <p className="text-sm font-medium tracking-[0.3em] text-ink-muted">
+        <p className="font-mono text-xs font-medium tracking-[0.3em] tabular-nums text-muted-foreground">
           #{dexNo(pokemon.id)}
         </p>
-        <h1 className="text-3xl font-bold capitalize tracking-tight sm:text-5xl">
+        <h1 className="font-display text-3xl font-bold capitalize tracking-[-0.01em] sm:text-4xl">
           {pokemon.name}
         </h1>
         {pokemon.species.genus && (
-          <p className="text-ink-muted">{pokemon.species.genus}</p>
+          <p className="text-sm text-muted-foreground">{pokemon.species.genus}</p>
         )}
-        <p className="text-xs uppercase tracking-[0.2em] text-ink-muted">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
           {genLabel(pokemon.id)}
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         {pokemon.types.map((type) => (
           <Type key={type} type={type} />
         ))}
@@ -77,15 +79,53 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
       {badges.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2">
           {badges.map((badge) => (
-            <span
+            <Badge
               key={badge}
-              className="rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-amber-200"
+              variant="outline"
+              className="border-amber-400/50 bg-amber-400/15 uppercase tracking-wide text-amber-700 dark:text-amber-200"
             >
               {badge}
-            </span>
+            </Badge>
           ))}
         </div>
       )}
+
+      <div className="mt-1 flex items-center justify-center gap-10">
+        <Vital
+          icon={<Ruler className="size-4" />}
+          label="Height"
+          value={`${pokemon.height / 10} m`}
+        />
+        <Vital
+          icon={<Weight className="size-4" />}
+          label="Weight"
+          value={`${pokemon.weight / 10} kg`}
+        />
+      </div>
     </section>
+  );
+}
+
+function Vital({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <span aria-hidden className="text-muted-foreground">
+        {icon}
+      </span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+        {label}
+      </span>
+      <span className="font-mono text-sm font-medium tabular-nums text-foreground">
+        {value}
+      </span>
+    </div>
   );
 }
