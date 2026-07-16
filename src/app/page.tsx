@@ -40,7 +40,7 @@ export default async function Home() {
   const initial = await loadHomeData();
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-7xl">
       <JsonLd data={jsonLd} />
       <PokedexBrowser initial={initial} />
     </div>
