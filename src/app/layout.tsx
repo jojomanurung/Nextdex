@@ -9,8 +9,7 @@ import { ThemeSync } from "@components/common/ThemeSync";
 import { BrowseSnapshotProvider } from "@context/BrowseSnapshotContext";
 import { SITE_NAME, SITE_URL } from "@constant/site";
 
-// Display / brand voice — Clash Display (self-hosted). Product names, headings,
-// the wordmark. Not Inter; not a reflex sans.
+// Display / brand voice — Clash Display (self-hosted).
 const clash = localFont({
   variable: "--font-clash",
   display: "swap",
@@ -21,8 +20,7 @@ const clash = localFont({
   ],
 });
 
-// Body / UI — Satoshi (self-hosted). Clean humanist grotesque; carries controls,
-// labels, and prose.
+// Body / UI — Satoshi (self-hosted).
 const satoshi = localFont({
   variable: "--font-satoshi",
   display: "swap",
@@ -50,10 +48,9 @@ export const metadata: Metadata = {
   description: defaultDescription,
 };
 
-// Set the initial theme class before paint (no flash). Migrated routes follow
-// the device theme; everything else is dark until migrated. Kept in sync after
-// hydration by <ThemeSync/>.
-const themeInit = `(function(){try{var t=location.pathname==='/';var d=t?matchMedia('(prefers-color-scheme: dark)').matches:true;document.documentElement.classList.toggle('dark',d);}catch(e){document.documentElement.classList.add('dark');}})();`;
+// Set the initial theme class before paint (no flash) from the device theme,
+// falling back to dark. Kept in sync with live OS changes by <ThemeSync/>.
+const themeInit = `(function(){try{document.documentElement.classList.toggle('dark',matchMedia('(prefers-color-scheme: dark)').matches);}catch(e){document.documentElement.classList.add('dark');}})();`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -68,7 +65,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeSync />
         <BrowseSnapshotProvider>
           <Navbar />
-          <main className="px-4 pb-16 md:px-6 lg:px-8">
+          <main className="px-4 pb-10 md:px-6 lg:px-8">
             {children}
             <Insights />
           </main>
