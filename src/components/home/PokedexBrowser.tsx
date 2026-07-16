@@ -42,7 +42,7 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
       />
 
       <div
-        className={`grid grid-cols-2 gap-x-4 gap-y-8 transition-opacity duration-200 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-5 ${
+        className={`grid grid-cols-2 gap-x-4 gap-y-10 transition-opacity duration-200 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-14 xl:grid-cols-5 ${
           isLoading ? "pointer-events-none opacity-40" : ""
         }`}
       >
