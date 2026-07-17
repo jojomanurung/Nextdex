@@ -1,4 +1,4 @@
-import { Ability } from "pokenode-ts";
+import { Ability, GameClient } from "pokenode-ts";
 import {
   AbilityData,
   AbilityIndexEntry,
@@ -49,17 +49,45 @@ function matchesQuery(entry: AbilityIndexEntry, query: string): boolean {
   );
 }
 
-// Filter + sort the index, then resolve one page of details in parallel.
+// Generation is a separate PokeAPI group; the ability list needs it only for
+// the generation filter, so it keeps its own cached client (mirrors
+// pokemonDetail's EvolutionClient).
+const gameClient = new GameClient({ cacheOptions: { ttl: 1000 * 60 * 60 } });
+
+// Names of every ability introduced in a generation, from /generation/{n} — one
+// cached request per generation. Backs the OR generation filter; ability ids
+// don't map to generation the way the national-dex id does.
+async function generationAbilityNames(gen: number): Promise<Set<string>> {
+  const data = await gameClient.getGenerationById(gen);
+  return new Set(data.abilities.map((a) => a.name));
+}
+
+// Filter + sort the index, then resolve one page of details in parallel. Facets
+// compose — AND across, OR within: name/number query and generation (membership
+// via /generation).
 export async function queryAbilities({
   query = "",
   sort = "number",
   offset = 0,
   limit = PAGE_LIMIT,
+  gens = [],
 }: AbilityQuery = {}): Promise<AbilityQueryResult> {
   const index = await getAbilityIndex();
   const q = query.trim().toLowerCase();
-  const matches = (q ? index.filter((e) => matchesQuery(e, q)) : index)
-    .slice()
+
+  let genNames: Set<string> | null = null;
+  if (gens.length) {
+    const sets = await Promise.all(gens.map(generationAbilityNames));
+    genNames = new Set<string>();
+    for (const set of sets) for (const name of set) genNames.add(name);
+  }
+
+  const matches = index
+    .filter((e) => {
+      if (q && !matchesQuery(e, q)) return false;
+      if (genNames && !genNames.has(e.name)) return false;
+      return true;
+    })
     .sort(SORT_COMPARATORS[sort]);
 
   const page = matches.slice(offset, offset + limit);

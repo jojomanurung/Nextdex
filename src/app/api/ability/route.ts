@@ -11,6 +11,13 @@ function toInt(value: string | null, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
+function toList(value: string | null): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sort = searchParams.get("sort") ?? "";
@@ -23,6 +30,9 @@ export async function GET(request: Request) {
       MAX_LIMIT,
       Math.max(1, toInt(searchParams.get("limit"), PAGE_LIMIT)),
     ),
+    gens: toList(searchParams.get("gens"))
+      .map(Number)
+      .filter((n) => Number.isInteger(n) && n >= 1 && n <= 9),
   };
 
   try {

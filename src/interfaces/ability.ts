@@ -17,6 +17,7 @@ export interface AbilityQuery {
   sort?: SortKey;
   offset?: number;
   limit?: number;
+  gens?: number[];
 }
 
 export interface AbilityQueryResult {

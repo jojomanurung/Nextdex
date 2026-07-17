@@ -2,14 +2,18 @@
 
 import { PokemonTile, PokemonTileSkeleton } from "@components/home/PokemonTile";
 import { ControlDeck } from "@components/home/ControlDeck";
+import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualScroll } from "@components/common/VirtualScroll";
 import { ScrollToTop } from "@components/common/ScrollToTop";
 import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
+import { genShortLabel } from "@constant/pokemonMeta";
 import { useResourceBrowser } from "@hooks/useResourceBrowser";
 
 type PokedexBrowserProps = {
   initial: PokemonQueryResult;
 };
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function PokedexBrowser({ initial }: PokedexBrowserProps) {
   const {
@@ -17,6 +21,8 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     setQuery,
     sort,
     setSort,
+    filters,
+    setFilters,
     rows,
     resultCount,
     isLast,
@@ -30,6 +36,27 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     snapshotKey: "pokemon",
   });
 
+  const types = filters.types ?? [];
+  const gens = (filters.gens ?? []).map(Number);
+  const hasFilters = types.length > 0 || gens.length > 0;
+
+  const setTypes = (next: string[]) => setFilters({ ...filters, types: next });
+  const setGens = (next: number[]) =>
+    setFilters({ ...filters, gens: next.map(String) });
+
+  const activeFilters = [
+    ...types.map((t) => ({
+      key: `type-${t}`,
+      label: capitalize(t),
+      onRemove: () => setTypes(types.filter((v) => v !== t)),
+    })),
+    ...gens.map((g) => ({
+      key: `gen-${g}`,
+      label: genShortLabel(g),
+      onRemove: () => setGens(gens.filter((v) => v !== g)),
+    })),
+  ];
+
   return (
     <>
       <ControlDeck
@@ -39,6 +66,17 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
         onSortChange={setSort}
         resultCount={resultCount}
         isLoading={isLoading}
+        filterSlot={
+          <FilterMenu
+            types={types}
+            onTypesChange={setTypes}
+            gens={gens}
+            onGensChange={setGens}
+            clearFilter={() => setFilters({})}
+          />
+        }
+        activeFilters={activeFilters}
+        onClearFilters={() => setFilters({})}
       />
 
       <div
@@ -61,8 +99,19 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
           <p className="max-w-xs text-sm text-muted-foreground">
             {query
               ? `Nothing matches “${query}”. Try another name or number.`
-              : "Nothing to show."}
+              : hasFilters
+                ? "No Pokémon match these filters."
+                : "Nothing to show."}
           </p>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={() => setFilters({})}
+              className="mt-1 text-sm font-medium text-primary underline-offset-2 outline-none transition-colors hover:underline focus-visible:underline"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       )}
 
