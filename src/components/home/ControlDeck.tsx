@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactNode } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import { Input } from "@components/ui/input";
 import {
@@ -18,6 +18,9 @@ type ControlDeckProps = {
   resultCount: number;
   isLoading?: boolean;
   placeholder?: string;
+  filterSlot?: ReactNode;
+  activeFilters?: { key: string; label: string; onRemove: () => void }[];
+  onClearFilters?: () => void;
 };
 
 export function ControlDeck({
@@ -28,9 +31,13 @@ export function ControlDeck({
   resultCount,
   isLoading,
   placeholder = "Search the collection…",
+  filterSlot,
+  activeFilters,
+  onClearFilters,
 }: ControlDeckProps) {
   return (
     <div className="sticky top-12 z-10 mb-8 border-b border-border bg-background py-3">
+      {/* Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search
@@ -60,15 +67,7 @@ export function ControlDeck({
         </div>
 
         <div className="flex items-center justify-between gap-3 sm:justify-end">
-          <p
-            aria-live="polite"
-            className="flex items-center gap-1.5 font-mono text-xs tabular-nums text-muted-foreground"
-          >
-            {isLoading && (
-              <Loader2 aria-hidden className="size-3.5 animate-spin" />
-            )}
-            {resultCount.toLocaleString()} results
-          </p>
+          {filterSlot}
           <Select
             value={sort}
             onValueChange={(value) => onSortChange(value as SortKey)}
@@ -89,6 +88,53 @@ export function ControlDeck({
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* Status line */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p
+          aria-live="polite"
+          className="flex items-center gap-1.5 font-mono text-xs tabular-nums text-muted-foreground"
+        >
+          {resultCount.toLocaleString()} results
+          {/* Reserved slot keeps loading from popping the line's width. */}
+          <span className="inline-flex size-3.5 shrink-0 items-center justify-center">
+            {isLoading && (
+              <Loader2 aria-hidden className="size-3.5 animate-spin" />
+            )}
+          </span>
+        </p>
+
+        {activeFilters && activeFilters.length > 0 && (
+          <>
+            <span aria-hidden className="text-muted-foreground/40">
+              ·
+            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              {activeFilters.map((f) => (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={f.onRemove}
+                  aria-label={`Remove ${f.label} filter`}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-muted py-0.5 pr-1.5 pl-2 text-xs text-foreground outline-none transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  {f.label}
+                  <X aria-hidden className="size-3 text-muted-foreground" />
+                </button>
+              ))}
+              {onClearFilters && (
+                <button
+                  type="button"
+                  onClick={onClearFilters}
+                  className="ml-0.5 text-xs text-muted-foreground underline-offset-2 outline-none transition-colors hover:text-foreground hover:underline focus-visible:text-foreground focus-visible:underline"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
