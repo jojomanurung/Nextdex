@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Martian_Mono } from "next/font/google";
 import { Navbar } from "@components/common/Navbar";
+import { Footer } from "@components/common/Footer";
 import { Insights } from "@components/common/Insights";
 import { ThemeSync } from "@components/common/ThemeSync";
 import { ScrollToTop } from "@components/common/ScrollToTop";
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ScrollToTop threshold={1000} />
             <Insights />
           </main>
+          <Footer />
         </BrowseSnapshotProvider>
       </body>
     </html>
