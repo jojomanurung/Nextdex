@@ -21,7 +21,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-20 border-b border-border bg-background px-4 md:px-6 lg:px-8">
+    <nav className="border-b border-border bg-background px-4 md:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-2.5">
         <Link
           href="/"

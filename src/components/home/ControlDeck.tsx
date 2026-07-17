@@ -36,7 +36,7 @@ export function ControlDeck({
   onClearFilters,
 }: ControlDeckProps) {
   return (
-    <div className="sticky top-12 z-10 mb-8 border-b border-border bg-background py-3">
+    <div className="sticky top-0 z-10 border-b border-border bg-background py-3">
       {/* Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
