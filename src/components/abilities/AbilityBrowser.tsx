@@ -7,7 +7,6 @@ import {
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualScroll } from "@components/common/VirtualScroll";
-import { ScrollToTop } from "@components/common/ScrollToTop";
 import { AbilityData, AbilityQueryResult } from "@interfaces/ability";
 import { genShortLabel } from "@constant/pokemonMeta";
 import { useResourceBrowser } from "@hooks/useResourceBrowser";
@@ -48,6 +47,16 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
     onRemove: () => setGens(gens.filter((v) => v !== g)),
   }));
 
+  const scrollToTop = () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  };
+
+  const clearFilter = () => {
+    scrollToTop();
+    setFilters({});
+  }
+
   return (
     <>
       <ControlDeck
@@ -62,11 +71,11 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
           <FilterMenu
             gens={gens}
             onGensChange={setGens}
-            clearFilter={() => setFilters({})}
+            clearFilter={clearFilter}
           />
         }
         activeFilters={activeFilters}
-        onClearFilters={() => setFilters({})}
+        onClearFilters={clearFilter}
       />
 
       <div
@@ -100,8 +109,6 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
           )}
         </div>
       )}
-
-      <ScrollToTop threshold={1000} />
 
       <VirtualScroll intersectCallback={onIntersect} isLast={isLast} />
     </>

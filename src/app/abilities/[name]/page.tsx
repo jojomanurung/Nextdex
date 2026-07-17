@@ -1,7 +1,6 @@
 import { ReactNode, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ScrollToTop } from "@components/common/ScrollToTop";
 import { JsonLd } from "@components/common/JsonLd";
 import { AbilityHero } from "@components/abilities/AbilityHero";
 import { AbilityPokemonGrid } from "@components/abilities/AbilityPokemonGrid";
@@ -126,8 +125,6 @@ export default async function AbilityDetailPage({
           <AbilityPokemonGrid pokemon={ability.pokemon} />
         </Band>
       </div>
-
-      <ScrollToTop reveal="near-bottom" />
     </div>
   );
 }
