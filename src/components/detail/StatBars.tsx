@@ -17,8 +17,8 @@ const STAT_LABELS: Record<string, string> = {
 const STAT_MAX = 150;
 const SEGMENTS = 20;
 
-// Tier color for a base-stat amount: red → amber → green → blue. Used for each
-// segment (by the level it represents) and for the stat's value label.
+// Tier color for a base-stat amount: red → amber → green → blue. A stat's whole
+// bar fills with the tier of its value.
 function tierColor(value: number): string {
   if (value <= 50) return "#fb7185"; // weak
   if (value <= 80) return "#fbbf24"; // below average
@@ -26,49 +26,49 @@ function tierColor(value: number): string {
   return "#38bdf8"; // excellent
 }
 
-const EMPTY = "rgba(255,255,255,0.08)";
-
 export function StatBars({ stats }: { stats: PokemonStat[] }) {
   const total = stats.reduce((sum, stat) => sum + stat.value, 0);
 
   return (
     <div className="space-y-3">
       {stats.map((stat) => {
-        const filled = Math.round((stat.value / STAT_MAX) * SEGMENTS);
+        const filled = Math.min(
+          Math.round((stat.value / STAT_MAX) * SEGMENTS),
+          SEGMENTS,
+        );
+        // One tier hue per bar (by the stat's own value)
+        const barColor = tierColor(stat.value);
         return (
           <div key={stat.name} className="flex items-center gap-3">
-            <span className="w-14 shrink-0 text-xs font-medium text-zinc-400">
+            <span className="w-14 shrink-0 text-xs font-medium text-muted-foreground">
               {STAT_LABELS[stat.name] ?? stat.name}
             </span>
 
-            <div className="flex flex-1 gap-0.5">
-              {Array.from({ length: SEGMENTS }, (_, i) => (
-                <span
-                  key={i}
-                  className="h-2.5 flex-1 rounded-[2px] transition-colors"
-                  style={{
-                    backgroundColor:
-                      i < filled
-                        ? tierColor(((i + 1) / SEGMENTS) * STAT_MAX)
-                        : EMPTY,
-                  }}
-                />
-              ))}
+            <div aria-hidden className="flex flex-1 gap-0.5">
+              {Array.from({ length: SEGMENTS }, (_, i) => {
+                const isFilled = i < filled;
+                return (
+                  <span
+                    key={i}
+                    className={`h-2.5 flex-1 rounded-[2px] ${
+                      isFilled ? "" : "bg-foreground/15"
+                    }`}
+                    style={isFilled ? { backgroundColor: barColor } : undefined}
+                  />
+                );
+              })}
             </div>
 
-            <span
-              className="w-9 shrink-0 text-right text-sm font-semibold tabular-nums"
-              style={{ color: tierColor(stat.value) }}
-            >
+            <span className="w-9 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-foreground">
               {stat.value}
             </span>
           </div>
         );
       })}
 
-      <div className="flex items-center justify-between border-t border-white/10 pt-2 text-sm">
+      <div className="flex items-center justify-between border-t border-border pt-2 text-sm">
         <span className="font-semibold">Total</span>
-        <span className="font-bold tabular-nums">{total}</span>
+        <span className="font-mono font-bold tabular-nums">{total}</span>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Wordmark } from "@components/common/Wordmark";
 
 const LINKS = [
   {
@@ -21,16 +21,14 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 left-0 right-0 w-full backdrop-blur-xs z-10">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-3 py-2">
-        <Link href="/" aria-label="Nextdex home">
-          <Image
-            src="/images/Pokemon.svg"
-            alt="Nextdex"
-            width={0}
-            height={0}
-            className="h-auto w-full max-w-28 sm:max-w-36"
-          />
+    <nav className="border-b border-border bg-background px-4 md:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-2.5">
+        <Link
+          href="/"
+          aria-label="Nextdex home"
+          className="group rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <Wordmark />
         </Link>
 
         <div className="flex items-center gap-4 sm:gap-6">
@@ -41,10 +39,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative text-sm font-medium transition-colors ${
+                className={`relative text-sm font-medium transition-colors before:absolute before:inset-x-0 before:-top-3 before:-bottom-3 before:content-[''] ${
                   active
-                    ? "text-white after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-white/80"
-                    : "text-zinc-400 hover:text-white"
+                    ? "text-foreground after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-primary"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.label}

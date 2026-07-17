@@ -33,23 +33,26 @@
   }
 }
 
-/* Smooth in-page anchor jumps (detail-page sub-nav). */
-html {
-  scroll-behavior: smooth;
+/* Smooth in-page anchor jumps (detail-page band ids) and scroll-to-top —
+   suppressed under prefers-reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-::-webkit-scrollbar {
-  width: 1rem;               
-}
-
-::-webkit-scrollbar-track {
-  background: #060B28;        
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #2F5AFF;    
-  border-radius: .5rem;       
-  border: 0.25rem solid #060B28;  
+/* Radar "ping" for the navbar mark: a faint ring emanates from the pokéball
+   on hover. Gated behind group-hover + motion-reduce in the component. */
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  80%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 /*
@@ -57,8 +60,11 @@ html {
 */
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-clash), var(--font-satoshi), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, SFMono-Regular, monospace;
+  --animate-ping-soft: ping-soft 1.5s ease-out infinite;
+  --animate-ping-soft-delayed: ping-soft 1.5s ease-out 0.75s infinite;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -174,4 +180,43 @@ html {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/*
+  ---break---
+*/
+
+/* Brand identity: the Nextdex blue is the single fixed accent (light + dark),
+   overriding the scaffolded shadcn neutrals. Type color now lives only on the
+   type chips. Muted-foreground is nudged toward the brand hue and darkened on
+   light for AA on small text. */
+:root {
+  --primary: oklch(0.52 0.2 264);
+  --primary-foreground: oklch(0.985 0.01 264);
+  --ring: oklch(0.52 0.2 264);
+  --muted-foreground: oklch(0.47 0.02 264);
+}
+
+.dark {
+  --primary: oklch(0.7 0.16 264);
+  --primary-foreground: oklch(0.17 0.03 264);
+  --ring: oklch(0.7 0.16 264);
+  --muted-foreground: oklch(0.72 0.02 264);
+}
+
+/* Theme-aware scrollbar (replaces the hardcoded navy/blue one). */
+::-webkit-scrollbar {
+  width: 0.75rem;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklch, var(--foreground) 38%, transparent);
 }

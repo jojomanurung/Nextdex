@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  BrowseKey,
-  useBrowseSnapshot,
-} from "@context/BrowseSnapshotContext";
+import { BrowseKey, useBrowseSnapshot } from "@context/BrowseSnapshotContext";
 import { useDebouncedValue } from "@hooks/useDebouncedValue";
 import { PAGE_LIMIT } from "@constant/pagination";
 import { SortKey, DEFAULT_SORT } from "@constant/sort";
@@ -11,10 +8,15 @@ type Status = "idle" | "loading" | "appending";
 
 type QueryResult<T> = { results: T[]; total: number; hasMore: boolean };
 
+// Opaque facet filters (e.g. { types: ["fire"], gens: ["1","3"] }). The hook
+// forwards them to the endpoint blindly; each browser owns which facets exist.
+type Filters = Record<string, string[]>;
+
 async function fetchPage<T>(
   endpoint: string,
   query: string,
   sort: SortKey,
+  filters: Filters,
   offset: number,
   signal: AbortSignal,
 ): Promise<QueryResult<T> | null> {
@@ -24,6 +26,9 @@ async function fetchPage<T>(
     offset: String(offset),
     limit: String(PAGE_LIMIT),
   });
+  for (const [key, values] of Object.entries(filters)) {
+    if (values.length) params.set(key, values.join(","));
+  }
   try {
     const res = await fetch(`${endpoint}?${params}`, { signal });
     if (!res.ok) throw new Error(String(res.status));
@@ -47,6 +52,7 @@ export function useResourceBrowser<T>({
 
   const [query, setQuery] = useState(snapshot?.query ?? "");
   const [sort, setSort] = useState<SortKey>(snapshot?.sort ?? DEFAULT_SORT);
+  const [filters, setFilters] = useState<Filters>(snapshot?.filters ?? {});
   const [results, setResults] = useState<T[]>(
     snapshot?.results ?? initial.results,
   );
@@ -56,9 +62,9 @@ export function useResourceBrowser<T>({
 
   const search = useDebouncedValue(query, 250).trim().toLowerCase();
 
-  // Reset to page 0 when the query or sort changes. Old rows stay put (dimmed by
-  // the view) until the new page lands, then swap. Skipped on mount, where the
-  // seed/snapshot already matches.
+  // Reset to page 0 when the query, sort, or filters change. Old rows stay put
+  // (dimmed by the view) until the new page lands, then swap. Skipped on mount,
+  // where the seed/snapshot already matches.
   const mounted = useRef(false);
   useEffect(() => {
     if (!mounted.current) {
@@ -67,7 +73,7 @@ export function useResourceBrowser<T>({
     }
     const controller = new AbortController();
     setStatus("loading");
-    fetchPage<T>(endpoint, search, sort, 0, controller.signal)
+    fetchPage<T>(endpoint, search, sort, filters, 0, controller.signal)
       .then((page) => {
         if (!page) return;
         setResults(page.results);
@@ -77,26 +83,46 @@ export function useResourceBrowser<T>({
       })
       .catch(() => setStatus("idle"));
     return () => controller.abort();
-  }, [search, sort, endpoint]);
+  }, [search, sort, filters, endpoint]);
 
-  const live = useRef({ status, hasMore, count: results.length, search, sort });
+  const live = useRef({
+    status,
+    hasMore,
+    count: results.length,
+    search,
+    sort,
+    filters,
+  });
   useEffect(() => {
-    live.current = { status, hasMore, count: results.length, search, sort };
-  }, [status, hasMore, results.length, search, sort]);
+    live.current = {
+      status,
+      hasMore,
+      count: results.length,
+      search,
+      sort,
+      filters,
+    };
+  }, [status, hasMore, results.length, search, sort, filters]);
 
   const onIntersect = useCallback(
     (intersecting: boolean) => {
       if (!intersecting) return;
-      const { status, hasMore, count, search, sort } = live.current;
+      const { status, hasMore, count, search, sort, filters } = live.current;
       if (status !== "idle" || !hasMore) return;
 
       const controller = new AbortController();
       setStatus("appending");
-      fetchPage<T>(endpoint, search, sort, count, controller.signal)
+      fetchPage<T>(endpoint, search, sort, filters, count, controller.signal)
         .then((page) => {
           if (!page) return;
           const now = live.current;
-          if (now.search !== search || now.sort !== sort) return; // list changed under us
+          // list changed under us
+          if (
+            now.search !== search ||
+            now.sort !== sort ||
+            now.filters !== filters
+          )
+            return;
           setResults((prev) => [...prev, ...page.results]);
           setTotal(page.total);
           setHasMore(page.hasMore);
@@ -108,8 +134,8 @@ export function useResourceBrowser<T>({
   );
 
   useEffect(() => {
-    setSnapshot({ query, sort, results, total, hasMore });
-  }, [query, sort, results, total, hasMore, setSnapshot]);
+    setSnapshot({ query, sort, filters, results, total, hasMore });
+  }, [query, sort, filters, results, total, hasMore, setSnapshot]);
 
   function changeSort(next: SortKey) {
     if (next === sort) return;
@@ -122,6 +148,8 @@ export function useResourceBrowser<T>({
     setQuery,
     sort,
     setSort: changeSort,
+    filters,
+    setFilters,
     rows: results,
     resultCount: total,
     isLast: !hasMore,

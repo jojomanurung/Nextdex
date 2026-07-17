@@ -1,4 +1,13 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactNode } from "react";
+import { Search, X, Loader2 } from "lucide-react";
+import { Input } from "@components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
 import { SortKey, SORT_OPTIONS } from "@constant/sort";
 
 type ControlDeckProps = {
@@ -9,10 +18,11 @@ type ControlDeckProps = {
   resultCount: number;
   isLoading?: boolean;
   placeholder?: string;
+  filterSlot?: ReactNode;
+  activeFilters?: { key: string; label: string; onRemove: () => void }[];
+  onClearFilters?: () => void;
 };
 
-// The device "control panel": sticky glass toolbar with search + sort. Docks
-// just below the fixed Navbar.
 export function ControlDeck({
   query,
   onQueryChange,
@@ -20,59 +30,110 @@ export function ControlDeck({
   onSortChange,
   resultCount,
   isLoading,
-  placeholder = "Search name or number…",
+  placeholder = "Search the collection…",
+  filterSlot,
+  activeFilters,
+  onClearFilters,
 }: ControlDeckProps) {
   return (
-    <div className="sticky z-9 top-[72px] rounded-2xl bg-slate-950/60 p-3 shadow-lg backdrop-blur-md sm:p-4">
-      <div className="flex gap-2 flex-row items-center">
+    <div className="sticky top-0 z-10 border-b border-border bg-background py-3">
+      {/* Controls */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
-            🔍
-          </span>
-          <input
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
             type="text"
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               onQueryChange(e.target.value)
             }
             placeholder={placeholder}
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white outline-hidden transition-colors placeholder:text-zinc-500 focus:border-white/30"
+            aria-label="Search Pokémon by name or number"
+            className="h-11 pr-9 pl-9"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => onQueryChange("")}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring pointer-coarse:before:absolute pointer-coarse:before:-inset-2.5 pointer-coarse:before:content-['']"
+            >
+              <X className="size-4" />
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <label
-            htmlFor="sort"
-            className="hidden sm:block text-xs tracking-wider text-zinc-500"
-          >
-            Sort
-          </label>
-          <select
-            id="sort"
+        <div className="flex items-center justify-between gap-3 sm:justify-end">
+          {filterSlot}
+          <Select
             value={sort}
-            onChange={(e) => onSortChange(e.target.value as SortKey)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-hidden transition-colors focus:border-white/30"
+            onValueChange={(value) => onSortChange(value as SortKey)}
           >
-            {SORT_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                className="bg-slate-900 text-white"
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger aria-label="Sort" className="h-11 w-44">
+              <SelectValue>
+                {(value) =>
+                  SORT_OPTIONS.find((o) => o.value === value)?.label ?? value
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false}>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
-        <p className="text-xs text-zinc-500">{resultCount} results</p>
-        {isLoading && (
-          <span
-            aria-hidden
-            className="h-3 w-3 animate-spin rounded-full border border-white/20 border-t-white/70"
-          />
+      {/* Status line */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p
+          aria-live="polite"
+          className="flex items-center gap-1.5 font-mono text-xs tabular-nums text-muted-foreground"
+        >
+          {resultCount.toLocaleString()} results
+          {/* Reserved slot keeps loading from popping the line's width. */}
+          <span className="inline-flex size-3.5 shrink-0 items-center justify-center">
+            {isLoading && (
+              <Loader2 aria-hidden className="size-3.5 animate-spin" />
+            )}
+          </span>
+        </p>
+
+        {activeFilters && activeFilters.length > 0 && (
+          <>
+            <span aria-hidden className="text-muted-foreground/40">
+              ·
+            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              {activeFilters.map((f) => (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={f.onRemove}
+                  aria-label={`Remove ${f.label} filter`}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-muted py-0.5 pr-1.5 pl-2 text-xs text-foreground outline-none transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  {f.label}
+                  <X aria-hidden className="size-3 text-muted-foreground" />
+                </button>
+              ))}
+              {onClearFilters && (
+                <button
+                  type="button"
+                  onClick={onClearFilters}
+                  className="ml-0.5 text-xs text-muted-foreground underline-offset-2 outline-none transition-colors hover:text-foreground hover:underline focus-visible:text-foreground focus-visible:underline"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

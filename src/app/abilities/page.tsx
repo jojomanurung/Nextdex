@@ -41,7 +41,7 @@ export default async function AbilitiesPage() {
   const initial = await loadAbilitiesData();
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-3">
+    <div className="mx-auto flex max-w-6xl flex-col gap-3">
       <JsonLd data={jsonLd} />
       <AbilityBrowser initial={initial} />
     </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 import { EvolutionStage } from "@interfaces/pokemon";
 import { dexNo } from "@constant/pokemonMeta";
 
@@ -19,7 +20,7 @@ export function EvolutionChainView({
   accent,
 }: EvolutionChainViewProps) {
   if (stages.length <= 1) {
-    return <p className="text-zinc-400">This Pokémon does not evolve.</p>;
+    return <p className="text-muted-foreground">This Pokémon does not evolve.</p>;
   }
 
   const maxStage = Math.max(...stages.map((s) => s.stage));
@@ -41,14 +42,12 @@ export function EvolutionChainView({
           >
             {index > 0 && (
               <div className="flex flex-row items-center gap-1 sm:flex-col sm:gap-0.5">
-                <span
+                <ChevronRight
                   aria-hidden
-                  className="order-1 rotate-90 text-2xl leading-none text-zinc-600 sm:order-2 sm:rotate-0"
-                >
-                  →
-                </span>
+                  className="order-1 size-6 rotate-90 text-muted-foreground sm:order-2 sm:rotate-0"
+                />
                 {linearCondition && (
-                  <span className="order-2 max-w-[120px] text-center text-[11px] leading-tight text-zinc-400 sm:order-1 sm:max-w-[90px]">
+                  <span className="order-2 max-w-[120px] text-center text-[11px] leading-tight text-muted-foreground sm:order-1 sm:max-w-[90px]">
                     {linearCondition}
                   </span>
                 )}
@@ -61,10 +60,8 @@ export function EvolutionChainView({
                   <Link
                     key={stage.id}
                     href={`/pokemon/${stage.name}`}
-                    className={`group flex w-36 flex-col items-center gap-1 rounded-2xl border p-2 text-center transition ${
-                      isCurrent
-                        ? "border-white/20 bg-white/10"
-                        : "border-white/5 bg-white/3 hover:bg-white/[0.07]"
+                    className={`group flex w-36 flex-col items-center gap-1 rounded-2xl p-2 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      isCurrent ? "bg-primary/10" : "hover:bg-muted"
                     }`}
                   >
                     <div className="relative h-28 w-28">
@@ -80,19 +77,19 @@ export function EvolutionChainView({
                         alt={stage.name}
                         fill
                         sizes="112px"
-                        className="object-contain transition-transform group-hover:scale-110"
+                        className="object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         placeholder="blur"
                         blurDataURL="/images/placeholder.png"
                       />
                     </div>
-                    <span className="text-[10px] tracking-widest text-zinc-500">
+                    <span className="font-mono text-[10px] tracking-widest tabular-nums text-muted-foreground">
                       #{dexNo(stage.id)}
                     </span>
-                    <span className="text-sm font-medium capitalize">
+                    <span className="text-sm font-medium capitalize text-foreground">
                       {stage.name}
                     </span>
                     {branched && stage.condition && (
-                      <span className="text-[11px] leading-tight text-zinc-500">
+                      <span className="text-[11px] leading-tight text-muted-foreground">
                         {stage.condition}
                       </span>
                     )}

@@ -16,6 +16,7 @@ export type BrowseKey = "pokemon" | "abilities";
 export type BrowserSnapshot<T> = {
   query: string;
   sort: SortKey;
+  filters: Record<string, string[]>;
   results: T[];
   total: number;
   hasMore: boolean;

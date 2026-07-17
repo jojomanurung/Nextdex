@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
 
 type ScrollToTopProps = {
   /** When to reveal the button:
@@ -14,10 +15,7 @@ type ScrollToTopProps = {
   threshold?: number;
 };
 
-export function ScrollToTop({
-  reveal = "scrolled",
-  threshold,
-}: ScrollToTopProps) {
+export function ScrollToTop({ reveal = "scrolled", threshold }: ScrollToTopProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -40,38 +38,25 @@ export function ScrollToTop({
     };
   }, [reveal, threshold]);
 
+  const scrollToTop = () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  };
+
   return (
     <button
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={scrollToTop}
       aria-label="Scroll back to top"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-20 right-6 z-20 rounded-full border border-white/10 bg-slate-900/50 p-3 text-zinc-300 backdrop-blur-md transition duration-300 ${
+      className={`fixed bottom-20 right-6 z-20 rounded-full border border-border bg-card p-3 text-muted-foreground shadow-sm transition duration-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:translate-y-0 ${
         visible
-          ? "translate-y-0 opacity-80"
+          ? "cursor-pointer translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >
-      <ArrowUp />
+      <ArrowUp className="size-5" />
     </button>
-  );
-}
-
-function ArrowUp() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className="h-5 w-5"
-    >
-      <line x1="12" y1="19" x2="12" y2="5" />
-      <polyline points="5 12 12 5 19 12" />
-    </svg>
   );
 }

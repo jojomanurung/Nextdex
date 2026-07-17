@@ -6,7 +6,7 @@ function PokemonTile({ pokemon }: { pokemon: AbilityPokemonRef }) {
   return (
     <Link
       href={`/pokemon/${pokemon.name}`}
-      className="group flex flex-col items-center gap-1 rounded-xl border border-white/5 bg-white/5 p-3 transition hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/10"
+      className="group flex flex-col items-center gap-1.5 rounded-xl px-1 py-2 outline-none transition-transform duration-300 ease-out hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       <div className="relative h-16 w-16">
         <Image
@@ -18,10 +18,10 @@ function PokemonTile({ pokemon }: { pokemon: AbilityPokemonRef }) {
           loading="lazy"
           placeholder="blur"
           blurDataURL="/images/placeholder.png"
-          className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+          className="h-full w-full object-contain drop-shadow-[0_4px_10px_rgb(0_0_0/0.15)] transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
       </div>
-      <span className="w-full truncate text-center text-xs capitalize text-zinc-300">
+      <span className="w-full truncate text-center text-xs capitalize text-muted-foreground transition-colors group-hover:text-primary">
         {pokemon.name.replace(/-/g, " ")}
       </span>
     </Link>
@@ -38,8 +38,11 @@ function Group({
   if (pokemon.length === 0) return null;
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold text-zinc-400">
-        {title} <span className="text-zinc-600">({pokemon.length})</span>
+      <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
+        {title}{" "}
+        <span className="font-mono tabular-nums text-muted-foreground">
+          ({pokemon.length})
+        </span>
       </h3>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {pokemon.map((p) => (
@@ -57,7 +60,7 @@ export function AbilityPokemonGrid({
 }) {
   if (pokemon.length === 0) {
     return (
-      <p className="text-sm text-zinc-500">No Pokémon have this ability.</p>
+      <p className="text-sm text-muted-foreground">No Pokémon have this ability.</p>
     );
   }
 

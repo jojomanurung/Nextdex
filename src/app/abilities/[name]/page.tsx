@@ -1,8 +1,6 @@
-import { cache } from "react";
+import { ReactNode, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Card } from "@components/common/Card";
-import { ScrollToTop } from "@components/common/ScrollToTop";
 import { JsonLd } from "@components/common/JsonLd";
 import { AbilityHero } from "@components/abilities/AbilityHero";
 import { AbilityPokemonGrid } from "@components/abilities/AbilityPokemonGrid";
@@ -53,6 +51,19 @@ async function loadDetail(name: string): Promise<AbilityDetailData> {
   }
 }
 
+// An editorial band — a Clash heading over its content, divided from the hero
+// by a hairline rule. No boxes, matching the Pokémon detail dossier.
+function Band({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="mt-10 border-t border-border pt-8">
+      <h2 className="mb-4 font-display text-lg font-semibold text-foreground">
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
 export default async function AbilityDetailPage({
   params,
 }: AbilityDetailPageProps) {
@@ -92,38 +103,28 @@ export default async function AbilityDetailPage({
   ];
 
   return (
-    <>
+    <div className="relative">
       <JsonLd data={jsonLd} />
 
-      {/* Neutral ambient wash (abilities carry no type color). */}
+      {/* Faint brand wash at the page top (abilities carry no type color).
+          Absolute, not fixed, so it scrolls with the content and can't bleed
+          above the navbar on overscroll. */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[50vh]"
         style={{
           background:
-            "radial-gradient(60% 50% at 50% 0%, rgba(148,163,184,0.15), transparent 70%)",
+            "radial-gradient(55% 60% at 50% -10%, color-mix(in oklch, var(--primary) 14%, transparent), transparent 70%)",
         }}
       />
 
-      <div className="mx-auto max-w-4xl space-y-6">
+      <div className="mx-auto max-w-4xl">
         <AbilityHero ability={ability} />
 
-        <Card>
-          <h2 className="mb-3 text-xl font-semibold">Effect</h2>
-          <p className="leading-relaxed text-zinc-300">
-            {ability.description || "No effect description available."}
-          </p>
-        </Card>
-
-        <Card>
-          <h2 className="mb-4 text-xl font-semibold">
-            Pokémon with this ability
-          </h2>
+        <Band title="Pokémon with this ability">
           <AbilityPokemonGrid pokemon={ability.pokemon} />
-        </Card>
+        </Band>
       </div>
-
-      <ScrollToTop reveal="near-bottom" />
-    </>
+    </div>
   );
 }

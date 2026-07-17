@@ -28,6 +28,8 @@ export interface PokemonQuery {
   sort?: SortKey;
   offset?: number;
   limit?: number;
+  types?: string[];
+  gens?: number[];
 }
 
 export interface PokemonQueryResult {
