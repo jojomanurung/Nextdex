@@ -64,7 +64,7 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
   const clearFilter = () => {
     scrollToTop();
     setFilters({});
-  }
+  };
 
   return (
     <>
