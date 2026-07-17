@@ -1,7 +1,6 @@
 import { ReactNode, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ScrollToTop } from "@components/common/ScrollToTop";
 import { JsonLd } from "@components/common/JsonLd";
 import { DetailHero } from "@components/detail/DetailHero";
 import { DetailPager } from "@components/detail/DetailPager";
@@ -197,8 +196,6 @@ export default async function DetailPage({ params }: DetailPageProps) {
 
         <DetailPager neighbors={neighbors} />
       </div>
-
-      <ScrollToTop reveal="near-bottom" />
     </div>
   );
 }

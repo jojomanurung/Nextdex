@@ -4,7 +4,6 @@ import { PokemonTile, PokemonTileSkeleton } from "@components/home/PokemonTile";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualScroll } from "@components/common/VirtualScroll";
-import { ScrollToTop } from "@components/common/ScrollToTop";
 import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
 import { genShortLabel } from "@constant/pokemonMeta";
 import { useResourceBrowser } from "@hooks/useResourceBrowser";
@@ -57,6 +56,16 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     })),
   ];
 
+  const scrollToTop = () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  };
+
+  const clearFilter = () => {
+    scrollToTop();
+    setFilters({});
+  };
+
   return (
     <>
       <ControlDeck
@@ -72,11 +81,11 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
             onTypesChange={setTypes}
             gens={gens}
             onGensChange={setGens}
-            clearFilter={() => setFilters({})}
+            clearFilter={clearFilter}
           />
         }
         activeFilters={activeFilters}
-        onClearFilters={() => setFilters({})}
+        onClearFilters={clearFilter}
       />
 
       <div
@@ -114,8 +123,6 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
           )}
         </div>
       )}
-
-      <ScrollToTop threshold={1000} />
 
       <VirtualScroll intersectCallback={onIntersect} isLast={isLast} />
     </>

@@ -4,8 +4,10 @@ import { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Martian_Mono } from "next/font/google";
 import { Navbar } from "@components/common/Navbar";
+import { Footer } from "@components/common/Footer";
 import { Insights } from "@components/common/Insights";
 import { ThemeSync } from "@components/common/ThemeSync";
+import { ScrollToTop } from "@components/common/ScrollToTop";
 import { BrowseSnapshotProvider } from "@context/BrowseSnapshotContext";
 import { SITE_NAME, SITE_URL } from "@constant/site";
 
@@ -65,10 +67,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeSync />
         <BrowseSnapshotProvider>
           <Navbar />
-          <main className="px-4 pb-10 md:px-6 lg:px-8">
+          <main className="px-4 pb-4 md:px-6 lg:px-8">
             {children}
+            <ScrollToTop threshold={1000} />
             <Insights />
           </main>
+          <Footer />
         </BrowseSnapshotProvider>
       </body>
     </html>
