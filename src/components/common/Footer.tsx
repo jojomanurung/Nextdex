@@ -26,16 +26,14 @@ export function Footer() {
               <Wordmark />
             </Link>
             <p className="mt-4 text-pretty text-sm leading-relaxed text-muted-foreground">
-              The national dex, presented as a curated gallery — every specimen
-              on its shelf.
+              The national dex, presented as a curated gallery — Made with
+              NextJS, TailwindCSS, Shadcn and a lot of childhood memories.
+              Deployed to Vercel
             </p>
           </div>
 
           {/* Link groups */}
-          <nav
-            aria-label="Footer"
-            className="flex gap-14 sm:gap-16"
-          >
+          <nav aria-label="Footer" className="flex gap-14 sm:gap-16">
             <FooterGroup label="Browse">
               <FooterLink href="/">Pokémon</FooterLink>
               <FooterLink href="/abilities">Abilities</FooterLink>
