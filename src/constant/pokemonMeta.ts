@@ -15,6 +15,12 @@ export function genLabel(id: number): string {
   return GENERATIONS.find((g) => id <= g.max)?.label ?? "Unknown";
 }
 
+// National-dex id → generation number (1–9), for the generation filter.
+export function generationFromId(id: number): number {
+  const i = GENERATIONS.findIndex((g) => id <= g.max);
+  return i >= 0 ? i + 1 : 0;
+}
+
 // Zero-padded national-dex number, e.g. 25 → "025".
 export function dexNo(id: number): string {
   return id.toString().padStart(3, "0");
@@ -72,3 +78,10 @@ export function generationFromName(name: string): number {
 export function genShortLabel(gen: number): string {
   return GEN_ROMAN[gen - 1] ? `Gen ${GEN_ROMAN[gen - 1]}` : "Unknown";
 }
+
+// Generation filter options: number + roman numeral + origin region.
+export const GENERATION_LIST = GENERATIONS.map((g, i) => ({
+  gen: i + 1,
+  roman: GEN_ROMAN[i],
+  region: g.label.split(" · ")[1] ?? "",
+}));

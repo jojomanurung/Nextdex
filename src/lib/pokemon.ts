@@ -5,7 +5,7 @@ import {
   PokemonQuery,
   PokemonQueryResult,
 } from "@interfaces/pokemon";
-import { dexNo } from "@constant/pokemonMeta";
+import { dexNo, generationFromId } from "@constant/pokemonMeta";
 import { PAGE_LIMIT } from "@constant/pagination";
 import { SORT_COMPARATORS } from "@constant/sort";
 
@@ -58,17 +58,48 @@ function matchesQuery(entry: PokemonIndexEntry, query: string): boolean {
   return entry.name.includes(query) || dexNo(entry.id).includes(query);
 }
 
-// Filter + sort the index, then resolve one page of details in parallel.
+// Ids of every Pokémon of a given type (national dex only), from the /type
+// endpoint — one cached request per type. Backs the OR type filter without a
+// full-dex detail crawl.
+async function typeMemberIds(type: string): Promise<Set<number>> {
+  const data = await client.getTypeByName(type);
+  const ids = new Set<number>();
+  for (const entry of data.pokemon) {
+    const id = Number(entry.pokemon.url.match(/\/pokemon\/(\d+)\/?$/)?.[1]);
+    if (id > 0 && id < FORM_ID_START) ids.add(id);
+  }
+  return ids;
+}
+
+// Filter + sort the index, then resolve one page of details in parallel. Facets
+// compose — AND across facets, OR within each: name/number query, generation
+// (derived from the dex id, no fetch), and type (membership via /type).
 export async function queryPokemon({
   query = "",
   sort = "number",
   offset = 0,
   limit = PAGE_LIMIT,
+  types = [],
+  gens = [],
 }: PokemonQuery = {}): Promise<PokemonQueryResult> {
   const index = await getPokemonIndex();
   const q = query.trim().toLowerCase();
-  const matches = (q ? index.filter((e) => matchesQuery(e, q)) : index)
-    .slice()
+
+  const genSet = gens.length ? new Set(gens) : null;
+  let typeIds: Set<number> | null = null;
+  if (types.length) {
+    const sets = await Promise.all(types.map(typeMemberIds));
+    typeIds = new Set<number>();
+    for (const set of sets) for (const id of set) typeIds.add(id);
+  }
+
+  const matches = index
+    .filter((e) => {
+      if (q && !matchesQuery(e, q)) return false;
+      if (genSet && !genSet.has(generationFromId(e.id))) return false;
+      if (typeIds && !typeIds.has(e.id)) return false;
+      return true;
+    })
     .sort(SORT_COMPARATORS[sort]);
 
   const page = matches.slice(offset, offset + limit);
