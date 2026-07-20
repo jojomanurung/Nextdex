@@ -14,6 +14,8 @@ const nextConfig = {
   },
   images: {
     dangerouslyAllowSVG: true,
+    loader: 'custom',
+    loaderFile: './src/lib/imageLoader.ts',
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
