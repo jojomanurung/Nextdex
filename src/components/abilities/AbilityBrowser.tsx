@@ -6,7 +6,7 @@ import {
 } from "@components/abilities/AbilityRow";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
-import { VirtualScroll } from "@components/common/VirtualScroll";
+import { VirtualGrid, type VirtualTier } from "@components/common/VirtualGrid";
 import { AbilityData, AbilityQueryResult } from "@interfaces/ability";
 import { genShortLabel } from "@constant/pokemonMeta";
 import { useResourceBrowser } from "@hooks/useResourceBrowser";
@@ -14,6 +14,14 @@ import { useResourceBrowser } from "@hooks/useResourceBrowser";
 type AbilityBrowserProps = {
   initial: AbilityQueryResult;
 };
+
+// Mirrors the catalogue's Tailwind grid (grid-cols-1 · md:cols-2 · xl:cols-3,
+// gap-x-10). Rows carry their own hairline divider, so vertical gap is 0.
+const ROW_TIERS: VirtualTier[] = [
+  { min: 0, columns: 1, colGap: 40, rowGap: 0 },
+  { min: 768, columns: 2, colGap: 40, rowGap: 0 },
+  { min: 1280, columns: 3, colGap: 40, rowGap: 0 },
+];
 
 export function AbilityBrowser({ initial }: AbilityBrowserProps) {
   const {
@@ -78,16 +86,28 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
         onClearFilters={clearFilter}
       />
 
-      <div
-        className={`grid grid-cols-1 gap-x-10 transition-opacity duration-200 md:grid-cols-2 xl:grid-cols-3 ${
-          isLoading ? "pointer-events-none opacity-40" : ""
-        }`}
-      >
-        {rows.map((ability) => (
-          <AbilityRow key={ability.name} ability={ability} />
-        ))}
-        {isAppending && <AbilityRowSkeleton />}
-      </div>
+      {!isEmpty && (
+        <div
+          className={`transition-opacity duration-200 ${
+            isLoading ? "pointer-events-none opacity-40" : ""
+          }`}
+        >
+          <VirtualGrid<AbilityData>
+            items={rows}
+            getKey={(ability) => ability.name}
+            renderItem={(ability) => <AbilityRow ability={ability} />}
+            renderSkeleton={(i) => <AbilityRowSkeleton key={i} />}
+            tiers={ROW_TIERS}
+            estimateRowHeight={110}
+            fallbackClassName="grid grid-cols-1 gap-x-10 md:grid-cols-2 xl:grid-cols-3"
+            resetKey={`${sort}|${query}|${gens.join(",")}`}
+            hasMore={!isLast}
+            isAppending={isAppending}
+            onEndReached={() => onIntersect(true)}
+            endLabel="End of content"
+          />
+        </div>
+      )}
 
       {isEmpty && (
         <div className="flex flex-col items-center gap-2 py-8 text-center">
@@ -109,8 +129,6 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
           )}
         </div>
       )}
-
-      <VirtualScroll intersectCallback={onIntersect} isLast={isLast} />
     </>
   );
 }

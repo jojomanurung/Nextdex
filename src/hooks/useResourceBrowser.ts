@@ -62,15 +62,22 @@ export function useResourceBrowser<T>({
 
   const search = useDebouncedValue(query, 250).trim().toLowerCase();
 
-  // Reset to page 0 when the query, sort, or filters change. Old rows stay put
-  // (dimmed by the view) until the new page lands, then swap. Skipped on mount,
-  // where the seed/snapshot already matches.
-  const mounted = useRef(false);
+  // Signature of the currently-loaded query. On mount it equals the seed/snapshot,
+  // so the reset effect below no-ops — this survives StrictMode's double-invoke
+  // and back-nav remounts (a mount-flag ref does not) and keeps the restored
+  // snapshot from being clobbered by a spurious page-0 fetch.
+  const filterSig = Object.keys(filters)
+    .sort()
+    .map((k) => `${k}=${filters[k].join(",")}`)
+    .join("&");
+  const queryKey = `${endpoint}|${search}|${sort}|${filterSig}`;
+  const loadedKey = useRef(queryKey);
+
+  // Reset to page 0 when the query, sort, or filters actually change. Old rows
+  // stay put (dimmed by the view) until the new page lands, then swap.
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      return;
-    }
+    if (queryKey === loadedKey.current) return;
+    loadedKey.current = queryKey;
     const controller = new AbortController();
     setStatus("loading");
     fetchPage<T>(endpoint, search, sort, filters, 0, controller.signal)
@@ -83,7 +90,7 @@ export function useResourceBrowser<T>({
       })
       .catch(() => setStatus("idle"));
     return () => controller.abort();
-  }, [search, sort, filters, endpoint]);
+  }, [queryKey, endpoint, search, sort, filters]);
 
   const live = useRef({
     status,
