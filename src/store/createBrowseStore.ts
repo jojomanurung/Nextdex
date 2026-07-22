@@ -60,10 +60,10 @@ export function createBrowseStore<T>(endpoint: string) {
     let seq = 0; // monotonic request marker; a newer run invalidates older ones
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     // The params that produced the current results — what `append` paginates.
-    let loaded = {
+    let loaded: { query: string; sort: SortKey; filters: Filters } = {
       query: "",
-      sort: DEFAULT_SORT as SortKey,
-      filters: {} as Filters,
+      sort: DEFAULT_SORT,
+      filters: {},
     };
 
     async function run(offset: number, mode: "reset" | "append") {
@@ -76,6 +76,11 @@ export function createBrowseStore<T>(endpoint: string) {
             }
           : loaded;
 
+      // A reset supersedes any pending debounced search.
+      if (mode === "reset" && debounceTimer) {
+        clearTimeout(debounceTimer);
+        debounceTimer = null;
+      }
       controller?.abort();
       controller = new AbortController();
       const mySeq = ++seq;
