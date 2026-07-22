@@ -4,9 +4,11 @@ import { PokemonTile, PokemonTileSkeleton } from "@components/home/PokemonTile";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualGrid, type VirtualTier } from "@components/common/VirtualGrid";
+import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
 import { genShortLabel } from "@constant/pokemonMeta";
-import { useResourceBrowser } from "@hooks/useResourceBrowser";
+import { usePokemonStore } from "@store/pokemonStore";
 
 type PokedexBrowserProps = {
   initial: PokemonQueryResult;
@@ -24,25 +26,43 @@ const TILE_TIERS: VirtualTier[] = [
 ];
 
 export function PokedexBrowser({ initial }: PokedexBrowserProps) {
+  // One-time seed from the SSR result (not an effect); idempotent on remount.
+  useState(() => usePokemonStore.getState().init(initial));
+
   const {
     query,
-    setQuery,
     sort,
-    setSort,
     filters,
+    results,
+    total,
+    hasMore,
+    status,
+    setQuery,
+    setSort,
     setFilters,
-    rows,
-    resultCount,
-    isLast,
-    isEmpty,
-    isLoading,
-    isAppending,
-    onIntersect,
-  } = useResourceBrowser<PokemonData>({
-    initial,
-    endpoint: "/api/pokemon",
-    snapshotKey: "pokemon",
-  });
+    loadMore,
+  } = usePokemonStore(
+    useShallow((s) => ({
+      query: s.query,
+      sort: s.sort,
+      filters: s.filters,
+      results: s.results,
+      total: s.total,
+      hasMore: s.hasMore,
+      status: s.status,
+      setQuery: s.setQuery,
+      setSort: s.setSort,
+      setFilters: s.setFilters,
+      loadMore: s.loadMore,
+    })),
+  );
+
+  const rows = results;
+  const resultCount = total;
+  const isLoading = status === "loading";
+  const isAppending = status === "appending";
+  const isLast = !hasMore;
+  const isEmpty = results.length === 0;
 
   const types = filters.types ?? [];
   const gens = (filters.gens ?? []).map(Number);
@@ -75,13 +95,19 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
     setFilters({});
   };
 
+  const handleSort = (next: typeof sort) => {
+    if (next === sort) return;
+    setSort(next);
+    scrollToTop();
+  };
+
   return (
     <>
       <ControlDeck
         query={query}
         onQueryChange={setQuery}
         sort={sort}
-        onSortChange={setSort}
+        onSortChange={handleSort}
         resultCount={resultCount}
         isLoading={isLoading}
         filterSlot={
@@ -114,7 +140,7 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
             resetKey={`${sort}|${query}|${types.join(",")}|${gens.join(",")}`}
             hasMore={!isLast}
             isAppending={isAppending}
-            onEndReached={() => onIntersect(true)}
+            onEndReached={() => loadMore()}
             endLabel="End of content"
           />
         </div>
