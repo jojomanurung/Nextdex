@@ -8,7 +8,6 @@ import { Footer } from "@components/common/Footer";
 import { Insights } from "@components/common/Insights";
 import { ThemeSync } from "@components/common/ThemeSync";
 import { ScrollToTop } from "@components/common/ScrollToTop";
-import { BrowseSnapshotProvider } from "@context/BrowseSnapshotContext";
 import { SITE_NAME, SITE_URL } from "@constant/site";
 
 // Display / brand voice — Clash Display (self-hosted).
@@ -65,15 +64,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="bg-background text-foreground font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <ThemeSync />
-        <BrowseSnapshotProvider>
-          <Navbar />
-          <main className="px-4 pb-4 md:px-6 lg:px-8">
-            {children}
-            <ScrollToTop threshold={1000} />
-            <Insights />
-          </main>
-          <Footer />
-        </BrowseSnapshotProvider>
+        <Navbar />
+        <main className="px-4 pb-4 md:px-6 lg:px-8">
+          {children}
+          <ScrollToTop threshold={1000} />
+          <Insights />
+        </main>
+        <Footer />
       </body>
     </html>
   );

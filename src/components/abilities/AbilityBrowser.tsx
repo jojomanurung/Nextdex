@@ -9,7 +9,9 @@ import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualGrid, type VirtualTier } from "@components/common/VirtualGrid";
 import { AbilityData, AbilityQueryResult } from "@interfaces/ability";
 import { genShortLabel } from "@constant/pokemonMeta";
-import { useResourceBrowser } from "@hooks/useResourceBrowser";
+import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { useAbilityStore } from "@store/abilityStore";
 
 type AbilityBrowserProps = {
   initial: AbilityQueryResult;
@@ -24,25 +26,43 @@ const ROW_TIERS: VirtualTier[] = [
 ];
 
 export function AbilityBrowser({ initial }: AbilityBrowserProps) {
+  // One-time seed from the SSR result (not an effect); idempotent on remount.
+  useState(() => useAbilityStore.getState().init(initial));
+
   const {
     query,
-    setQuery,
     sort,
-    setSort,
     filters,
+    results,
+    total,
+    hasMore,
+    status,
+    setQuery,
+    setSort,
     setFilters,
-    rows,
-    resultCount,
-    isLast,
-    isEmpty,
-    isLoading,
-    isAppending,
-    onIntersect,
-  } = useResourceBrowser<AbilityData>({
-    initial,
-    endpoint: "/api/ability",
-    snapshotKey: "abilities",
-  });
+    loadMore,
+  } = useAbilityStore(
+    useShallow((s) => ({
+      query: s.query,
+      sort: s.sort,
+      filters: s.filters,
+      results: s.results,
+      total: s.total,
+      hasMore: s.hasMore,
+      status: s.status,
+      setQuery: s.setQuery,
+      setSort: s.setSort,
+      setFilters: s.setFilters,
+      loadMore: s.loadMore,
+    })),
+  );
+
+  const rows = results;
+  const resultCount = total;
+  const isLoading = status === "loading";
+  const isAppending = status === "appending";
+  const isLast = !hasMore;
+  const isEmpty = results.length === 0;
 
   const gens = (filters.gens ?? []).map(Number);
   const hasFilters = gens.length > 0;
@@ -63,7 +83,13 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
   const clearFilter = () => {
     scrollToTop();
     setFilters({});
-  }
+  };
+
+  const handleSort = (next: typeof sort) => {
+    if (next === sort) return;
+    setSort(next);
+    scrollToTop();
+  };
 
   return (
     <>
@@ -71,7 +97,7 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
         query={query}
         onQueryChange={setQuery}
         sort={sort}
-        onSortChange={setSort}
+        onSortChange={handleSort}
         resultCount={resultCount}
         isLoading={isLoading}
         placeholder="Search abilities…"
@@ -103,7 +129,7 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
             resetKey={`${sort}|${query}|${gens.join(",")}`}
             hasMore={!isLast}
             isAppending={isAppending}
-            onEndReached={() => onIntersect(true)}
+            onEndReached={() => loadMore()}
             endLabel="End of content"
           />
         </div>
