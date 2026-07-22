@@ -25,9 +25,6 @@
       "@constant/*": [
         "./src/constant/*"
       ],
-      "@context/*": [
-        "./src/context/*"
-      ],
       "@hooks/*": [
         "./src/hooks/*"
       ],
@@ -36,6 +33,9 @@
       ],
       "@lib/*": [
         "./src/lib/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
       ],
       "@styles/*": [
         "./src/styles/*"

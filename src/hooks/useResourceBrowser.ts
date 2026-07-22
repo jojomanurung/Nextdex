@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { BrowseKey, useBrowseSnapshot } from "@context/BrowseSnapshotContext";
+import { useCallback, useEffect, useState } from "react";
 import { useDebouncedValue } from "@hooks/useDebouncedValue";
 import { PAGE_LIMIT } from "@constant/pagination";
 import { SortKey, DEFAULT_SORT } from "@constant/sort";
-
-type Status = "idle" | "loading" | "appending";
+import {
+  BrowseKey,
+  BrowserState,
+  Filters,
+  useBrowseStore,
+} from "@store/browseStore";
 
 type QueryResult<T> = { results: T[]; total: number; hasMore: boolean };
-
-// Opaque facet filters (e.g. { types: ["fire"], gens: ["1","3"] }). The hook
-// forwards them to the endpoint blindly; each browser owns which facets exist.
-type Filters = Record<string, string[]>;
 
 async function fetchPage<T>(
   endpoint: string,
@@ -48,115 +47,109 @@ export function useResourceBrowser<T>({
   endpoint: string;
   snapshotKey: BrowseKey;
 }) {
-  const { snapshot, setSnapshot } = useBrowseSnapshot<T>(snapshotKey);
+  const patch = useBrowseStore((x) => x.patch);
 
-  const [query, setQuery] = useState(snapshot?.query ?? "");
-  const [sort, setSort] = useState<SortKey>(snapshot?.sort ?? DEFAULT_SORT);
-  const [filters, setFilters] = useState<Filters>(snapshot?.filters ?? {});
-  const [results, setResults] = useState<T[]>(
-    snapshot?.results ?? initial.results,
-  );
-  const [total, setTotal] = useState(snapshot?.total ?? initial.total);
-  const [hasMore, setHasMore] = useState(snapshot?.hasMore ?? initial.hasMore);
-  const [status, setStatus] = useState<Status>("idle");
+  // The slice this browser seeds from — stable across renders. loadedKey matches
+  // the mount queryKey so the reset effect no-ops on first render.
+  const [seedSlice] = useState<BrowserState<unknown>>(() => ({
+    query: "",
+    sort: DEFAULT_SORT,
+    filters: {},
+    results: initial.results,
+    total: initial.total,
+    hasMore: initial.hasMore,
+    status: "idle",
+    loadedKey: `${endpoint}||${DEFAULT_SORT}|`,
+  }));
+
+  // Seed the store once (lazy, idempotent). On a back-nav remount the slice is
+  // already present and `seed` no-ops, restoring the whole scrolled list.
+  useState(() => useBrowseStore.getState().seed(snapshotKey, seedSlice));
+
+  // Fall back to `seedSlice` in case the subscription hasn't reflected the
+  // just-written seed on the very first render (they're identical).
+  const s = (useBrowseStore((x) => x.slices[snapshotKey]) ??
+    seedSlice) as BrowserState<T>;
+
+  const { query, sort, filters, results, total, hasMore, status } = s;
 
   const search = useDebouncedValue(query, 250).trim().toLowerCase();
 
-  // Signature of the currently-loaded query. On mount it equals the seed/snapshot,
-  // so the reset effect below no-ops — this survives StrictMode's double-invoke
-  // and back-nav remounts (a mount-flag ref does not) and keeps the restored
-  // snapshot from being clobbered by a spurious page-0 fetch.
   const filterSig = Object.keys(filters)
     .sort()
     .map((k) => `${k}=${filters[k].join(",")}`)
     .join("&");
   const queryKey = `${endpoint}|${search}|${sort}|${filterSig}`;
-  const loadedKey = useRef(queryKey);
 
   // Reset to page 0 when the query, sort, or filters actually change. Old rows
-  // stay put (dimmed by the view) until the new page lands, then swap.
+  // stay put (dimmed by the view) until the new page lands, then swap. The guard
+  // reads `loadedKey` from the store (not a dep), so it survives StrictMode's
+  // double-invoke and back-nav remounts without a spurious page-0 refetch.
   useEffect(() => {
-    if (queryKey === loadedKey.current) return;
-    loadedKey.current = queryKey;
+    if (queryKey === useBrowseStore.getState().slices[snapshotKey]?.loadedKey)
+      return;
+    patch(snapshotKey, { status: "loading", loadedKey: queryKey });
     const controller = new AbortController();
-    setStatus("loading");
     fetchPage<T>(endpoint, search, sort, filters, 0, controller.signal)
       .then((page) => {
         if (!page) return;
-        setResults(page.results);
-        setTotal(page.total);
-        setHasMore(page.hasMore);
-        setStatus("idle");
+        patch(snapshotKey, {
+          results: page.results,
+          total: page.total,
+          hasMore: page.hasMore,
+          status: "idle",
+        });
       })
-      .catch(() => setStatus("idle"));
+      .catch(() => patch(snapshotKey, { status: "idle" }));
     return () => controller.abort();
-  }, [queryKey, endpoint, search, sort, filters]);
-
-  const live = useRef({
-    status,
-    hasMore,
-    count: results.length,
-    search,
-    sort,
-    filters,
-  });
-  useEffect(() => {
-    live.current = {
-      status,
-      hasMore,
-      count: results.length,
-      search,
-      sort,
-      filters,
-    };
-  }, [status, hasMore, results.length, search, sort, filters]);
+  }, [queryKey, endpoint, search, sort, filters, snapshotKey, patch]);
 
   const onIntersect = useCallback(
     (intersecting: boolean) => {
       if (!intersecting) return;
-      const { status, hasMore, count, search, sort, filters } = live.current;
-      if (status !== "idle" || !hasMore) return;
+      const slice = useBrowseStore.getState().slices[snapshotKey];
+      if (!slice || slice.status !== "idle" || !slice.hasMore) return;
 
+      const { sort, filters, results, loadedKey } = slice as BrowserState<T>;
       const controller = new AbortController();
-      setStatus("appending");
-      fetchPage<T>(endpoint, search, sort, filters, count, controller.signal)
+      patch(snapshotKey, { status: "appending" });
+      // Use the debounced `search` (matching the loaded page), not the raw
+      // store query, so an append fired mid-debounce can't fetch a different
+      // query than what's currently loaded.
+      fetchPage<T>(endpoint, search, sort, filters, results.length, controller.signal)
         .then((page) => {
           if (!page) return;
-          const now = live.current;
-          // list changed under us
+          // Dropped if the list changed under the in-flight append.
           if (
-            now.search !== search ||
-            now.sort !== sort ||
-            now.filters !== filters
+            useBrowseStore.getState().slices[snapshotKey]?.loadedKey !==
+            loadedKey
           )
             return;
-          setResults((prev) => [...prev, ...page.results]);
-          setTotal(page.total);
-          setHasMore(page.hasMore);
-          setStatus("idle");
+          patch(snapshotKey, (prev) => ({
+            results: [...prev.results, ...page.results],
+            total: page.total,
+            hasMore: page.hasMore,
+            status: "idle",
+          }));
         })
-        .catch(() => setStatus("idle"));
+        .catch(() => patch(snapshotKey, { status: "idle" }));
     },
-    [endpoint],
+    [endpoint, snapshotKey, patch, search],
   );
-
-  useEffect(() => {
-    setSnapshot({ query, sort, filters, results, total, hasMore });
-  }, [query, sort, filters, results, total, hasMore, setSnapshot]);
 
   function changeSort(next: SortKey) {
     if (next === sort) return;
-    setSort(next);
+    patch(snapshotKey, { sort: next });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return {
     query,
-    setQuery,
+    setQuery: (query: string) => patch(snapshotKey, { query }),
     sort,
     setSort: changeSort,
     filters,
-    setFilters,
+    setFilters: (filters: Filters) => patch(snapshotKey, { filters }),
     rows: results,
     resultCount: total,
     isLast: !hasMore,
