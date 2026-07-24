@@ -4,6 +4,7 @@ import { PokemonTile, PokemonTileSkeleton } from "@components/home/PokemonTile";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
 import { VirtualGrid, type VirtualTier } from "@components/common/VirtualGrid";
+import { Button } from "@components/ui/button";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { PokemonData, PokemonQueryResult } from "@interfaces/pokemon";
@@ -86,7 +87,9 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
   ];
 
   const scrollToTop = () => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   };
 
@@ -148,7 +151,9 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
 
       {isEmpty && (
         <div className="flex flex-col items-center gap-2 py-20 text-center">
-          <p className="font-display text-lg text-foreground">No Pokémon found</p>
+          <p className="font-display text-lg text-foreground">
+            No Pokémon found
+          </p>
           <p className="max-w-xs text-sm text-muted-foreground">
             {query
               ? `Nothing matches “${query}”. Try another name or number.`
@@ -157,13 +162,9 @@ export function PokedexBrowser({ initial }: PokedexBrowserProps) {
                 : "Nothing to show."}
           </p>
           {hasFilters && (
-            <button
-              type="button"
-              onClick={() => setFilters({})}
-              className="mt-1 text-sm font-medium text-primary underline-offset-2 outline-none transition-colors hover:underline focus-visible:underline"
-            >
+            <Button type="button" variant="link" onClick={() => setFilters({})}>
               Clear filters
-            </button>
+            </Button>
           )}
         </div>
       )}
