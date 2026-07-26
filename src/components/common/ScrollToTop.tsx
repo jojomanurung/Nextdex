@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { Button } from "@components/ui/button";
 
 type ScrollToTopProps = {
   /** When to reveal the button:
@@ -44,19 +45,20 @@ export function ScrollToTop({ reveal = "scrolled", threshold }: ScrollToTopProps
   };
 
   return (
-    <button
+    <Button
       type="button"
+      size="icon-lg"
       onClick={scrollToTop}
       aria-label="Scroll back to top"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-20 right-6 z-20 rounded-full border border-border bg-card p-3 text-muted-foreground shadow-sm transition duration-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:translate-y-0 ${
+      className={`fixed bottom-20 right-6 z-20 rounded-full bg-card p-3 text-muted-foreground shadow-sm transition duration-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:translate-y-0 ${
         visible
           ? "cursor-pointer translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >
       <ArrowUp className="size-5" />
-    </button>
+    </Button>
   );
 }

@@ -6,6 +6,7 @@ import {
 } from "@components/abilities/AbilityRow";
 import { ControlDeck } from "@components/home/ControlDeck";
 import { FilterMenu } from "@components/home/FilterMenu";
+import { Button } from "@components/ui/button";
 import { VirtualGrid, type VirtualTier } from "@components/common/VirtualGrid";
 import { AbilityData, AbilityQueryResult } from "@interfaces/ability";
 import { genShortLabel } from "@constant/pokemonMeta";
@@ -76,7 +77,9 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
   }));
 
   const scrollToTop = () => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   };
 
@@ -145,13 +148,13 @@ export function AbilityBrowser({ initial }: AbilityBrowserProps) {
                 : "Nothing to show."}
           </p>
           {hasFilters && (
-            <button
+            <Button
               type="button"
+              variant="link"
               onClick={() => setFilters({})}
-              className="text-sm font-medium text-primary underline-offset-2 outline-none transition-colors hover:underline focus-visible:underline"
             >
               Clear filters
-            </button>
+            </Button>
           )}
         </div>
       )}

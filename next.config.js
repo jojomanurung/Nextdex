@@ -13,7 +13,6 @@ const nextConfig = {
     NEXT_PUBLIC_SITE_URL: siteUrl,
   },
   images: {
-    dangerouslyAllowSVG: true,
     loader: 'custom',
     loaderFile: './src/lib/imageLoader.ts',
     contentDispositionType: 'attachment',
