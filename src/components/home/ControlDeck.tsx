@@ -1,6 +1,6 @@
 import { ChangeEvent, ReactNode } from "react";
 import { Search, X, Loader2 } from "lucide-react";
-import { Input } from "@components/ui/input";
+import { Button } from "@components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,6 +9,12 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { SortKey, SORT_OPTIONS } from "@constant/sort";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@components/ui/input-group";
 
 type ControlDeckProps = {
   query: string;
@@ -39,12 +45,11 @@ export function ControlDeck({
     <div className="sticky top-0 z-10 border-b border-border bg-background py-3">
       {/* Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search
-            aria-hidden
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
+        <InputGroup>
+          <InputGroupAddon>
+            <Search aria-hidden />
+          </InputGroupAddon>
+          <InputGroupInput
             type="text"
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -52,19 +57,20 @@ export function ControlDeck({
             }
             placeholder={placeholder}
             aria-label="Search Pokémon by name or number"
-            className="h-11 pr-9 pl-9"
           />
           {query && (
-            <button
-              type="button"
-              onClick={() => onQueryChange("")}
-              aria-label="Clear search"
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring pointer-coarse:before:absolute pointer-coarse:before:-inset-2.5 pointer-coarse:before:content-['']"
-            >
-              <X className="size-4" />
-            </button>
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                type="button"
+                onClick={() => onQueryChange("")}
+                aria-label="Clear search"
+                size="icon-xs"
+              >
+                <X className="size-4" />
+              </InputGroupButton>
+            </InputGroupAddon>
           )}
-        </div>
+        </InputGroup>
 
         <div className="flex items-center justify-between gap-3 sm:justify-end">
           {filterSlot}
@@ -112,25 +118,27 @@ export function ControlDeck({
             </span>
             <div className="flex flex-wrap items-center gap-2">
               {activeFilters.map((f) => (
-                <button
+                <Button
                   key={f.key}
                   type="button"
+                  variant="outline"
                   onClick={f.onRemove}
                   aria-label={`Remove ${f.label} filter`}
-                  className="inline-flex items-center gap-1 rounded-full border border-border bg-muted py-0.5 pr-1.5 pl-2 text-xs text-foreground outline-none transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="text-xs"
                 >
                   {f.label}
                   <X aria-hidden className="size-3 text-muted-foreground" />
-                </button>
+                </Button>
               ))}
               {onClearFilters && (
-                <button
+                <Button
                   type="button"
+                  variant="link"
                   onClick={onClearFilters}
-                  className="ml-0.5 text-xs text-muted-foreground underline-offset-2 outline-none transition-colors hover:text-foreground hover:underline focus-visible:text-foreground focus-visible:underline"
+                  className="ml-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:underline"
                 >
                   Clear all
-                </button>
+                </Button>
               )}
             </div>
           </>
