@@ -1,7 +1,12 @@
 "use client";
 
 import { SlidersHorizontal } from "lucide-react";
-import { Popover, PopoverTrigger, PopoverContent } from "@components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@components/ui/popover";
+import { Button } from "@components/ui/button";
 import { POKEMON_TYPES } from "@constant/pokemonTypes";
 import { GENERATION_LIST } from "@constant/pokemonMeta";
 import { cn } from "@lib/utils";
@@ -29,7 +34,7 @@ export function FilterMenu({
   onTypesChange,
   gens,
   onGensChange,
-  clearFilter
+  clearFilter,
 }: FilterMenuProps) {
   const hasTypeFacet = Boolean(types && onTypesChange);
   const activeCount = (types?.length ?? 0) + gens.length;
@@ -38,7 +43,7 @@ export function FilterMenu({
     <Popover>
       <PopoverTrigger
         aria-label={`Filter${activeCount ? `, ${activeCount} active` : ""}`}
-        className="inline-flex h-11 shrink-0 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-colors hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-colors hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <SlidersHorizontal
           aria-hidden
@@ -69,7 +74,9 @@ export function FilterMenu({
                     onClick={() => onTypesChange!(toggleValue(types!, t.name))}
                     className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-medium capitalize text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
                     style={{
-                      backgroundColor: selected ? `${t.color}33` : `${t.color}14`,
+                      backgroundColor: selected
+                        ? `${t.color}33`
+                        : `${t.color}14`,
                       borderColor: selected ? t.color : `${t.color}59`,
                     }}
                   >
@@ -126,13 +133,14 @@ export function FilterMenu({
         </section>
 
         {activeCount > 0 && (
-          <button
+          <Button
             type="button"
+            variant="link"
             onClick={() => clearFilter()}
-            className="text-xs text-muted-foreground underline-offset-2 outline-none transition-colors hover:text-foreground hover:underline focus-visible:text-foreground focus-visible:underline"
+            className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:text-foreground focus-visible:underline"
           >
             Clear all
-          </button>
+          </Button>
         )}
       </PopoverContent>
     </Popover>
