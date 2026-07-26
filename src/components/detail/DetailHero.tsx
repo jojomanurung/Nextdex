@@ -47,7 +47,7 @@ export function DetailHero({ pokemon }: DetailHeroProps) {
             onPressedChange={(pressed) => setShiny(pressed)}
             aria-label="Toggle shiny artwork"
             title="Toggle shiny artwork"
-            className="absolute right-0 top-0 gap-1.5 rounded-full border border-border bg-background px-3 text-xs text-muted-foreground aria-pressed:border-amber-400/60 aria-pressed:bg-amber-400/20 aria-pressed:text-amber-700 dark:aria-pressed:text-amber-200"
+            className="absolute right-0 top-0 gap-1.5 rounded-full border border-border px-3 text-xs text-muted-foreground cursor-pointer hover:bg-transparent aria-pressed:border-amber-400/60 aria-pressed:bg-amber-400/20 aria-pressed:text-amber-700 dark:aria-pressed:text-amber-200"
           >
             <Sparkles className="size-3.5" />
             Shiny
