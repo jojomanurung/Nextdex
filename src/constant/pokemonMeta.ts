@@ -57,6 +57,25 @@ export function versionGeneration(version: string): number {
   return VERSION_GENERATION[version] ?? 0;
 }
 
+// Version *group* → generation (1–9). Move flavor text carries a version_group
+// (e.g. "sword-shield"), not a single version, so it needs its own table.
+const VERSION_GROUP_GENERATION: Record<string, number> = {
+  "red-blue": 1, yellow: 1,
+  "gold-silver": 2, crystal: 2,
+  "ruby-sapphire": 3, emerald: 3, "firered-leafgreen": 3, colosseum: 3, xd: 3,
+  "diamond-pearl": 4, platinum: 4, "heartgold-soulsilver": 4,
+  "black-white": 5, "black-2-white-2": 5,
+  "x-y": 6, "omega-ruby-alpha-sapphire": 6,
+  "sun-moon": 7, "ultra-sun-ultra-moon": 7, "lets-go-pikachu-lets-go-eevee": 7,
+  "sword-shield": 8, "the-isle-of-armor": 8, "the-crown-tundra": 8,
+  "brilliant-diamond-and-shining-pearl": 8, "legends-arceus": 8,
+  "scarlet-violet": 9, "the-teal-mask": 9, "the-indigo-disk": 9,
+};
+
+export function versionGroupGeneration(versionGroup: string): number {
+  return VERSION_GROUP_GENERATION[versionGroup] ?? 0;
+}
+
 // Generation number (1–9) → "Gen III · Hoenn" label, reusing GENERATIONS order.
 export function generationLabel(gen: number): string {
   return GENERATIONS[gen - 1]?.label ?? "Unknown";
