@@ -15,6 +15,11 @@ const LINKS = [
     label: "Abilities",
     match: (p: string) => p.startsWith("/abilities"),
   },
+  {
+    href: "/moves",
+    label: "Moves",
+    match: (p: string) => p.startsWith("/moves"),
+  },
 ];
 
 export function Navbar() {

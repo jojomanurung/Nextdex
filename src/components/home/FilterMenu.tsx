@@ -9,15 +9,19 @@ import {
 import { Button } from "@components/ui/button";
 import { POKEMON_TYPES } from "@constant/pokemonTypes";
 import { GENERATION_LIST } from "@constant/pokemonMeta";
+import { MOVE_DAMAGE_CLASSES } from "@constant/moveMeta";
 import { cn } from "@lib/utils";
 
-// Shared filter control for both browse families: a calm trigger (with an
-// active-count badge) opening a popover of type chips + generation toggles.
-// Type color lives on the chips — the one place the design system allows it.
-// Abilities pass no `types`, so only the Generation section renders.
+// Shared filter control for all browse families: a calm trigger (with an
+// active-count badge) opening a popover of type chips + damage-class + generation
+// toggles. Type color lives on the chips — the one place the design system
+// allows it. Each facet renders only when its props are supplied (abilities pass
+// gens only; moves pass all three; Pokémon pass types + gens).
 type FilterMenuProps = {
   types?: string[];
   onTypesChange?: (next: string[]) => void;
+  classes?: string[];
+  onClassesChange?: (next: string[]) => void;
   gens: number[];
   onGensChange: (next: number[]) => void;
   clearFilter: () => void;
@@ -32,12 +36,16 @@ function toggleValue<T>(list: T[], value: T): T[] {
 export function FilterMenu({
   types,
   onTypesChange,
+  classes,
+  onClassesChange,
   gens,
   onGensChange,
   clearFilter,
 }: FilterMenuProps) {
   const hasTypeFacet = Boolean(types && onTypesChange);
-  const activeCount = (types?.length ?? 0) + gens.length;
+  const hasClassFacet = Boolean(classes && onClassesChange);
+  const activeCount =
+    (types?.length ?? 0) + (classes?.length ?? 0) + gens.length;
 
   return (
     <Popover>
@@ -96,6 +104,42 @@ export function FilterMenu({
                       }}
                     />
                     {t.name}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {hasClassFacet && (
+          <section>
+            <h3 className="mb-2 text-xs font-medium text-muted-foreground">
+              Damage class
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {MOVE_DAMAGE_CLASSES.map((c) => {
+                const selected = classes!.includes(c.name);
+                const Icon = c.icon;
+                return (
+                  <button
+                    key={c.name}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() =>
+                      onClassesChange!(toggleValue(classes!, c.name))
+                    }
+                    className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+                    style={{
+                      backgroundColor: selected ? `${c.color}33` : `${c.color}14`,
+                      borderColor: selected ? c.color : `${c.color}59`,
+                    }}
+                  >
+                    <Icon
+                      aria-hidden
+                      className="size-3 shrink-0"
+                      style={{ color: c.color }}
+                    />
+                    {c.label}
                   </button>
                 );
               })}
